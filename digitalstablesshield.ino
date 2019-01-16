@@ -1053,6 +1053,9 @@ void loop() {
 					lcd.print(internalBatteryStateOfCharge);
 					lcd.print("%") ;
 					wpsCountdown=true;
+					operatingStatus="WPS";
+					wpsCountDownStartSeconds= getCurrentTimeInSeconds();
+					currentSecondsToPowerOff=0L;
 
 				}
 			}else if( batteryVoltage<=enterWPSVoltage){
