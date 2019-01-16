@@ -1,4 +1,4 @@
-
+#include <MemoryFree.h>
 #include <Wire.h>
 #include <avr/sleep.h>
 #include <avr/power.h>
@@ -34,42 +34,41 @@ boolean waitingForWPSConfirmation=false;
 long currentSleepStartTime=0L;
 long lastWPSStartUp=0L;
 
-String WPSSensorDataDirName = "WPSSensr";
-String LifeCycleDataDirName = "LifeCycl";
-String RememberedValueDataDirName = "RememVal";
-String unstraferedFileName = "Untransf.txt";
+#define WPSSensorDataDirName  "WPSSensr"
+#define LifeCycleDataDirName  "LifeCycl"
+#define RememberedValueDataDirName  "RememVal"
+#define unstraferedFileName  "Untransf.txt"
 
-int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
-int LIFE_CYCLE_EVENT_WPS_VALUE=2;
-int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
+const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
+const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
+const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
-String LIFE_CYCLE_EVENT_FORCED_START_WPS="Forced Start WPS";
-String LIFE_CYCLE_EVENT_START_WPS="Start WPS";
-String LIFE_CYCLE_EVENT_END_WPS="End WPS";
-String LIFE_CYCLE_EVENT_START_COMMA="Start Comma";
-String LIFE_CYCLE_EVENT_END_COMMA="End Comma";
-String operatingStatus="Normal";
+#define LIFE_CYCLE_EVENT_FORCED_START_WPS "Forced Start WPS"
+#define LIFE_CYCLE_EVENT_START_WPS "Start WPS"
+#define LIFE_CYCLE_EVENT_END_WPS "End WPS"
+#define LIFE_CYCLE_EVENT_START_COMMA "Start Comma"
+#define LIFE_CYCLE_EVENT_END_COMMA "End Comma"
+#define operatingStatus "Normal"
 
-String BATTERY_VOLTAGE_BEFORE_PI_ON="Battery Voltage Before Turning Pi On";
-String BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
-String BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON="Battery Voltage Differential After Turning Pi On";
-String FORCED_PI_TURN_OFF="Forced Pi Turn Off";
-String PI_TURN_OFF="Pi Turn Off";
+#define BATTERY_VOLTAGE_BEFORE_PI_ON="Battery Voltage Before Turning Pi On";
+#define BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
+#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON="Battery Voltage Differential After Turning Pi On";
+#define FORCED_PI_TURN_OFF="Forced Pi Turn Off";
+#define PI_TURN_OFF="Pi Turn Off";
 
-String DAILY_MINIMUM_BATTERY_VOLTAGE="Daily Minimum Battery Voltage";
-String DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
+#define DAILY_MINIMUM_BATTERY_VOLTAGE="Daily Minimum Battery Voltage";
+#define DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
 
-String DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
-String DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
-String MAXIMUM_VALUE="Max";
-String MINIMUM_VALUE="Min";
-String AVERAGE_VALUE="Avg";
+#define DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
+#define DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
+#define MAXIMUM_VALUE="Max";
+#define MINIMUM_VALUE="Min";
+#define AVERAGE_VALUE="Avg";
 
+#define UNIT_VOLT="Volt";
+#define UNIT_MILLI_AMPERES="mA";
 
-String UNIT_VOLT="Volt";
-String UNIT_MILLI_AMPERES="mA";
-
-String UNIT_PERCENTAGE="%";
+#define UNIT_PERCENTAGE="%";
 //
 // Analogs
 //
@@ -79,8 +78,8 @@ String UNIT_PERCENTAGE="%";
 //
 // Digital
 //
-int switchPin = 3;
-int PI_POWER_PIN=4;
+const int switchPin = 3;
+const int PI_POWER_PIN=4;
 
 
 
@@ -970,34 +969,41 @@ void loop() {
 
 
 
-	if(!inWPS && !waitingForWPSConfirmation){
-		long now = getCurrentTimeInSeconds();
-		if(batteryVoltage>exitWPSVoltage){
-			lcd.setRGB(0, 225, 0);
-
-			if(!digitalRead(PI_POWER_PIN))turnPiOn(now);
-			operatingStatus="Normal";
-		}else if(batteryVoltage>minWPSVoltage && batteryVoltage<exitWPSVoltage){
-			lcd.clear();
-			if(digitalRead(PI_POWER_PIN)){
+	if(!inWPS ){
+		if(!waitingForWPSConfirmation){
+			long now = getCurrentTimeInSeconds();
+			if(batteryVoltage>exitWPSVoltage){
 				lcd.setRGB(0, 225, 0);
-				lcd.setCursor(0, 0);
-				lcd.print("Pi On");
-			}else{
-				lcd.setRGB(225, 225, 0);
-				lcd.setCursor(0, 0);
-				lcd.print("Pi Off");
-				lcd.setCursor(0,1);
-				lcd.print(batteryVoltage);
-				lcd.print("V ");
-				lcd.print(internalBatteryStateOfCharge);
-				lcd.print("%") ;
-			}
-		}else if( batteryVoltage<=enterWPSVoltage){
-			faultData="Enter WPS";
-			sendWPSAlert(now, faultData, batteryVoltage);
-		}
 
+				if(!digitalRead(PI_POWER_PIN))turnPiOn(now);
+				operatingStatus="Normal";
+			}else if(batteryVoltage>minWPSVoltage && batteryVoltage<exitWPSVoltage){
+				inWPS=true;
+				lcd.clear();
+				if(digitalRead(PI_POWER_PIN)){
+					lcd.setRGB(0, 225, 0);
+					lcd.setCursor(0, 0);
+					lcd.print("Pi On");
+					faultData="Enter WPS";
+					sendWPSAlert(now, faultData, batteryVoltage);
+				}else{
+					lcd.setRGB(225, 225, 0);
+					lcd.setCursor(0, 0);
+					lcd.print("Pi Off");
+					lcd.setCursor(0,1);
+					lcd.print(batteryVoltage);
+					lcd.print("V ");
+					lcd.print(internalBatteryStateOfCharge);
+					lcd.print("%") ;
+					wpsCountdown=true;
+
+				}
+			}else if( batteryVoltage<=enterWPSVoltage){
+				faultData="Enter WPS";
+				sendWPSAlert(now, faultData, batteryVoltage);
+			}
+
+		}
 
 	}else if(inWPS && batteryVoltage<minWPSVoltage){
 		if(f_wdt == 1){
