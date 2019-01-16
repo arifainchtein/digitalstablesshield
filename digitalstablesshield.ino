@@ -48,7 +48,7 @@ const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 #define LIFE_CYCLE_EVENT_END_WPS "End WPS"
 #define LIFE_CYCLE_EVENT_START_COMMA "Start Comma"
 #define LIFE_CYCLE_EVENT_END_COMMA "End Comma"
-#define operatingStatus "Normal"
+String operatingStatus ="Normal";
 
 #define BATTERY_VOLTAGE_BEFORE_PI_ON "Battery Voltage Before Turning Pi On"
 #define BATTERY_VOLTAGE_ATER_PI_ON "Battery Voltage After Turning Pi On"
