@@ -1558,7 +1558,7 @@ void loop() {
 			lcd.print("  ");
 			lcd.print(batteryVoltage);
 			lcd.print("V ");
-		//	lcd.print(freeMemory());
+			lcd.print(freeMemory());
 
 			inWPS=true;
 			if( remaining <= 0  ){
