@@ -224,7 +224,7 @@ void storeRememberedValue(long time, String name, float value, String unit){
 
 	char untransferredFileName[24];
 	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName.c_str(),unstraferedFileName.c_str());
-	File todayFile = SD.open(fileName, FILE_WRITE);
+	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 
 
 
