@@ -45,13 +45,13 @@ String operatingStatus ="Normal";
 
 
 
+String  WPSSensorDataDirName="WPSSensr";
+String LifeCycleDataDirName="LifeCycl";
+String  RememberedValueDataDirName  = "RememVal";
+String  unstraferedFileName ="Untransf.txt";
 
 
 #define CONST_STR(s) F(s)
-#define  WPSSensorDataDirName   CONST_STR( "WPSSensr")
-#define  LifeCycleDataDirName  CONST_STR("LifeCycl")
-#define  RememberedValueDataDirName  CONST_STR( "RememVal")
-#define  unstraferedFileName   CONST_STR("Untransf.txt")
 
 #define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
 #define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
@@ -475,7 +475,12 @@ boolean checkCode(long userCode){
 
 void storeLifeCycleEvent(long time, String eventType, int eventValue){
 
-	File untransferredFile = SD.open("/" + LifeCycleDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+	char untransferredFileName[24];
+	sprintf(untransferredFileName,"/%s/%s",LifeCycleDataDirName.c_str(),unstraferedFileName.c_str());
+	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
+
+
+	//File untransferredFile = SD.open("/" + LifeCycleDataDirName + "/" + unstraferedFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
 		untransferredFile.print(eventType);
@@ -783,6 +788,7 @@ void pauseWPS(void)
 boolean getHistoricalData(String dirName, int date, int month, int year){
 	boolean result=false;
 	File todayFile1 = SD.open("/" + dirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
+
 	if (todayFile1) {
 		todayFile1.seek(0);
 		while (todayFile1.available()){
