@@ -62,7 +62,7 @@ String  unstraferedFileName ="Untransf.txt";
 #define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
 #define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
 #define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON CONST_STR("Battery Voltage Differential After Turning Pi On")
-#define FORCED_PI_TURN_OFF  CONST_STR("Forced Pi Turn Off")
+//#define FORCED_PI_TURN_OFF  CONST_STR("Forced Pi Turn Off")
 #define PI_TURN_OFF CONST_STR("Pi Turn Off")
 
 #define DAILY_MINIMUM_BATTERY_VOLTAGE CONST_STR("Daily Minimum Battery Voltage")
@@ -73,12 +73,12 @@ String  unstraferedFileName ="Untransf.txt";
 #define MINIMUM_VALUE CONST_STR("Min")
 #define AVERAGE_VALUE CONST_STR("Avg")
 
-#define UNIT_VOLT CONST_STR("Volt")
+//#define UNIT_VOLT CONST_STR("Volt")
 #define UNIT_MILLI_AMPERES CONST_STR("mA")
 #define UNIT_PERCENTAGE CONST_STR("%")
 
 String UNIT_VOLT="Volt";
-
+String FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
 
 
 //
