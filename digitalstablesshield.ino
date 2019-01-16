@@ -77,7 +77,7 @@ String  unstraferedFileName ="Untransf.txt";
 #define UNIT_MILLI_AMPERES CONST_STR("mA")
 #define UNIT_PERCENTAGE CONST_STR("%")
 
-
+String UNIT_VOLT="Volt";
 
 
 
