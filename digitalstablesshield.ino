@@ -1102,10 +1102,18 @@ void loop() {
 		}
 	}else if(batteryVoltage>minWPSVoltage && batteryVoltage<exitWPSVoltage){
 		lcd.setRGB(255, 225, 0);
-		long now = getCurrentTimeInSeconds();
-		faultData="Enter WPS";
-		if(!waitingForWPSConfirmation)sendWPSAlert(now, faultData, batteryVoltage);
-		operatingStatus="WPS";
+		//long now = getCurrentTimeInSeconds();
+		//faultData="Enter WPS";
+		//if(!waitingForWPSConfirmation)sendWPSAlert(now, faultData, batteryVoltage);
+		//operatingStatus="WPS";
+		lcd.clear();
+		lcd.setCursor(0,0);
+		lcd.print("In WPS");
+		lcd.setCursor(0,1);
+		lcd.print(batteryVoltage);
+		lcd.print("V ");
+		lcd.print(internalBatteryStateOfCharge);
+		lcd.print("%") ;
 
 	}else if(batteryVoltage>exitWPSVoltage){
 		lcd.setRGB(0, 225, 0);
