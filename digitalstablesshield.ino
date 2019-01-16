@@ -1101,7 +1101,7 @@ void loop() {
 		lcd.setRGB(255, 225, 0);
 		long now = getCurrentTimeInSeconds();
 		faultData="Enter WPS";
-		sendWPSAlert(now, faultData, batteryVoltage);
+		if(!waitingForWPSConfirmation)sendWPSAlert(now, faultData, batteryVoltage);
 		operatingStatus="WPS";
 
 	}else if(batteryVoltage>exitWPSVoltage){
@@ -1815,7 +1815,7 @@ void loop() {
 				// is below the minimum
 				// send an alert to the hypothalamus to shut things down
 				// orderly
-				sendWPSAlert(now, faultData, batteryVoltage);
+				if(!waitingForWPSConfirmation)sendWPSAlert(now, faultData, batteryVoltage);
 			}else{
 				lcd.clear();
 				lcd.setCursor(0,0);
