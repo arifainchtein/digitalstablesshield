@@ -73,11 +73,11 @@ String  unstraferedFileName ="Untransf.txt";
 #define MINIMUM_VALUE CONST_STR("Min")
 #define AVERAGE_VALUE CONST_STR("Avg")
 
-//#define UNIT_VOLT CONST_STR("Volt")
+#define UNIT_VOLT CONST_STR("Volt")
 #define UNIT_MILLI_AMPERES CONST_STR("mA")
 #define UNIT_PERCENTAGE CONST_STR("%")
 
-String UNIT_VOLT="Volt";
+//String UNIT_VOLT="Volt";
 String FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
 
 
