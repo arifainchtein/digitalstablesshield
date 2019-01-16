@@ -34,10 +34,10 @@ boolean waitingForWPSConfirmation=false;
 long currentSleepStartTime=0L;
 long lastWPSStartUp=0L;
 
-#define WPSSensorDataDirName  "WPSSensr"
-#define LifeCycleDataDirName  "LifeCycl"
-#define RememberedValueDataDirName  "RememVal"
-#define unstraferedFileName  "Untransf.txt"
+String  WPSSensorDataDirName = "WPSSensr";
+String  LifeCycleDataDirName = "LifeCycl";
+String RememberedValueDataDirName = "RememVal";
+String unstraferedFileName = "Untransf.txt";
 
 const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
