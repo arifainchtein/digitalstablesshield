@@ -1,4 +1,4 @@
-//#include <MemoryFree.h>
+#include <MemoryFree.h>
 #include <Wire.h>
 #include <avr/sleep.h>
 #include <avr/power.h>
@@ -1559,7 +1559,7 @@ void loop() {
 			lcd.print("  ");
 			lcd.print(batteryVoltage);
 			lcd.print("V ");
-			//lcd.print(freeMemory());
+			lcd.print(freeMemory());
 
 			inWPS=true;
 			if( remaining <= 0  ){
