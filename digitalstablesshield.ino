@@ -53,11 +53,11 @@ String  unstraferedFileName ="Untransf.txt";
 
 #define CONST_STR(s) F(s)
 
-#define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
-#define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
-#define LIFE_CYCLE_EVENT_END_WPS      CONST_STR("End WPS")
-#define LIFE_CYCLE_EVENT_START_COMMA  CONST_STR("Start Comma")
-#define LIFE_CYCLE_EVENT_END_COMMA    CONST_STR("End Comma")
+//#define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
+//#define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
+//#define LIFE_CYCLE_EVENT_END_WPS      CONST_STR("End WPS")
+//#define LIFE_CYCLE_EVENT_START_COMMA  CONST_STR("Start Comma")
+//#define LIFE_CYCLE_EVENT_END_COMMA    CONST_STR("End Comma")
 
 //#define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
 //#define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
@@ -88,6 +88,11 @@ String BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
 String BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
 String PI_TURN_OFF ="Pi Turn Off";
 
+String LIFE_CYCLE_EVENT_FORCED_START_WPS ="Forced Start WPS";
+String LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
+String LIFE_CYCLE_EVENT_END_WPS      ="End WPS";
+String LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
+String LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
 
 
 //
