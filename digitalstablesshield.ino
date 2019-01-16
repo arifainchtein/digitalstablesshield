@@ -52,46 +52,53 @@ String  unstraferedFileName ="Untransf.txt";
 
 
 #define CONST_STR(s) s
-
-#define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
-#define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
-#define LIFE_CYCLE_EVENT_END_WPS      CONST_STR("End WPS")
-#define LIFE_CYCLE_EVENT_START_COMMA  CONST_STR("Start Comma")
-#define LIFE_CYCLE_EVENT_END_COMMA    CONST_STR("End Comma")
-
-#define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
-#define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
-#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON CONST_STR("Battery Voltage Differential After Turning Pi On")
-#define FORCED_PI_TURN_OFF  CONST_STR("Forced Pi Turn Off")
-#define PI_TURN_OFF CONST_STR("Pi Turn Off")
-
+//
+//#define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
+//#define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
+//#define LIFE_CYCLE_EVENT_END_WPS      CONST_STR("End WPS")
+//#define LIFE_CYCLE_EVENT_START_COMMA  CONST_STR("Start Comma")
+//#define LIFE_CYCLE_EVENT_END_COMMA    CONST_STR("End Comma")
+//
+//#define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
+//#define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
+//#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON CONST_STR("Battery Voltage Differential After Turning Pi On")
+//#define FORCED_PI_TURN_OFF  CONST_STR("Forced Pi Turn Off")
+//#define PI_TURN_OFF CONST_STR("Pi Turn Off")
+//
 #define DAILY_MINIMUM_BATTERY_VOLTAGE CONST_STR("Daily Minimum Battery Voltage")
 #define DAILY_MAXIMUM_BATTERY_VOLTAGE CONST_STR("Daily Maximum Battery Voltage")
 #define DAILY_MINIMUM_BATTERY_CURRENT CONST_STR("Daily Minimum Battery Current")
 #define DAILY_MAXIMUM_BATTERY_CURRENT CONST_STR("Daily Maximum Battery Current")
+
 #define MAXIMUM_VALUE CONST_STR("Max")
 #define MINIMUM_VALUE CONST_STR("Min")
 #define AVERAGE_VALUE CONST_STR("Avg")
-
-#define UNIT_VOLT CONST_STR("Volt")
-#define UNIT_MILLI_AMPERES CONST_STR("mA")
-#define UNIT_PERCENTAGE CONST_STR("%")
-
-
-//String UNIT_VOLT ="Volt";
-//String UNIT_MILLI_AMPERES ="mA";
-//String UNIT_PERCENTAGE ="%";
-//String FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
-//String BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
-//String BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
-//String BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
-//String PI_TURN_OFF ="Pi Turn Off";
 //
-//String LIFE_CYCLE_EVENT_FORCED_START_WPS ="Forced Start WPS";
-//String LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
-//String LIFE_CYCLE_EVENT_END_WPS      ="End WPS";
-//String LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
-//String LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
+//#define UNIT_VOLT CONST_STR("Volt")
+//#define UNIT_MILLI_AMPERES CONST_STR("mA")
+//#define UNIT_PERCENTAGE CONST_STR("%")
+
+
+String UNIT_VOLT ="Volt";
+String UNIT_MILLI_AMPERES ="mA";
+String UNIT_PERCENTAGE ="%";
+String FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
+String BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
+String BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
+String BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
+String PI_TURN_OFF ="Pi Turn Off";
+
+String LIFE_CYCLE_EVENT_FORCED_START_WPS ="Forced Start WPS";
+String LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
+String LIFE_CYCLE_EVENT_END_WPS      ="End WPS";
+String LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
+String LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
+
+String LIFE_CYCLE_EVENT_FORCED_START_WPS= "Forced Start WPS";
+String LIFE_CYCLE_EVENT_START_WPS  =  "Start WPS";
+String LIFE_CYCLE_EVENT_END_WPS    =  "End WPS";
+String LIFE_CYCLE_EVENT_START_COMMA = "Start Comma";
+String LIFE_CYCLE_EVENT_END_COMMA    ="End Comma";
 
 
 //
