@@ -52,9 +52,9 @@ const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
 #define BATTERY_VOLTAGE_BEFORE_PI_ON "Battery Voltage Before Turning Pi On";
 #define BATTERY_VOLTAGE_ATER_PI_ON "Battery Voltage After Turning Pi On";
-#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON="Battery Voltage Differential After Turning Pi On";
-#define FORCED_PI_TURN_OFF="Forced Pi Turn Off";
-#define PI_TURN_OFF="Pi Turn Off";
+#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON "Battery Voltage Differential After Turning Pi On";
+#define FORCED_PI_TURN_OFF "Forced Pi Turn Off";
+#define PI_TURN_OFF "Pi Turn Off";
 
 #define DAILY_MINIMUM_BATTERY_VOLTAGE "Daily Minimum Battery Voltage";
 #define DAILY_MAXIMUM_BATTERY_VOLTAGE "Daily Maximum Battery Voltage";
