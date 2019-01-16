@@ -34,10 +34,7 @@ boolean waitingForWPSConfirmation=false;
 long currentSleepStartTime=0L;
 long lastWPSStartUp=0L;
 
-char  WPSSensorDataDirName[9] = "WPSSensr";
-char  LifeCycleDataDirName[9] = "LifeCycl";
-char rememberedValueDataDirName[9] = "RememVal";
-char unstraferedFileName[13] = "Untransf.txt";
+
 
 const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
@@ -51,6 +48,11 @@ String operatingStatus ="Normal";
 
 
 #define CONST_STR(s) F(s)
+#define  WPSSensorDataDirName   CONST_STR( "WPSSensr")
+#define  LifeCycleDataDirName  CONST_STR("LifeCycl")
+#define  RememberedValueDataDirName  CONST_STR( "RememVal")
+#define  unstraferedFileName   CONST_STR("Untransf.txt")
+
 #define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
 #define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
 #define LIFE_CYCLE_EVENT_END_WPS      CONST_STR("End WPS")
@@ -218,7 +220,7 @@ boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, Stri
 }
 
 void storeRememberedValue(long time, String name, float value, String unit){
-	File untransferredFile = SD.open("/" + rememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+	File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
 		untransferredFile.print(time);
@@ -358,17 +360,19 @@ float searchRememberedValue(char *label, int date, int month, int year, char *wh
 	float value=0;
 	int sampleCount=0;
 	int sampleSum=0;
-	char fileName[23]="/";
-	strcat(fileName, *rememberedValueDataDirName);
-	strcat(fileName, "/");
-	strcat(fileName, date);
-	strcat(fileName, "_");
-	strcat(fileName, month);
-	strcat(fileName, "_");
-	strcat(fileName, year);
-	strcat(fileName, ".txt");
+//	char fileName[23]="/";
+//	strcat(fileName, *RememberedValueDataDirName);
+//	strcat(fileName, "/");
+//	strcat(fileName, date);
+//	strcat(fileName, "_");
+//	strcat(fileName, month);
+//	strcat(fileName, "_");
+//	strcat(fileName, year);
+//	strcat(fileName, ".txt");
+//	File todayFile = SD.open(fileName, FILE_WRITE);
 
-	File todayFile = SD.open(fileName, FILE_WRITE);
+	File todayFile = SD.open("/" + RememberedValueDataDirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
+
 	if (todayFile) {
 		todayFile.seek(0);
 		while (todayFile.available()){
