@@ -1,4 +1,4 @@
-#include <MemoryFree.h>
+
 #include <Wire.h>
 #include <avr/sleep.h>
 #include <avr/power.h>
@@ -615,7 +615,6 @@ float getBatteryVoltage(){
 	float value =correction*(10*sum*4.980/1023.00);
 	if(value < minBatteryVoltage)minBatteryVoltage=value;
 	else if(value > maxBatteryVoltage)maxBatteryVoltage=value;
-	float maxBatteryVoltage=0;
 
 	return value;
 }
@@ -1559,7 +1558,7 @@ void loop() {
 			lcd.print("  ");
 			lcd.print(batteryVoltage);
 			lcd.print("V ");
-			lcd.print(freeMemory());
+		//	lcd.print(freeMemory());
 
 			inWPS=true;
 			if( remaining <= 0  ){
