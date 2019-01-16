@@ -220,7 +220,14 @@ boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, Stri
 }
 
 void storeRememberedValue(long time, String name, float value, String unit){
-	File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+	//File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+
+	char untransferredFileName[24];
+	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName.c_str(),unstraferedFileName.c_str());
+	File todayFile = SD.open(fileName, FILE_WRITE);
+
+
+
 	if (untransferredFile) {
 		// Write to file
 		untransferredFile.print(time);
@@ -352,7 +359,7 @@ String getValue(String data, char separator, int index)
 	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-float searchRememberedValue(char *label, int date, int month, int year, char *whatToSearchFor){
+float searchRememberedValue(String label, int date, int month, int year, char *whatToSearchFor){
 
 	float result=-9999;
 	String line="";
@@ -371,7 +378,12 @@ float searchRememberedValue(char *label, int date, int month, int year, char *wh
 //	strcat(fileName, ".txt");
 //	File todayFile = SD.open(fileName, FILE_WRITE);
 
-	File todayFile = SD.open("/" + RememberedValueDataDirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
+	char fileName[32];
+	sprintf(fileName,"/%s/%i_%i_%i/.txt",RememberedValueDataDirName.c_str(),date,month,year);
+	File todayFile = SD.open(fileName, FILE_WRITE);
+
+
+	//File todayFile = SD.open("/" + RememberedValueDataDirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
 
 	if (todayFile) {
 		todayFile.seek(0);
