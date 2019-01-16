@@ -43,32 +43,42 @@ const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
 const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
-char LIFE_CYCLE_EVENT_FORCED_START_WPS[17]="Forced Start WPS";
-char LIFE_CYCLE_EVENT_START_WPS[10]= "Start WPS";
-char LIFE_CYCLE_EVENT_END_WPS[8]= "End WPS"
-char LIFE_CYCLE_EVENT_START_COMMA[12]= "Start Comma"
-char LIFE_CYCLE_EVENT_END_COMMA[10]= "End Comma"
+
 String operatingStatus ="Normal";
 
-char BATTERY_VOLTAGE_BEFORE_PI_ON[36]=  "Battery Voltage Before Turning Pi On";
-char BATTERY_VOLTAGE_ATER_PI_ON[35]=    "Battery Voltage After Turning Pi On";
-char BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON [48]= "Battery Voltage Differential After Turning Pi On";
-char FORCED_PI_TURN_OFF [19]= "Forced Pi Turn Off";
-char PI_TURN_OFF[12]=  "Pi Turn Off";
 
-char DAILY_MINIMUM_BATTERY_VOLTAGE[30]= "Daily Minimum Battery Voltage";
-char DAILY_MAXIMUM_BATTERY_VOLTAGE[30]= "Daily Maximum Battery Voltage";
 
-char DAILY_MINIMUM_BATTERY_CURRENT[30]= "Daily Minimum Battery Current";
-char DAILY_MAXIMUM_BATTERY_CURRENT[30]= "Daily Maximum Battery Current";
-char MAXIMUM_VALUE[4]= "Max";
-char MINIMUM_VALUE[4]= "Min";
-char AVERAGE_VALUE[4]= "Avg";
 
-char UNIT_VOLT[5]= "Volt";
-char UNIT_MILLI_AMPERES[3]= "mA";
 
-#define UNIT_PERCENTAGE[2]= "%";
+#define CONST_STR(s) F(s)
+#define LIFE_CYCLE_EVENT_FORCED_START_WPS CONST_STR("Forced Start WPS")
+#define LIFE_CYCLE_EVENT_START_WPS    CONST_STR("Start WPS")
+#define LIFE_CYCLE_EVENT_END_WPS      CONST_STR("End WPS")
+#define LIFE_CYCLE_EVENT_START_COMMA  CONST_STR("Start Comma")
+#define LIFE_CYCLE_EVENT_END_COMMA    CONST_STR("End Comma")
+
+#define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
+#define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
+#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON CONST_STR("Battery Voltage Differential After Turning Pi On")
+#define FORCED_PI_TURN_OFF  CONST_STR("Forced Pi Turn Off")
+#define PI_TURN_OFF CONST_STR("Pi Turn Off")
+
+#define DAILY_MINIMUM_BATTERY_VOLTAGE CONST_STR("Daily Minimum Battery Voltage")
+#define DAILY_MAXIMUM_BATTERY_VOLTAGE CONST_STR("Daily Maximum Battery Voltage")
+#define DAILY_MINIMUM_BATTERY_CURRENT CONST_STR("Daily Minimum Battery Current")
+#define DAILY_MAXIMUM_BATTERY_CURRENT CONST_STR("Daily Maximum Battery Current")
+#define MAXIMUM_VALUE CONST_STR("Max")
+#define MINIMUM_VALUE CONST_STR("Min")
+#define AVERAGE_VALUE CONST_STR("Avg")
+
+#define UNIT_VOLT CONST_STR("Volt")
+#define UNIT_MILLI_AMPERES CONST_STR("mA")
+#define UNIT_PERCENTAGE CONST_STR("%")
+
+
+
+
+
 //
 // Analogs
 //
@@ -356,7 +366,7 @@ float searchRememberedValue(char *label, int date, int month, int year, char *wh
 	strcat(fileName, month);
 	strcat(fileName, "_");
 	strcat(fileName, year);
-	strcat(fileName, ",txt");
+	strcat(fileName, ".txt");
 
 	File todayFile = SD.open(fileName, FILE_WRITE);
 	if (todayFile) {
