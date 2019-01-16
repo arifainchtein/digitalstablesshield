@@ -1498,9 +1498,11 @@ void loop() {
 			lcd.setCursor(0,1);
 			long remaining = secondsToForcedWPS-z;
 			lcd.print(remaining);
-			lcd.print("   ");
+			lcd.print("  ");
 			lcd.print(batteryVoltage);
-			lcd.print("V");
+			lcd.print("V ");
+			lcd.print(freeMemory());
+
 			inWPS=true;
 			if( remaining <= 0  ){
 				waitingForWPSConfirmation=false;
