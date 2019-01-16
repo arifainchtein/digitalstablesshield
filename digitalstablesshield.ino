@@ -94,11 +94,7 @@ String LIFE_CYCLE_EVENT_END_WPS      ="End WPS";
 String LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
 String LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
 
-String LIFE_CYCLE_EVENT_FORCED_START_WPS= "Forced Start WPS";
-String LIFE_CYCLE_EVENT_START_WPS  =  "Start WPS";
-String LIFE_CYCLE_EVENT_END_WPS    =  "End WPS";
-String LIFE_CYCLE_EVENT_START_COMMA = "Start Comma";
-String LIFE_CYCLE_EVENT_END_COMMA    ="End Comma";
+
 
 
 //
