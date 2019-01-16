@@ -37,7 +37,7 @@ long lastWPSStartUp=0L;
 char  WPSSensorDataDirName[9] = "WPSSensr";
 char  LifeCycleDataDirName[9] = "LifeCycl";
 char rememberedValueDataDirName[9] = "RememVal";
-char unstraferedFileName[9] = "Untransf.txt";
+char unstraferedFileName[13] = "Untransf.txt";
 
 const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
