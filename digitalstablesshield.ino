@@ -359,7 +359,7 @@ String getValue(String data, char separator, int index)
 	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-float searchRememberedValue(String label, int date, int month, int year, char *whatToSearchFor){
+float searchRememberedValue(String label, int date, int month, int year, String whatToSearchFor){
 
 	float result=-9999;
 	String line="";
