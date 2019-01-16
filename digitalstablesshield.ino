@@ -59,11 +59,11 @@ String  unstraferedFileName ="Untransf.txt";
 #define LIFE_CYCLE_EVENT_START_COMMA  CONST_STR("Start Comma")
 #define LIFE_CYCLE_EVENT_END_COMMA    CONST_STR("End Comma")
 
-#define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
-#define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
-#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON CONST_STR("Battery Voltage Differential After Turning Pi On")
+//#define BATTERY_VOLTAGE_BEFORE_PI_ON  CONST_STR("Battery Voltage Before Turning Pi On")
+//#define BATTERY_VOLTAGE_ATER_PI_ON    CONST_STR("Battery Voltage After Turning Pi On")
+//#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON CONST_STR("Battery Voltage Differential After Turning Pi On")
 //#define FORCED_PI_TURN_OFF  CONST_STR("Forced Pi Turn Off")
-#define PI_TURN_OFF CONST_STR("Pi Turn Off")
+//#define PI_TURN_OFF CONST_STR("Pi Turn Off")
 
 #define DAILY_MINIMUM_BATTERY_VOLTAGE CONST_STR("Daily Minimum Battery Voltage")
 #define DAILY_MAXIMUM_BATTERY_VOLTAGE CONST_STR("Daily Maximum Battery Voltage")
@@ -78,10 +78,15 @@ String  unstraferedFileName ="Untransf.txt";
 //#define UNIT_PERCENTAGE CONST_STR("%")
 
 String UNIT_VOLT="Volt";
-String FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
+
 String UNIT_VOLT ="Volt";
 String UNIT_MILLI_AMPERES ="mA";
 String UNIT_PERCENTAGE ="%";
+String FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
+String BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
+String BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
+String BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
+String PI_TURN_OFF ="Pi Turn Off";
 
 
 
