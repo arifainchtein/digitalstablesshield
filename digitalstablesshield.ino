@@ -34,41 +34,41 @@ boolean waitingForWPSConfirmation=false;
 long currentSleepStartTime=0L;
 long lastWPSStartUp=0L;
 
-String  WPSSensorDataDirName = "WPSSensr";
-String  LifeCycleDataDirName = "LifeCycl";
-String RememberedValueDataDirName = "RememVal";
-String unstraferedFileName = "Untransf.txt";
+char  WPSSensorDataDirName[9] = "WPSSensr";
+char  LifeCycleDataDirName[9] = "LifeCycl";
+char rememberedValueDataDirName[9] = "RememVal";
+char unstraferedFileName[9] = "Untransf.txt";
 
 const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
 const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
-#define LIFE_CYCLE_EVENT_FORCED_START_WPS "Forced Start WPS"
-#define LIFE_CYCLE_EVENT_START_WPS "Start WPS"
-#define LIFE_CYCLE_EVENT_END_WPS "End WPS"
-#define LIFE_CYCLE_EVENT_START_COMMA "Start Comma"
-#define LIFE_CYCLE_EVENT_END_COMMA "End Comma"
+char LIFE_CYCLE_EVENT_FORCED_START_WPS[17]="Forced Start WPS";
+char LIFE_CYCLE_EVENT_START_WPS[10]= "Start WPS";
+char LIFE_CYCLE_EVENT_END_WPS[8]= "End WPS"
+char LIFE_CYCLE_EVENT_START_COMMA[12]= "Start Comma"
+char LIFE_CYCLE_EVENT_END_COMMA[10]= "End Comma"
 String operatingStatus ="Normal";
 
-#define BATTERY_VOLTAGE_BEFORE_PI_ON "Battery Voltage Before Turning Pi On"
-#define BATTERY_VOLTAGE_ATER_PI_ON "Battery Voltage After Turning Pi On"
-#define BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON "Battery Voltage Differential After Turning Pi On"
-#define FORCED_PI_TURN_OFF "Forced Pi Turn Off"
-#define PI_TURN_OFF "Pi Turn Off"
+char BATTERY_VOLTAGE_BEFORE_PI_ON[36]=  "Battery Voltage Before Turning Pi On";
+char BATTERY_VOLTAGE_ATER_PI_ON[35]=    "Battery Voltage After Turning Pi On";
+char BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON [48]= "Battery Voltage Differential After Turning Pi On";
+char FORCED_PI_TURN_OFF [19]= "Forced Pi Turn Off";
+char PI_TURN_OFF[12]=  "Pi Turn Off";
 
-#define DAILY_MINIMUM_BATTERY_VOLTAGE "Daily Minimum Battery Voltage"
-#define DAILY_MAXIMUM_BATTERY_VOLTAGE "Daily Maximum Battery Voltage"
+char DAILY_MINIMUM_BATTERY_VOLTAGE[30]= "Daily Minimum Battery Voltage";
+char DAILY_MAXIMUM_BATTERY_VOLTAGE[30]= "Daily Maximum Battery Voltage";
 
-#define DAILY_MINIMUM_BATTERY_CURRENT "Daily Minimum Battery Current"
-#define DAILY_MAXIMUM_BATTERY_CURRENT "Daily Maximum Battery Current"
-#define MAXIMUM_VALUE "Max"
-#define MINIMUM_VALUE "Min"
-#define AVERAGE_VALUE "Avg"
+char DAILY_MINIMUM_BATTERY_CURRENT[30]= "Daily Minimum Battery Current";
+char DAILY_MAXIMUM_BATTERY_CURRENT[30]= "Daily Maximum Battery Current";
+char MAXIMUM_VALUE[4]= "Max";
+char MINIMUM_VALUE[4]= "Min";
+char AVERAGE_VALUE[4]= "Avg";
 
-#define UNIT_VOLT "Volt"
-#define UNIT_MILLI_AMPERES "mA"
+char UNIT_VOLT[5]= "Volt";
+char UNIT_MILLI_AMPERES[3]= "mA";
 
-#define UNIT_PERCENTAGE "%"
+#define UNIT_PERCENTAGE[2]= "%";
 //
 // Analogs
 //
@@ -208,7 +208,7 @@ boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, Stri
 }
 
 void storeRememberedValue(long time, String name, float value, String unit){
-	File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+	File untransferredFile = SD.open("/" + rememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
 		untransferredFile.print(time);
@@ -340,7 +340,7 @@ String getValue(String data, char separator, int index)
 	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-float searchRememberedValue(String label, int date, int month, int year, String whatToSearchFor){
+float searchRememberedValue(char *label, int date, int month, int year, char *whatToSearchFor){
 
 	float result=-9999;
 	String line="";
@@ -348,7 +348,17 @@ float searchRememberedValue(String label, int date, int month, int year, String 
 	float value=0;
 	int sampleCount=0;
 	int sampleSum=0;
-	File todayFile = SD.open("/" + RememberedValueDataDirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
+	char fileName[23]="/";
+	strcat(fileName, *rememberedValueDataDirName);
+	strcat(fileName, "/");
+	strcat(fileName, date);
+	strcat(fileName, "_");
+	strcat(fileName, month);
+	strcat(fileName, "_");
+	strcat(fileName, year);
+	strcat(fileName, ",txt");
+
+	File todayFile = SD.open(fileName, FILE_WRITE);
 	if (todayFile) {
 		todayFile.seek(0);
 		while (todayFile.available()){
