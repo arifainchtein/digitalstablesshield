@@ -739,6 +739,7 @@ void enterArduinoSleep(void)
 		operatingStatus="WPS";
 		lastWPSStartUp = now;
 		wpsSleeping=true;
+		inWPS=true;
 		sleep_disable(); /* First thing to do is disable sleep. */
 		/* Re-enable the peripherals. */
 		power_all_enable();
@@ -990,7 +991,7 @@ void turnPiOn(long time){
 
 
 
-void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge, float currentValue, boolean piIsOn){
+void defineState(long time, float batteryVoltage,int internalBatteryStateOfCharge, float currentValue, boolean piIsOn){
 
 
 	if(batteryVoltage>exitWPSVoltage){
@@ -1066,12 +1067,81 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 		}
 
 
+	}else if(batteryVoltage>enterWPSVoltage && batteryVoltage<=exitWPSVoltage){
+		if(wpsSleeping){
+			//delay(1000);
+			//lcd.noDisplay();
+			long piSleepingRemaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+			lcd.clear();
+			lcd.display();
+			lcd.setCursor(0,0);
+			lcd.setRGB(255,255,0);
 
-	}else if(batteryVoltage>enterWPSVoltage && batteryVoltage<exitWPSVoltage){
-		faultData="Enter WPS";
-		sendWPSAlert(time, faultData, batteryVoltage);
+			if(piSleepingRemaining<=0){
+				wpsSleeping=false;
+				if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
+				storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
-	}else if(batteryVoltage>minWPSVoltage && batteryVoltage<enterWPSVoltage){
+				lcd.print("Pi ON WPS ");
+				lcd.setCursor(0,1);
+				lcd.print(batteryVoltage);
+				lcd.print("V ");
+				lcd.print(internalBatteryStateOfCharge);
+				lcd.print("%") ;
+				lastWPSStartUp = time;
+			}else{
+				//
+				// if we are here is because we are in the
+				// sleep period of the wps cycle.
+				// check to see if we need to store a record in the sd card
+				//
+				long z =time-lastWPSRecordSeconds;
+				lcd.print("wps rec in ");
+				long netWPSRecordIn = (long)wpsPulseFrequencySeconds-z;
+
+				lcd.print(netWPSRecordIn);
+				lcd.setCursor(0,1);
+				lcd.print("pi on in ");
+				long piremaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+				lcd.print(piremaining);
+
+
+				//delay(1000);
+
+				if(netWPSRecordIn<=0){
+					lcd.clear();
+					lcd.display();
+
+					lastWPSRecordSeconds = getCurrentTimeInSeconds();
+					saveWPSSensorRecord( lastWPSRecordSeconds);
+					lcd.setRGB(255,255,0);
+				}else{
+					//
+					// if we are here is because we are in the sleeping part of the
+					// WPS and is not time to take another record
+					// now check if there is any reason to keep it from comma
+					// ie if its raining and the sensor needs to stay on
+					// if not sleep for 8 seconds
+					//
+					boolean stayAwake=true;
+
+					if(!stayAwake){
+						pauseWPS();
+					}
+				}
+			}
+		}else if(piIsOn){
+			lcd.clear();
+			lcd.setCursor(0,0);
+			lcd.print("pi ON WPS ");
+			lcd.print(batteryVoltage);
+			lcd.print(" V");
+			lcd.setCursor(0,1);
+			lcd.print("Runtime ");
+			long secsRunning = time-lastWPSStartUp;
+			lcd.print(secsRunning);
+		}
+	}else if(batteryVoltage>minWPSVoltage && batteryVoltage<=enterWPSVoltage){
 		if(!inWPS){
 			faultData="Enter WPS";
 			sendWPSAlert(time, faultData, batteryVoltage);
@@ -1431,7 +1501,7 @@ void loop() {
 	//lcd.setCursor(0, 0);
 
 	long now = getCurrentTimeInSeconds();
-	defineSate(now,  batteryVoltage, internalBatteryStateOfCharge, currentValue, piIsOn);
+	defineState(now,  batteryVoltage, internalBatteryStateOfCharge, currentValue, piIsOn);
 	//
 	// the commands
 	//
