@@ -1224,7 +1224,7 @@ void defineState(long time, float batteryVoltage,int internalBatteryStateOfCharg
 					// check to see if we need to store a record in the sd card
 					//
 					long z =time-lastWPSRecordSeconds;
-					lcd.print("wps rec in ");
+					lcd.print("WPS rec in ");
 					long netWPSRecordIn = (long)wpsPulseFrequencySeconds-z;
 
 					lcd.print(netWPSRecordIn);
