@@ -306,8 +306,8 @@ void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayY
 	//
 	// move whatever is in untrasferred to the correct date
 	boolean result = readUntransferredFileFromSDCardByDate( 1,false, RememberedValueDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear );
-	 result = readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
-	 result = readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
+	result = readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
+	result = readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 
 	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, minBatteryVoltage, UNIT_VOLT);
 	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, maxBatteryVoltage, UNIT_VOLT);
@@ -334,7 +334,7 @@ void yearlyTasks(long time){
 long getCurrentTimeInSeconds(){
 	rtc.read();
 	int month = rtc.month-1;
-    long now=dateAsSeconds(rtc.year, month, rtc.day, rtc.hour, rtc.minute, rtc.second);
+	long now=dateAsSeconds(rtc.year, month, rtc.day, rtc.hour, rtc.minute, rtc.second);
 	if (currentDay != rtc.day) {
 		//
 		// we are in a new day, so get yesterdays day, month and year
@@ -385,16 +385,16 @@ float searchRememberedValue(char *label, int date, int month, int year, char *wh
 	float value=0;
 	int sampleCount=0;
 	int sampleSum=0;
-//	char fileName[23]="/";
-//	strcat(fileName, *RememberedValueDataDirName);
-//	strcat(fileName, "/");
-//	strcat(fileName, date);
-//	strcat(fileName, "_");
-//	strcat(fileName, month);
-//	strcat(fileName, "_");
-//	strcat(fileName, year);
-//	strcat(fileName, ".txt");
-//	File todayFile = SD.open(fileName, FILE_WRITE);
+	//	char fileName[23]="/";
+	//	strcat(fileName, *RememberedValueDataDirName);
+	//	strcat(fileName, "/");
+	//	strcat(fileName, date);
+	//	strcat(fileName, "_");
+	//	strcat(fileName, month);
+	//	strcat(fileName, "_");
+	//	strcat(fileName, year);
+	//	strcat(fileName, ".txt");
+	//	File todayFile = SD.open(fileName, FILE_WRITE);
 
 	char fileName[32];
 	sprintf(fileName,"/%s/%i_%i_%i/.txt",RememberedValueDataDirName,date,month,year);
@@ -846,6 +846,18 @@ long getSDCardDiskUse(File dir ) {
 }
 
 
+long getDiskUsage(){
+	File sensorFile = SD.open(sensorDirName );
+	long totalDiskUse=getSDCardDiskUse(sensorFile);
+
+	File lifeCycleFile = SD.open(lifeCycleFileName );
+	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
+
+	File rememberedValueFile = SD.open(remFileName );
+	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
+	return totalDiskUse;
+}
+
 long printDirectory(File dir, int numTabs) {
 	long total=0L;
 	while(true) {
@@ -877,60 +889,60 @@ void sendWPSAlert(long time, char *faultData, int batteryVoltage){
 	waitingForWPSConfirmation=true;
 	wpsCountdown=false;
 	inWPS=true;
-    operatingStatus="WPS";
+	operatingStatus="WPS";
 	wpsAlertTime=getCurrentTimeInSeconds();
 	storeRememberedValue(time,faultData, batteryVoltage, UNIT_VOLT);
 }
 
 void saveWPSSensorRecord(long lastWPSRecordSeconds){
-    char fileName[24] = "/";
+	char fileName[24] = "/";
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
 
 
-    File untransferredFile = SD.open(fileName, FILE_WRITE);
-    if (untransferredFile) {
-        // Write to file
-        lcd.setRGB(0,0,255);
-        float batteryVoltage = getBatteryVoltage();
-        float current = calculateCurrent();
-        int sc = getStatefCharge(batteryVoltage);
-        untransferredFile.print(lastWPSRecordSeconds);
-        untransferredFile.print("#");
-        untransferredFile.print(batteryVoltage);
-        untransferredFile.print("#");
-        untransferredFile.print(current);
-        untransferredFile.print("#");
-        //
-        // calculate the energy used in mAhr
-        //
-        float energy = wpsPulseFrequencySeconds*current/3600;
-        untransferredFile.print(energy);
-        untransferredFile.print("#");
-        untransferredFile.print(sc);
-        untransferredFile.print("#");
-        untransferredFile.print(operatingStatus);
+	File untransferredFile = SD.open(fileName, FILE_WRITE);
+	if (untransferredFile) {
+		// Write to file
+		lcd.setRGB(0,0,255);
+		float batteryVoltage = getBatteryVoltage();
+		float current = calculateCurrent();
+		int sc = getStatefCharge(batteryVoltage);
+		untransferredFile.print(lastWPSRecordSeconds);
+		untransferredFile.print("#");
+		untransferredFile.print(batteryVoltage);
+		untransferredFile.print("#");
+		untransferredFile.print(current);
+		untransferredFile.print("#");
+		//
+		// calculate the energy used in mAhr
+		//
+		float energy = wpsPulseFrequencySeconds*current/3600;
+		untransferredFile.print(energy);
+		untransferredFile.print("#");
+		untransferredFile.print(sc);
+		untransferredFile.print("#");
+		untransferredFile.print(operatingStatus);
 
-        long totalDiskUse= getDiskUsage();
-
-
-
-        untransferredFile.print("#");
-        untransferredFile.println(totalDiskUse/1024);
-
-        untransferredFile.close(); // close the file
-        lcd.setCursor(0,0);
-        lcd.print("saved wps record");
-        lcd.setCursor(0,1);
-        lcd.print("to SD card ");
+		long totalDiskUse= getDiskUsage();
 
 
-    } else {
-        lcd.setRGB(255,255,0);
-        lcd.setCursor(0,0);
-        lcd.print("error opening");
-        lcd.setCursor(0,1);
-        lcd.print(fileName);
-    }
+
+		untransferredFile.print("#");
+		untransferredFile.println(totalDiskUse/1024);
+
+		untransferredFile.close(); // close the file
+		lcd.setCursor(0,0);
+		lcd.print("saved wps record");
+		lcd.setCursor(0,1);
+		lcd.print("to SD card ");
+
+
+	} else {
+		lcd.setRGB(255,255,0);
+		lcd.setCursor(0,0);
+		lcd.print("error opening");
+		lcd.setCursor(0,1);
+		lcd.print(fileName);
+	}
 }
 
 
@@ -971,33 +983,22 @@ void turnPiOn(long time){
 	storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
-long getDiskUsage(){
-	File sensorFile = SD.open(sensorDirName );
-	long totalDiskUse=getSDCardDiskUse(sensorFile);
-
-	File lifeCycleFile = SD.open(lifeCycleFileName );
-	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
-
-	File rememberedValueFile = SD.open(remFileName );
-	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
-	return totalDiskUse;
-}
 
 
 void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge, float currentValue, boolean piIsOn){
 
 
-    if(batteryVoltage>exitWPSVoltage){
-        if(!piIsOn)turnPiOn(time);
-        operatingStatus="Normal";
-        lcd.setRGB(0, 225, 0);
-        operatingStatus="Normal";
-        wpsCountdown=false;
-        wpsSleeping=false;
-        inWPS=false;
-        waitingForWPSConfirmation=false;
+	if(batteryVoltage>exitWPSVoltage){
+		if(!piIsOn)turnPiOn(time);
+		operatingStatus="Normal";
+		lcd.setRGB(0, 225, 0);
+		operatingStatus="Normal";
+		wpsCountdown=false;
+		wpsSleeping=false;
+		inWPS=false;
+		waitingForWPSConfirmation=false;
 
-        if(inPulse){
+		if(inPulse){
 			lcd.clear();
 			lcd.setCursor(0, 0);
 			lcd.print("Executing Pulse" );
@@ -1061,126 +1062,126 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 
 
 
-    }else if(batteryVoltage>enterWPSVoltage && batteryVoltage<exitWPSVoltage){
-        faultData="Enter WPS";
+	}else if(batteryVoltage>enterWPSVoltage && batteryVoltage<exitWPSVoltage){
+		faultData="Enter WPS";
 		sendWPSAlert(time, faultData, batteryVoltage);
 
-    }else if(batteryVoltage>minWPSVoltage && batteryVoltage<enterWPSVoltage){
-        if(!inWPS){
-            faultData="Enter WPS";
-		    sendWPSAlert(time, faultData, batteryVoltage);
-            lcd.clear();
-            lcd.setRGB(225, 225, 0);
-            lcd.setCursor(0, 0);
-            lcd.print("WPS Alert Sent");
+	}else if(batteryVoltage>minWPSVoltage && batteryVoltage<enterWPSVoltage){
+		if(!inWPS){
+			faultData="Enter WPS";
+			sendWPSAlert(time, faultData, batteryVoltage);
+			lcd.clear();
+			lcd.setRGB(225, 225, 0);
+			lcd.setCursor(0, 0);
+			lcd.print("WPS Alert Sent");
 
-        }else{
-            if(waitingForWPSConfirmation){
-                delay(1000);
-                long z = time-wpsAlertTime;
-                long remaining = secondsToForcedWPS-z;
-                lcd.clear();
-                lcd.setRGB(225,225,0);
-                lcd.setCursor(0,0);
+		}else{
+			if(waitingForWPSConfirmation){
+				delay(1000);
+				long z = time-wpsAlertTime;
+				long remaining = secondsToForcedWPS-z;
+				lcd.clear();
+				lcd.setRGB(225,225,0);
+				lcd.setCursor(0,0);
 
-                if( remaining <= 0  ){
-                    waitingForWPSConfirmation=false;
-                    operatingStatus="WPS";
-                    storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
-                    lcd.print("pi off");
-                    wpsSleeping=true;
-                    currentSleepStartTime = time;
-                    currentSecondsToPowerOff=0L;
-                    turnPiOff(time);
-                    wpsCountdown=false;
-                }else{
-                    lcd.print("Waiting EnterWPS");
-                    lcd.setCursor(0,1);
-                    long remaining = secondsToForcedWPS-z;
-                    lcd.print(remaining);
-                    lcd.print("  ");
-                    lcd.print(batteryVoltage);
-                    lcd.print("V ");
-                }
-            }else if(wpsCountdown){
-                currentSecondsToPowerOff = secondsToTurnPowerOff -( time - wpsCountDownStartSeconds);
-                lcd.clear();
-                lcd.setCursor(0,0);
-                lcd.print("wps countdown ");
-                lcd.setCursor(0,1);
-                lcd.print(	currentSecondsToPowerOff);
-                if(currentSecondsToPowerOff<=0){
-                    currentSecondsToPowerOff=0;
-                    turnPiOff(time);
-                    storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
-                    wpsSleeping=true;
-                    wpsCountdown=false;
-                    currentSleepStartTime=time;
-                }
-            }else if(wpsSleeping){
-                //delay(1000);
-                //lcd.noDisplay();
-                long piSleepingRemaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
-                lcd.clear();
-                lcd.display();
-                lcd.setCursor(0,0);
-                lcd.setRGB(255,255,0);
+				if( remaining <= 0  ){
+					waitingForWPSConfirmation=false;
+					operatingStatus="WPS";
+					storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					lcd.print("pi off");
+					wpsSleeping=true;
+					currentSleepStartTime = time;
+					currentSecondsToPowerOff=0L;
+					turnPiOff(time);
+					wpsCountdown=false;
+				}else{
+					lcd.print("Waiting EnterWPS");
+					lcd.setCursor(0,1);
+					long remaining = secondsToForcedWPS-z;
+					lcd.print(remaining);
+					lcd.print("  ");
+					lcd.print(batteryVoltage);
+					lcd.print("V ");
+				}
+			}else if(wpsCountdown){
+				currentSecondsToPowerOff = secondsToTurnPowerOff -( time - wpsCountDownStartSeconds);
+				lcd.clear();
+				lcd.setCursor(0,0);
+				lcd.print("wps countdown ");
+				lcd.setCursor(0,1);
+				lcd.print(	currentSecondsToPowerOff);
+				if(currentSecondsToPowerOff<=0){
+					currentSecondsToPowerOff=0;
+					turnPiOff(time);
+					storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					wpsSleeping=true;
+					wpsCountdown=false;
+					currentSleepStartTime=time;
+				}
+			}else if(wpsSleeping){
+				//delay(1000);
+				//lcd.noDisplay();
+				long piSleepingRemaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+				lcd.clear();
+				lcd.display();
+				lcd.setCursor(0,0);
+				lcd.setRGB(255,255,0);
 
-                if(piSleepingRemaining<=0){
-                    wpsSleeping=false;
-                    if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-                    storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+				if(piSleepingRemaining<=0){
+					wpsSleeping=false;
+					if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
+					storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
-                    lcd.print("pi ON WPS ");
-                    lcd.setCursor(0,1);
-                    lcd.print(batteryVoltage);
-                    lcd.print("V ");
-                    lcd.print(internalBatteryStateOfCharge);
-                    lcd.print("%") ;
-                    lastWPSStartUp = time;
-                }else{
-                    //
-                    // if we are here is because we are in the
-                    // sleep period of the wps cycle.
-                    // check to see if we need to store a record in the sd card
-                    //
-                    long z =time-lastWPSRecordSeconds;
-                    lcd.print("wps rec in ");
-                    long netWPSRecordIn = (long)wpsPulseFrequencySeconds-z;
+					lcd.print("pi ON WPS ");
+					lcd.setCursor(0,1);
+					lcd.print(batteryVoltage);
+					lcd.print("V ");
+					lcd.print(internalBatteryStateOfCharge);
+					lcd.print("%") ;
+					lastWPSStartUp = time;
+				}else{
+					//
+					// if we are here is because we are in the
+					// sleep period of the wps cycle.
+					// check to see if we need to store a record in the sd card
+					//
+					long z =time-lastWPSRecordSeconds;
+					lcd.print("wps rec in ");
+					long netWPSRecordIn = (long)wpsPulseFrequencySeconds-z;
 
-                    lcd.print(netWPSRecordIn);
-                    lcd.setCursor(0,1);
-                    lcd.print("pi on in ");
-                    long piremaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
-                    lcd.print(piremaining);
+					lcd.print(netWPSRecordIn);
+					lcd.setCursor(0,1);
+					lcd.print("pi on in ");
+					long piremaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+					lcd.print(piremaining);
 
 
-                    //delay(1000);
+					//delay(1000);
 
-                    if(netWPSRecordIn<=0){
-                        lcd.clear();
-                        lcd.display();
+					if(netWPSRecordIn<=0){
+						lcd.clear();
+						lcd.display();
 
-                        lastWPSRecordSeconds = getCurrentTimeInSeconds();
-                        saveWPSSensorRecord( lastWPSRecordSeconds);
-                        lcd.setRGB(255,255,0);
-                    }else{
-                        //
-                        // if we are here is because we are in the sleeping part of the
-                        // WPS and is not time to take another record
-                        // now check if there is any reason to keep it from comma
-                        // ie if its raining and the sensor needs to stay on
-                        // if not sleep for 8 seconds
-                        //
-                        boolean stayAwake=true;
+						lastWPSRecordSeconds = getCurrentTimeInSeconds();
+						saveWPSSensorRecord( lastWPSRecordSeconds);
+						lcd.setRGB(255,255,0);
+					}else{
+						//
+						// if we are here is because we are in the sleeping part of the
+						// WPS and is not time to take another record
+						// now check if there is any reason to keep it from comma
+						// ie if its raining and the sensor needs to stay on
+						// if not sleep for 8 seconds
+						//
+						boolean stayAwake=true;
 
-                        if(!stayAwake){
-                            pauseWPS();
-                        }
-                    }
-                }
-            }else{
-                lcd.clear();
+						if(!stayAwake){
+							pauseWPS();
+						}
+					}
+				}
+			}else{
+				lcd.clear();
 				lcd.setCursor(0,0);
 				lcd.print("pi ON WPS ");
 				lcd.print(batteryVoltage);
@@ -1189,114 +1190,114 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 				lcd.print("Runtime ");
 				long secsRunning = time-lastWPSStartUp;
 				lcd.print(secsRunning);
-            }
-        }
+			}
+		}
 
-    }else if(batteryVoltage<minWPSVoltage ){
-        if(!inWPS){
-            faultData="Enter WPS";
-		    sendWPSAlert(time, faultData, batteryVoltage);
-            lcd.clear();
-            lcd.setRGB(225, 0, 0);
-            lcd.setCursor(0, 0);
-            lcd.print("Comma Alert Sent");
+	}else if(batteryVoltage<minWPSVoltage ){
+		if(!inWPS){
+			faultData="Enter WPS";
+			sendWPSAlert(time, faultData, batteryVoltage);
+			lcd.clear();
+			lcd.setRGB(225, 0, 0);
+			lcd.setCursor(0, 0);
+			lcd.print("Comma Alert Sent");
 
-        }else{
-            if(waitingForWPSConfirmation){
-                delay(1000);
-                long z = time-wpsAlertTime;
-                long remaining = secondsToForcedWPS-z;
-                lcd.clear();
-                lcd.setCursor(0,0);
-                lcd.setRGB(255,0,0);
-                lcd.setCursor(0,0);
-                if( remaining <= 0  ){
-                    waitingForWPSConfirmation=false;
-                    operatingStatus="WPS";
-                    storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
-                    wpsSleeping=false;
-                    currentSecondsToPowerOff=0L;
-                    if(piIsOn)turnPiOff(time);
-                    wpsCountdown=false;
+		}else{
+			if(waitingForWPSConfirmation){
+				delay(1000);
+				long z = time-wpsAlertTime;
+				long remaining = secondsToForcedWPS-z;
+				lcd.clear();
+				lcd.setCursor(0,0);
+				lcd.setRGB(255,0,0);
+				lcd.setCursor(0,0);
+				if( remaining <= 0  ){
+					waitingForWPSConfirmation=false;
+					operatingStatus="WPS";
+					storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					wpsSleeping=false;
+					currentSecondsToPowerOff=0L;
+					if(piIsOn)turnPiOff(time);
+					wpsCountdown=false;
 
-                    if(f_wdt == 1){
-                        /* Don't forget to clear the flag. */
-                        f_wdt = 0;
-                        /* Re-enter sleep mode. */
-                        lcd.print("Enter Comma");
-                        operatingStatus="Comma";
-                        lcd.setCursor(0,1);
-                        lcd.print(batteryVoltage);
-                        lcd.print(" V");
-                        delay(2000);
-                        lcd.setRGB(0,0,0);
-                        lcd.noDisplay();
-                        storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
-                        enterArduinoSleep();
-                    }
-                }else{
-                    lcd.print("Waiting EnterWPS");
-                    lcd.setCursor(0,1);
-                    long remaining = secondsToForcedWPS-z;
-                    lcd.print(remaining);
-                    lcd.print("  ");
-                    lcd.print(batteryVoltage);
-                    lcd.print("V ");
-                }
-            }else if(wpsCountdown){
-                currentSecondsToPowerOff = secondsToTurnPowerOff -( time - wpsCountDownStartSeconds);
-                lcd.clear();
-                lcd.setCursor(0,0);
-                lcd.print("wps countdown ");
-                lcd.setCursor(0,1);
-                lcd.print(	currentSecondsToPowerOff);
-                if(currentSecondsToPowerOff<=0){
-                    currentSecondsToPowerOff=0;
-                    if(piIsOn)turnPiOff(time);
-                    storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
-                    wpsSleeping=false;
-                    wpsCountdown=false;
-                    if(f_wdt == 1){
-                        /* Don't forget to clear the flag. */
-                        f_wdt = 0;
-                        /* Re-enter sleep mode. */
-                        lcd.print("Enter Comma");
-                        operatingStatus="Comma";
-                        lcd.setCursor(0,1);
-                        lcd.print(batteryVoltage);
-                        lcd.print(" V");
-                        delay(2000);
-                        lcd.setRGB(0,0,0);
-                        lcd.noDisplay();
-                        storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
-                        enterArduinoSleep();
-                    }
-                }
-            }else if(wpsSleeping){
-                //
-                // if the pi is asleep then go into a comma
-                //
-                if(f_wdt == 1){
-                    /* Don't forget to clear the flag. */
-                    f_wdt = 0;
-                    /* Re-enter sleep mode. */
-                    lcd.clear();
-                    lcd.setRGB(255,0,0);
-                    lcd.setCursor(0,0);
-                    lcd.print("Enter Comma");
-                    operatingStatus="Comma";
-                    lcd.setCursor(0,1);
-                    lcd.print(batteryVoltage);
-                    lcd.print(" V");
-                    delay(2000);
-                    lcd.setRGB(0,0,0);
-                    lcd.noDisplay();
-                    storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
-                    enterArduinoSleep();
-                }
-            }
-        }
-    }
+					if(f_wdt == 1){
+						/* Don't forget to clear the flag. */
+						f_wdt = 0;
+						/* Re-enter sleep mode. */
+						lcd.print("Enter Comma");
+						operatingStatus="Comma";
+						lcd.setCursor(0,1);
+						lcd.print(batteryVoltage);
+						lcd.print(" V");
+						delay(2000);
+						lcd.setRGB(0,0,0);
+						lcd.noDisplay();
+						storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						enterArduinoSleep();
+					}
+				}else{
+					lcd.print("Waiting EnterWPS");
+					lcd.setCursor(0,1);
+					long remaining = secondsToForcedWPS-z;
+					lcd.print(remaining);
+					lcd.print("  ");
+					lcd.print(batteryVoltage);
+					lcd.print("V ");
+				}
+			}else if(wpsCountdown){
+				currentSecondsToPowerOff = secondsToTurnPowerOff -( time - wpsCountDownStartSeconds);
+				lcd.clear();
+				lcd.setCursor(0,0);
+				lcd.print("wps countdown ");
+				lcd.setCursor(0,1);
+				lcd.print(	currentSecondsToPowerOff);
+				if(currentSecondsToPowerOff<=0){
+					currentSecondsToPowerOff=0;
+					if(piIsOn)turnPiOff(time);
+					storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					wpsSleeping=false;
+					wpsCountdown=false;
+					if(f_wdt == 1){
+						/* Don't forget to clear the flag. */
+						f_wdt = 0;
+						/* Re-enter sleep mode. */
+						lcd.print("Enter Comma");
+						operatingStatus="Comma";
+						lcd.setCursor(0,1);
+						lcd.print(batteryVoltage);
+						lcd.print(" V");
+						delay(2000);
+						lcd.setRGB(0,0,0);
+						lcd.noDisplay();
+						storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						enterArduinoSleep();
+					}
+				}
+			}else if(wpsSleeping){
+				//
+				// if the pi is asleep then go into a comma
+				//
+				if(f_wdt == 1){
+					/* Don't forget to clear the flag. */
+					f_wdt = 0;
+					/* Re-enter sleep mode. */
+					lcd.clear();
+					lcd.setRGB(255,0,0);
+					lcd.setCursor(0,0);
+					lcd.print("Enter Comma");
+					operatingStatus="Comma";
+					lcd.setCursor(0,1);
+					lcd.print(batteryVoltage);
+					lcd.print(" V");
+					delay(2000);
+					lcd.setRGB(0,0,0);
+					lcd.noDisplay();
+					storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+					enterArduinoSleep();
+				}
+			}
+		}
+	}
 }
 
 
@@ -1357,7 +1358,7 @@ void setup() {
 		lcd.print("Kb") ;
 	}
 
-//	wdt_enable(WDTO_8S);
+	//	wdt_enable(WDTO_8S);
 
 
 }
@@ -1420,7 +1421,10 @@ void loop() {
 		lcd.print(command);
 		if(command=="TestWPSSensor"){
 			lastWPSRecordSeconds = getCurrentTimeInSeconds();
-			File untransferredFile = SD.open("/" + WPSSensorDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+			char fileName[24];
+			snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
+
+			File untransferredFile = SD.open(fileName, FILE_WRITE);
 			if (untransferredFile) {
 				// Write to file
 				float batteryVoltage = getBatteryVoltage();
@@ -1459,44 +1463,19 @@ void loop() {
 			Serial.println(" ");
 			Serial.println(" ");
 			Serial.println("/" + WPSSensorDataDirName);
-			File sensorFile = SD.open("/" + WPSSensorDataDirName );
+
+			File sensorFile = SD.open(sensorDirName );
+			long totalDiskUse=getSDCardDiskUse(sensorFile);
+			File lifeCycleFile = SD.open(lifeCycleFileName );
+			File rememberedValueFile = SD.open(remFileName );
+
 			long totalDiskUse=printDirectory(sensorFile, 1);
 			Serial.println(" ");
 			Serial.println("/" + LifeCycleDataDirName);
-			File lifeCycleFile = SD.open("/" + LifeCycleDataDirName );
 			totalDiskUse+=printDirectory(lifeCycleFile, 1);
-
 			Serial.println(" ");
 			Serial.println("/" + RememberedValueDataDirName);
-			File rememberedValueFile = SD.open("/" + RememberedValueDataDirName );
 			totalDiskUse+=printDirectory(rememberedValueFile, 1);
-
-
-
-			//			Serial.print("Clusters:          ");
-			//			Serial.println(volume.clusterCount());
-			//			Serial.print("Blocks x Cluster:  ");
-			//			Serial.println(volume.blocksPerCluster());
-			//
-			//			Serial.print("Total Blocks:      ");
-			//			Serial.println(volume.blocksPerCluster() * volume.clusterCount());
-			//			Serial.println();
-
-			// print the type and size of the first FAT-type volume
-			//			uint32_t volumesize;
-			//			Serial.print("Volume type is:    FAT");
-			//			Serial.println(volume.fatType(), DEC);
-			//
-			//			volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
-			//			volumesize *= volume.clusterCount();       // we'll have a lot of clusters
-			//			volumesize /= 2;                           // SD card blocks are always 512 bytes (2 blocks are 1KB)
-			//			Serial.print("Volume size (Kb):  ");
-			//			Serial.println(volumesize);
-			//			Serial.print("Volume size (Mb):  ");
-			//			volumesize /= 1024;
-			//			Serial.println(volumesize);
-			//			Serial.print("Volume size (Gb):  ");
-			//			Serial.println((float)volumesize / 1024.0);
 
 			Serial.println(" ");
 
