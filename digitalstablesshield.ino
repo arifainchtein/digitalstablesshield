@@ -49,6 +49,12 @@ const char  *WPSSensorDataDirName="WPSSensr";
 const char  *LifeCycleDataDirName="LifeCycl";
 const char  *RememberedValueDataDirName  = "RememVal";
 const char  *unstraferedFileName ="Untransf.txt";
+char sensorDirName[10];
+char lifeCycleFileName[10];
+char remFileName[10];
+
+
+
 
 
 //
@@ -904,22 +910,19 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
         untransferredFile.print("#");
         untransferredFile.print(operatingStatus);
 
-        char sensorDirName[10];
-        snprintf(sensorDirName, sizeof sensorDirName, "/%s", WPSSensorDataDirName);
-
 
         File sensorFile = SD.open(sensorDirName );
         long totalDiskUse=getSDCardDiskUse(sensorFile);
 
-        char lifeCycleFileName[10];
-        snprintf(lifeCycleFileName, sizeof lifeCycleFileName, "/%s", LifeCycleDataDirName);
+
+
 
         File lifeCycleFile = SD.open(lifeCycleFileName );
         totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
 
 
-        char remFileName[10];
-        snprintf(remFileName, sizeof remFileName, "/%s", RememberedValueDataDirName);
+
+
 
         File rememberedValueFile = SD.open(remFileName );
         totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
@@ -1306,6 +1309,10 @@ void setup() {
 	SPI.begin();
 	rtc.setup();
 
+	snprintf(sensorDirName, sizeof sensorDirName, "/%s", WPSSensorDataDirName);
+	snprintf(lifeCycleFileName, sizeof lifeCycleFileName, "/%s", LifeCycleDataDirName);
+	snprintf(remFileName, sizeof remFileName, "/%s", RememberedValueDataDirName);
+
 	//Set the RTC time automatically: Calibrate RTC time by your computer time
 	//rtc.adjustRtc(F(__DATE__), F(__TIME__));
 	pinMode(PI_POWER_PIN, OUTPUT);
@@ -1316,6 +1323,7 @@ void setup() {
 	delay(100); //Allow for serial print to complete.
 	initializeWDT();
 
+
 	if (!SD.begin(SD_PIN)) {
 		Serial.println("No SD-card.");
 		lcd.setCursor(0, 0);
@@ -1323,21 +1331,23 @@ void setup() {
 		return;
 	}else{
 		// Check dir for db files
-		if (!SD.exists("/" + WPSSensorDataDirName )) {
+		if (!SD.exists(sensorDirName )) {
 			Serial.println("wpsSensorData Dir does not exist, creating...");
-			SD.mkdir("/" + WPSSensorDataDirName);
+			SD.mkdir(sensorDirName);
 		}
-		if (!SD.exists("/" + LifeCycleDataDirName)) {
-			SD.mkdir("/" + LifeCycleDataDirName);
+		if (!SD.exists(lifeCycleFileName)) {
+			SD.mkdir(lifeCycleFileName);
 		}
-		if (!SD.exists("/" + RememberedValueDataDirName)) {
-			SD.mkdir("/" + RememberedValueDataDirName);
+		if (!SD.exists(remFileName)) {
+			SD.mkdir(remFileName);
 		}
-		File sensorFile = SD.open("/" + WPSSensorDataDirName );
+		File sensorFile = SD.open(sensorDirName );
 		long totalDiskUse=getSDCardDiskUse(sensorFile);
-		File lifeCycleFile = SD.open("/" + LifeCycleDataDirName );
+
+		File lifeCycleFile = SD.open(lifeCycleFileName );
 		totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
-		File rememberedValueFile = SD.open("/" + RememberedValueDataDirName );
+
+		File rememberedValueFile = SD.open(remFileName );
 		totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
 
 		lcd.setCursor(0, 0);
