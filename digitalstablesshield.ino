@@ -901,10 +901,8 @@ void sendWPSAlert(long time, char *faultData, int batteryVoltage){
 }
 
 void saveWPSSensorRecord(long lastWPSRecordSeconds){
-	char fileName[25];
+	char fileName[30];
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
-
-
 	File untransferredFile = SD.open(fileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
@@ -948,6 +946,7 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
 		lcd.print("error opening");
 		lcd.setCursor(0,1);
 		lcd.print(fileName);
+		delay(2000);
 	}
 }
 
@@ -1793,7 +1792,7 @@ void loop() {
 			}else {
 
 				char text[44];
-				snprintf(text, sizeof text, "Failure-error opening %s/%s", WPSSensorDataDirName, unstraferedFileName);
+				snprintf(text, sizeof text, "Failure-error opening /%s/%s", WPSSensorDataDirName, unstraferedFileName);
 				Serial.println(text);
 
 			}
