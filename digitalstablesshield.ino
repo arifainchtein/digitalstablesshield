@@ -1200,7 +1200,7 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 		}
 
 	}else if(batteryVoltage<minWPSVoltage ){
-		if(!inWPS){
+		if(!inWPS || piIsOn){
 			faultData="Enter WPS";
 			sendWPSAlert(time, faultData, batteryVoltage);
 			lcd.clear();
