@@ -1675,7 +1675,9 @@ void loop() {
 			if(result){
 				Serial.println("Ok-GetRememberedValueData");
 			}else {
-				Serial.println("Failure-error opening/" + RememberedValueDataDirName + "/" + unstraferedFileName);
+				char text[44];
+				snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
+				Serial.println(text);
 			}
 			Serial.flush();
 		}else if(command.startsWith("GetLifeCycleData")){
@@ -1685,7 +1687,9 @@ void loop() {
 			if(result){
 				Serial.println("Ok-GetLifeCycleData");
 			}else {
-				Serial.println("Failure-error opening/" + LifeCycleDataDirName + "/" + unstraferedFileName);
+				char text[44];
+				snprintf(text, sizeof text, "Failure-error opening %s/%s", LifeCycleDataDirName, unstraferedFileName);
+				Serial.println(text);
 			}
 			Serial.flush();
 		}else if(command.startsWith("GetWPSSensorData")){
@@ -1696,7 +1700,11 @@ void loop() {
 			if(result){
 				Serial.println("Ok-GetWPSSensorData");
 			}else {
-				Serial.println("Failure-error opening/" + WPSSensorDataDirName + "/" + unstraferedFileName);
+
+				char text[44];
+				snprintf(text, sizeof text, "Failure-error opening %s/%s", WPSSensorDataDirName, unstraferedFileName);
+				Serial.println(text);
+
 			}
 			Serial.flush();
 
