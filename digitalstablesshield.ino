@@ -802,9 +802,14 @@ void pauseWPS(void)
 }
 
 
-boolean getHistoricalData(String dirName, int date, int month, int year){
+boolean getHistoricalData(const char *dirName, int date, int month, int year){
 	boolean result=false;
-	File todayFile1 = SD.open("/" + dirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
+
+	char fileName[24];
+	snprintf(fileName, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
+
+
+	File todayFile1 = SD.open(fileName, FILE_WRITE);
 
 	if (todayFile1) {
 		todayFile1.seek(0);
@@ -1717,7 +1722,10 @@ void loop() {
 			if(result){
 				Serial.println("Ok-GetWPSSensorDataHistory");
 			}else {
-				Serial.println("Failure-error opening/" + WPSSensorDataDirName + "/" +unstraferedFileName);
+				char text[44];
+				snprintf(text, sizeof text, "Failure-error opening %s/%s", WPSSensorDataDirName, unstraferedFileName);
+
+				Serial.println(text);
 			}
 			Serial.flush();
 		}else if(command.startsWith("GetHistoricalLifeCycleData")){
@@ -1729,7 +1737,9 @@ void loop() {
 			if (result) {
 				Serial.println("Ok-GetHistoricalLifeCycleData");
 			}else {
-				Serial.println("Failure-error opening/" + LifeCycleDataDirName + "/" + unstraferedFileName);
+				char text[44];
+				snprintf(text, sizeof text, "Failure-error opening %s/%s", LifeCycleDataDirName, unstraferedFileName);
+				Serial.println(text);
 			}
 			Serial.flush();
 		}else if(command.startsWith("GetHistoricalRememberedValueData")){
@@ -1741,7 +1751,10 @@ void loop() {
 			if (result) {
 				Serial.println("Ok-GetHistoricalRememberedValueData");
 			}else {
-				Serial.println("Failure-error opening/" + RememberedValueDataDirName + "/" + unstraferedFileName);
+				char text[44];
+				snprintf(text, sizeof text, "Failure-error opening %s/%s", RememberedValueDataDirName, unstraferedFileName);
+
+				Serial.println(text);
 			}
 			Serial.flush();
 		}else if (command.startsWith("AsyncData") ){
