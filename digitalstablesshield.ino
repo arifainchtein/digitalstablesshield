@@ -134,7 +134,7 @@ int currentViewIndex=0;
 int secondsForCommandsToBeExecuted=4;
 int currentCommandSecondsCounter=0;
 volatile int f_wdt=1;
-char faultData[10];
+char faultData;
 long secondsToForcedWPS=60L;
 long wpsAlertTime=0L;
 
