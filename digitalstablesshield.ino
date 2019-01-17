@@ -1311,7 +1311,7 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 				lcd.clear();
 				lcd.setRGB(225, 0, 0);
 				lcd.setCursor(0, 0);
-				lcd.print("Comma Alert Sent")
+				lcd.print("Comma Alert Sent");
 			}
 		}
 	}
