@@ -405,7 +405,7 @@ float searchRememberedValue(char *label, int date, int month, int year, char *wh
 			// and copy it into today's file
 			line = todayFile.readStringUntil('\n');
 			anyLabel = getValue(line, '#', 1);
-			if(label == anyLabel){
+			if(strcmp(label, anyLabel) == 0){
 				value = stringToFloat(getValue(line, '#', 2));
 				if(whatToSearchFor == MAXIMUM_VALUE){
 					if(value>result)result=value;
@@ -879,6 +879,8 @@ void sendWPSAlert(long time, char *faultData, int batteryVoltage){
 void saveWPSSensorRecord(long lastWPSRecordSeconds){
     char fileName[24] = "/";
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
+
+
     File untransferredFile = SD.open(fileName, FILE_WRITE);
     if (untransferredFile) {
         // Write to file
@@ -904,6 +906,7 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
 
         char sensorDirName[10];
         snprintf(sensorDirName, sizeof sensorDirName, "/%s", WPSSensorDataDirName);
+
 
         File sensorFile = SD.open(sensorDirName );
         long totalDiskUse=getSDCardDiskUse(sensorFile);
@@ -937,8 +940,7 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
         lcd.setCursor(0,0);
         lcd.print("error opening");
         lcd.setCursor(0,1);
-        lcd.print(WPSSensorDataDirName + "/" + unstraferedFileName);
-        Serial.println("error opening/" +WPSSensorDataDirName + "/" + unstraferedFileName);
+        lcd.print(fileName);
     }
 }
 
