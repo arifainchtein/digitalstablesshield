@@ -854,13 +854,17 @@ long getSDCardDiskUse(File dir ) {
 
 long getDiskUsage(){
 	File sensorFile = SD.open(sensorDirName );
-	long totalDiskUse=getSDCardDiskUse(sensorFile);
-
 	File lifeCycleFile = SD.open(lifeCycleFileName );
-	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
-
 	File rememberedValueFile = SD.open(remFileName );
+
+	long totalDiskUse=getSDCardDiskUse(sensorFile);
+	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
 	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
+
+	sensorFile.close();
+	lifeCycleFile.close();
+	rememberedValueFile.close();
+
 	return totalDiskUse;
 }
 
@@ -1440,6 +1444,10 @@ void setup() {
 		File rememberedValueFile = SD.open(remFileName );
 		totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
 
+		sensorFile.close();
+		lifeCycleFile.close();
+		rememberedValueFile.close();
+
 		lcd.setCursor(0, 0);
 		lcd.print("Finish Init") ;
 		lcd.setCursor(0, 1);
@@ -1490,6 +1498,10 @@ void loop() {
 
 	File rememberedValueFile = SD.open(remFileName );
 	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
+
+	sensorFile.close();
+	lifeCycleFile.close();
+	rememberedValueFile.close();
 
 	toReturn.concat(totalDiskUse/1024);
 	toReturn.concat("#");
@@ -1565,6 +1577,9 @@ void loop() {
 			Serial.println(" ");
 			Serial.println(remFileName);
 			totalDiskUse+=printDirectory(rememberedValueFile, 1);
+			sensorFile.close();
+			lifeCycleFile.close();
+			rememberedValueFile.close();
 
 			Serial.println(" ");
 
