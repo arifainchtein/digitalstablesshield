@@ -1462,19 +1462,18 @@ void loop() {
 		}else if(command=="ListFiles"){
 			Serial.println(" ");
 			Serial.println(" ");
-			Serial.println("/" + WPSSensorDataDirName);
+			Serial.println(sensorDirName);
 
 			File sensorFile = SD.open(sensorDirName );
-			long totalDiskUse=getSDCardDiskUse(sensorFile);
 			File lifeCycleFile = SD.open(lifeCycleFileName );
 			File rememberedValueFile = SD.open(remFileName );
 
 			long totalDiskUse=printDirectory(sensorFile, 1);
 			Serial.println(" ");
-			Serial.println("/" + LifeCycleDataDirName);
+			Serial.println(lifeCycleFileName);
 			totalDiskUse+=printDirectory(lifeCycleFile, 1);
 			Serial.println(" ");
-			Serial.println("/" + RememberedValueDataDirName);
+			Serial.println(remFileName);
 			totalDiskUse+=printDirectory(rememberedValueFile, 1);
 
 			Serial.println(" ");
@@ -1482,8 +1481,6 @@ void loop() {
 			Serial.print("Used (Kb):  ");
 			Serial.println((float)totalDiskUse/1024);
 
-			//			Serial.print("Free (Mb):  ");
-			//			Serial.println(volumesize-totalDiskUse);
 			Serial.println("");
 			Serial.println("Ok-ListFiles");
 			Serial.flush();
