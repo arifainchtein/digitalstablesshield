@@ -217,7 +217,7 @@ boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial
 			//
 			// since we just transferred the records and copy them
 			// delete the file untransferredFile
-			SD.remove("/" + dirName + "/"+unstraferedFileName);
+			SD.remove(fileName);
 		}
 		result=true;
 	}
