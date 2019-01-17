@@ -901,7 +901,7 @@ void sendWPSAlert(long time, char *faultData, int batteryVoltage){
 }
 
 void saveWPSSensorRecord(long lastWPSRecordSeconds){
-	char fileName[25] = "/";
+	char fileName[25];
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
 
 
