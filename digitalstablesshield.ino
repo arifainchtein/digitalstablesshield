@@ -734,12 +734,11 @@ void enterArduinoSleep(void)
 		lcd.setCursor(0,0);
 		lcd.print("Out of Comma");
 		lcd.setCursor(0,1);
-
 		lcd.print(batteryVoltage);
 		lcd.print("V");
 		operatingStatus="WPS";
-		//lcd.setCursor(0, 1);
-		//lcd.print("Awake") ;
+		lastWPSStartUp = now;
+		wpsSleeping=true;
 		sleep_disable(); /* First thing to do is disable sleep. */
 		/* Re-enable the peripherals. */
 		power_all_enable();
@@ -1138,7 +1137,7 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 					if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
 					storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
-					lcd.print("pi ON WPS ");
+					lcd.print("Pi ON WPS ");
 					lcd.setCursor(0,1);
 					lcd.print(batteryVoltage);
 					lcd.print("V ");
@@ -1187,15 +1186,20 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 					}
 				}
 			}else{
-				lcd.clear();
-				lcd.setCursor(0,0);
-				lcd.print("pi ON WPS ");
-				lcd.print(batteryVoltage);
-				lcd.print(" V");
-				lcd.setCursor(0,1);
-				lcd.print("Runtime ");
-				long secsRunning = time-lastWPSStartUp;
-				lcd.print(secsRunning);
+				if(piIsOn){
+					lcd.clear();
+					lcd.setCursor(0,0);
+					lcd.print("pi ON WPS ");
+					lcd.print(batteryVoltage);
+					lcd.print(" V");
+					lcd.setCursor(0,1);
+					lcd.print("Runtime ");
+					long secsRunning = time-lastWPSStartUp;
+					lcd.print(secsRunning);
+				}else{
+
+				}
+
 			}
 		}
 
