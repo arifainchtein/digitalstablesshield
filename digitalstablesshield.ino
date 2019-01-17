@@ -134,7 +134,7 @@ int currentViewIndex=0;
 int secondsForCommandsToBeExecuted=4;
 int currentCommandSecondsCounter=0;
 volatile int f_wdt=1;
-char faultData[20];
+char faultData[10];
 long secondsToForcedWPS=60L;
 long wpsAlertTime=0L;
 
@@ -1388,7 +1388,6 @@ void loop() {
 	toReturn.concat(currentValueStr) ;
 	toReturn.concat("#") ;
 
-	int internalBatteryStateOfCharge = getStatefCharge(batteryVoltage);
 	toReturn.concat( internalBatteryStateOfCharge);
 	toReturn.concat("#") ;
 	toReturn.concat( operatingStatus);
