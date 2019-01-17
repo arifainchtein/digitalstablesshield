@@ -377,11 +377,11 @@ String getValue(String data, char separator, int index)
 	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-float searchRememberedValue(char *label, int date, int month, int year, char *whatToSearchFor){
+float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor){
 
 	float result=-9999;
 	String line="";
-	String anyLabel;
+	char anyLabel[50];
 	float value=0;
 	int sampleCount=0;
 	int sampleSum=0;
@@ -410,7 +410,8 @@ float searchRememberedValue(char *label, int date, int month, int year, char *wh
 			// Read each line, send it to the serial port
 			// and copy it into today's file
 			line = todayFile.readStringUntil('\n');
-			anyLabel = getValue(line, '#', 1);
+
+			 getValue(line, '#', 1).toCharArray(anyLabel, sizeof anyLabel);
 			if(strcmp(label, anyLabel) == 0){
 				value = stringToFloat(getValue(line, '#', 2));
 				if(whatToSearchFor == MAXIMUM_VALUE){
