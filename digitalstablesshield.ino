@@ -737,7 +737,7 @@ void enterArduinoSleep(void)
 		lcd.print(batteryVoltage);
 		lcd.print("V");
 		operatingStatus="WPS";
-		lastWPSStartUp = now;
+		currentSleepStartTime = now;
 		wpsSleeping=true;
 		inWPS=true;
 		sleep_disable(); /* First thing to do is disable sleep. */
