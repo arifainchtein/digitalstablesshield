@@ -193,7 +193,7 @@ boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial
 	//GetRememberedValueData#0
 
 
-	char fileName[24] = "/";
+	char fileName[25] = "/";
 	snprintf(fileName, sizeof fileName, "/%s/%s", dirName, unstraferedFileName);
 
 
@@ -240,7 +240,7 @@ boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, cons
 void storeRememberedValue(long time, const char *name, float value, String unit){
 	//File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
 
-	char untransferredFileName[24];
+	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 
@@ -494,7 +494,7 @@ boolean checkCode(long userCode){
 
 void storeLifeCycleEvent(long time, const char *eventType, int eventValue){
 
-	char untransferredFileName[24];
+	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",LifeCycleDataDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 
@@ -901,7 +901,7 @@ void sendWPSAlert(long time, char *faultData, int batteryVoltage){
 }
 
 void saveWPSSensorRecord(long lastWPSRecordSeconds){
-	char fileName[24] = "/";
+	char fileName[25] = "/";
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
 
 
@@ -1427,7 +1427,7 @@ void loop() {
 		lcd.print(command);
 		if(command=="TestWPSSensor"){
 			lastWPSRecordSeconds = getCurrentTimeInSeconds();
-			char fileName[24];
+			char fileName[25];
 			snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
 
 			File untransferredFile = SD.open(fileName, FILE_WRITE);
