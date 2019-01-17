@@ -1251,7 +1251,7 @@ void defineState(long time, float batteryVoltage,int internalBatteryStateOfCharg
 						// ie if its raining and the sensor needs to stay on
 						// if not sleep for 8 seconds
 						//
-						boolean stayAwake=true;
+						boolean stayAwake=false;
 
 						if(!stayAwake){
 							pauseWPS();
