@@ -252,7 +252,7 @@ void storeRememberedValue(long time, const char *name, float value, String unit)
 		untransferredFile.print("#");
 		untransferredFile.print(name);
 		untransferredFile.print("#");
-		untransferredFile.println(value);
+		untransferredFile.print(value);
 		untransferredFile.print("#");
 		untransferredFile.println(unit);
 		untransferredFile.close(); // close the file
