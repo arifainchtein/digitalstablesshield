@@ -134,7 +134,7 @@ int currentViewIndex=0;
 int secondsForCommandsToBeExecuted=4;
 int currentCommandSecondsCounter=0;
 volatile int f_wdt=1;
-char faultData;
+char *faultData;
 long secondsToForcedWPS=60L;
 long wpsAlertTime=0L;
 
@@ -910,22 +910,8 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
         untransferredFile.print("#");
         untransferredFile.print(operatingStatus);
 
+        long totalDiskUse= getDiskUsage();
 
-        File sensorFile = SD.open(sensorDirName );
-        long totalDiskUse=getSDCardDiskUse(sensorFile);
-
-
-
-
-        File lifeCycleFile = SD.open(lifeCycleFileName );
-        totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
-
-
-
-
-
-        File rememberedValueFile = SD.open(remFileName );
-        totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
 
 
         untransferredFile.print("#");
@@ -984,6 +970,19 @@ void turnPiOn(long time){
 	storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
 	storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
+
+long getDiskUsage(){
+	File sensorFile = SD.open(sensorDirName );
+	long totalDiskUse=getSDCardDiskUse(sensorFile);
+
+	File lifeCycleFile = SD.open(lifeCycleFileName );
+	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
+
+	File rememberedValueFile = SD.open(remFileName );
+	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
+	return totalDiskUse;
+}
+
 
 void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge, float currentValue, boolean piIsOn){
 
@@ -1393,12 +1392,12 @@ void loop() {
 	toReturn.concat( operatingStatus);
 	toReturn.concat("#") ;
 
-	File sensorFile = SD.open("/" + WPSSensorDataDirName );
+	File sensorFile = SD.open(sensorDirName );
 	long totalDiskUse=getSDCardDiskUse(sensorFile);
-	File lifeCycleFile = SD.open("/" + LifeCycleDataDirName );
+	File lifeCycleFile = SD.open(lifeCycleFileName);
 	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
 
-	File rememberedValueFile = SD.open("/" + RememberedValueDataDirName );
+	File rememberedValueFile = SD.open(remFileName );
 	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
 
 	toReturn.concat(totalDiskUse/1024);
@@ -1439,10 +1438,8 @@ void loop() {
 				untransferredFile.print(operatingStatus);
 
 
-				File sensorFile = SD.open("/" + WPSSensorDataDirName );
-				long totalDiskUse=getSDCardDiskUse(sensorFile);
-				File lifeCycleFile = SD.open("/" + LifeCycleDataDirName );
-				totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
+				File sensorFile = SD.open(sensorDirName);
+				long totalDiskUse=getDiskUsage();
 				untransferredFile.print("#");
 				untransferredFile.println(totalDiskUse/1024);
 
