@@ -1301,6 +1301,17 @@ void defineSate(long time, float batteryVoltage,int internalBatteryStateOfCharge
 					storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 					enterArduinoSleep();
 				}
+			}else if(piIsOn){
+				//
+				// i we are here it means the pi is n
+				// and voltage has dropped into
+				// comma range so
+				faultData="Enter WPS";
+				sendWPSAlert(time, faultData, batteryVoltage);
+				lcd.clear();
+				lcd.setRGB(225, 0, 0);
+				lcd.setCursor(0, 0);
+				lcd.print("Comma Alert Sent")
 			}
 		}
 	}
