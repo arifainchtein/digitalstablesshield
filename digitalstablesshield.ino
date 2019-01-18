@@ -31,6 +31,7 @@ long poweredDownInLoopSeconds=0;
 int wpsPulseFrequencySeconds=60;
 long lastWPSRecordSeconds=0L;
 boolean waitingForWPSConfirmation=false;
+boolean pauseDuringWPS=false;
 long currentSleepStartTime=0L;
 long lastWPSStartUp=0L;
 
@@ -315,10 +316,8 @@ void hourlyTasks(long time, int previousHour ){
 
 	storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
     storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
-
     hourlyBatteryOutEnergy=0;
     hourlyPoweredDownInLoopSeconds=0;
-
 }
 
 /*
@@ -1201,9 +1200,9 @@ void defineState(long time, float batteryVoltage,int internalBatteryStateOfCharg
 					// ie if its raining and the sensor needs to stay on
 					// if not sleep for 8 seconds
 					//
-					boolean stayAwake=false;
 
-					if(!stayAwake){
+
+					if(pauseDuringWPS){
 						pauseWPS();
 					}
 				}
@@ -1326,9 +1325,8 @@ void defineState(long time, float batteryVoltage,int internalBatteryStateOfCharg
 						// ie if its raining and the sensor needs to stay on
 						// if not sleep for 8 seconds
 						//
-						boolean stayAwake=false;
 
-						if(!stayAwake){
+						if(pauseDuringWPS){
 							pauseWPS();
 						}
 					}
@@ -1847,10 +1845,13 @@ void loop() {
 			Serial.flush();
 
 		}else if(command.startsWith("EnterWPS")){
-			//EnterWPS#10#45#30
+			//EnterWPS#10#45#30#1
 			secondsToTurnPowerOff = (long)getValue(command, '#', 1).toInt();
 			secondsToNextPiOn = (long)getValue(command, '#', 2).toInt();
 			wpsPulseFrequencySeconds = getValue(command, '#', 3).toInt();
+			int pauseDuringWPSi = getValue(command, '#', 4).toInt();
+			if(pauseDuringWPSi==1)pauseDuringWPS=true;
+			else pauseDuringWPS=false;
 			waitingForWPSConfirmation=false;
 			wpsCountdown=true;
 			operatingStatus="WPS";
