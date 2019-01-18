@@ -88,7 +88,7 @@ const char *LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
 const char *LIFE_CYCLE_EVENT_END_WPS     ="End WPS";
 const char *LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
 const char *LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
-
+const char *LIFE_CYCLE_EVENT_SETUP_COMPLETED="Setup Method Completed";
 
 
 
@@ -1486,6 +1486,10 @@ void setup() {
 		lcd.print("SD use ") ;
 		lcd.print(totalDiskUse/1024) ;
 		lcd.print("Kb") ;
+
+		long now = getCurrentTimeInSeconds();
+		storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
+
 	}
 
 	//	wdt_enable(WDTO_8S);
