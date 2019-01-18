@@ -316,9 +316,9 @@ void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayY
 	result = readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 
 
-	long dateAsSeconds = dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
+	long yesterdayDateSeconds = dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
 
-	storeRememberedValue(time,DAILY_STATS_TIMESTAMP, dateAsSeconds, UNIT_NO_UNIT);
+	storeRememberedValue(time,DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, UNIT_NO_UNIT);
 	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
 	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
 
