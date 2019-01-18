@@ -1509,6 +1509,8 @@ void loop() {
 	capacitorVoltage= lockCapacitorValue * (5.0 / 1023.0);
 	boolean piIsOn = digitalRead(PI_POWER_PIN);
 
+
+
 	//
 	// Generate the SensorData String
 	toReturn="";
@@ -1555,20 +1557,9 @@ void loop() {
 	char dailyPoweredDownInLoopSecondsStr[15];
 	dtostrf(dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
 	toReturn.concat(dailyPoweredDownInLoopSecondsStr) ;
-	//toReturn.concat("#") ;
+	toReturn.concat("#") ;
 
-	File sensorFile = SD.open(sensorDirName );
-	long totalDiskUse=getSDCardDiskUse(sensorFile);
-	File lifeCycleFile = SD.open(lifeCycleFileName);
-	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
-
-	File rememberedValueFile = SD.open(remFileName );
-	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
-
-	sensorFile.close();
-	lifeCycleFile.close();
-	rememberedValueFile.close();
-
+	long totalDiskUse=getDiskUsage();
 	toReturn.concat(totalDiskUse/1024);
 	toReturn.concat("#");
 
