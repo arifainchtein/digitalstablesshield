@@ -738,7 +738,7 @@ void enterArduinoSleep(void)
 	// the min for wps then go into wps,
 	// otherwise go back to comma
 	//
-	long lastSleepSeconds = currentSleepSeconds - getCurrentTimeInSeconds();
+	long lastSleepSeconds = getCurrentTimeInSeconds()-currentSleepSeconds ;
 	poweredDownInLoopSeconds+=lastSleepSeconds;
 	float batteryVoltage = getBatteryVoltage();
 	if(batteryVoltage>minWPSVoltage){
@@ -1977,7 +1977,7 @@ void loop() {
 	// finally add the poweredDownInLoopSeconds to the daily total
 
 	int loopConsumingPowerSeconds = getCurrentTimeInSeconds()-now -poweredDownInLoopSeconds;
-	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*currentValue;
+	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*currentValue/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 }
 
