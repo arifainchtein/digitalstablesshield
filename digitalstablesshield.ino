@@ -66,7 +66,7 @@ const char *DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
 const char *DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
 const char *DAILY_ENERGY="Daily Energy";
 const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
-const char *HOURLY_ENERGY="Daily Energy";
+const char *HOURLY_ENERGY="Hourly Energy";
 const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
 
 
@@ -208,10 +208,8 @@ float stringToFloat(String s){
 boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
 	//GetRememberedValueData#0
 
-
 	char fileName[25] = "/";
 	snprintf(fileName, sizeof fileName, "/%s/%s", dirName, unstraferedFileName);
-
 
 	File uf = SD.open(fileName, FILE_WRITE);
 	File tf;
@@ -221,7 +219,6 @@ boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial
 		snprintf(fileNameTF, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
 		tf = SD.open(fileNameTF, FILE_WRITE);
 	}
-
 
 	if (uf) {
 		uf.seek(0);
@@ -259,8 +256,6 @@ void storeRememberedValue(long time, const char *name, float value, String unit)
 	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
-
-
 
 	if (untransferredFile) {
 		// Write to file
@@ -543,9 +538,9 @@ void storeLifeCycleEvent(long time, const char *eventType, int eventValue){
 	//File untransferredFile = SD.open("/" + LifeCycleDataDirName + "/" + unstraferedFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
-		untransferredFile.print(eventType);
-		untransferredFile.print("#");
 		untransferredFile.print(time);
+		untransferredFile.print("#");
+		untransferredFile.print(eventType);
 		untransferredFile.print("#");
 		untransferredFile.println(eventValue);
 		untransferredFile.close(); // close the file
@@ -980,13 +975,12 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
 		//
 		// calculate the energy used in mAhr
 		//
-		float energy = wpsPulseFrequencySeconds*current/3600;
-		dailyBatteryOutEnergy+=energy;
-		untransferredFile.print(energy);
-		untransferredFile.print("#");
+//		float energy = wpsPulseFrequencySeconds*current/3600;
+//		dailyBatteryOutEnergy+=energy;
+//		untransferredFile.print(energy);
+//		untransferredFile.print("#");
+//		hourlyBatteryOutEnergy+=energy;
 
-
-		hourlyBatteryOutEnergy+=energy;
 		untransferredFile.print(hourlyBatteryOutEnergy);
 		untransferredFile.print("#");
 
