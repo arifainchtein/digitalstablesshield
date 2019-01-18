@@ -25,7 +25,7 @@ int SHARED_SECRET_LENGTH=27;
 float capacitorVoltage= 0;
 #define LOCK_CAPACITOR_PIN A0
 #define SD_PIN 53  // SD Card CS pin
-
+long poweredDownInLoopSeconds=0;
 // Arbitrary record definition for this table.
 // This should be modified to reflect your record needs.
 int wpsPulseFrequencySeconds=60;
@@ -58,19 +58,24 @@ char remFileName[10];
 
 
 //
+const char *DAILY_STATS_TIMESTAMP="Daily Timestamp";
 const char *DAILY_MINIMUM_BATTERY_VOLTAGE="Daily Minimum Battery Voltage";
 const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
 const char *DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
 const char *DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
-
+const char *DAILY_ENERGY="Daily Energy";
+const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Daily Powered Down In Loop Seconds";
 
 
 const char *MAXIMUM_VALUE="Max";
 const char *MINIMUM_VALUE="Min";
 const char *AVERAGE_VALUE="Avg";
 
+const char *UNIT_NO_UNIT =" ";
 const char *UNIT_VOLT ="Volt";
+const char *UNIT_SECONDS="seconds";
 const char *UNIT_MILLI_AMPERES ="mA";
+const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
 const char *UNIT_PERCENTAGE ="%";
 const char *FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
 const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
@@ -141,12 +146,13 @@ long wpsAlertTime=0L;
 int currentDay=0;
 int currentMonth=0;
 int currentYear=0;
-float minBatteryVoltage=0;
-float maxBatteryVoltage=0;
+float dailyMinBatteryVoltage=0;
+float dailyMaxBatteryVoltage=0;
 
-float minBatteryCurrent=0;
-float maxBatteryCurrent=0;
-
+float dailyMinBatteryCurrent=0;
+float dailyMaxBatteryCurrent=0;
+float dailyBatteryOutEnergy=0;
+float dailyPoweredDownInLoopSeconds=0;
 //Sd2Card card;
 //SdVolume volume;
 //SdFile root;
@@ -309,16 +315,25 @@ void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayY
 	result = readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 	result = readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 
-	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, minBatteryVoltage, UNIT_VOLT);
-	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, maxBatteryVoltage, UNIT_VOLT);
 
-	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, minBatteryCurrent, UNIT_MILLI_AMPERES);
-	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, maxBatteryCurrent, UNIT_MILLI_AMPERES);
+	long dateAsSeconds = dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
 
-	minBatteryVoltage = 9999;
-	maxBatteryVoltage = -1;
-	minBatteryCurrent = 9999;
-	maxBatteryCurrent = -1;
+	storeRememberedValue(time,DAILY_STATS_TIMESTAMP, dateAsSeconds, UNIT_NO_UNIT);
+	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
+	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
+
+	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, UNIT_MILLI_AMPERES);
+	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, UNIT_MILLI_AMPERES);
+
+	storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
+
+	dailyMinBatteryVoltage = 9999;
+	dailyMaxBatteryVoltage = -1;
+	dailyMinBatteryCurrent = 9999;
+	dailyMaxBatteryCurrent = -1;
+	dailyBatteryOutEnergy=0;
+	dailyPoweredDownInLoopSeconds=0;
 
 }
 
@@ -411,7 +426,7 @@ float searchRememberedValue(const char *label, int date, int month, int year, ch
 			// and copy it into today's file
 			line = todayFile.readStringUntil('\n');
 
-			 getValue(line, '#', 1).toCharArray(anyLabel, sizeof anyLabel);
+			getValue(line, '#', 1).toCharArray(anyLabel, sizeof anyLabel);
 			if(strcmp(label, anyLabel) == 0){
 				value = stringToFloat(getValue(line, '#', 2));
 				if(whatToSearchFor == MAXIMUM_VALUE){
@@ -616,8 +631,8 @@ float getBatteryVoltage(){
 	sum=sum/10;
 	double correction=1.025;
 	float value =correction*(10*sum*4.980/1023.00);
-	if(value < minBatteryVoltage)minBatteryVoltage=value;
-	else if(value > maxBatteryVoltage)maxBatteryVoltage=value;
+	if(value < dailyMinBatteryVoltage)dailyMinBatteryVoltage=value;
+	else if(value > dailyMaxBatteryVoltage)dailyMaxBatteryVoltage=value;
 
 	return value;
 }
@@ -638,8 +653,8 @@ float calculateCurrent(){
 	//the VCC on the Grove interface of the sensor is 5v
 	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
 	float effective_value=amplitude_current/1.414;
-	if(effective_value)minBatteryCurrent=effective_value;
-	else if(effective_value > maxBatteryCurrent)maxBatteryCurrent=effective_value;
+	if(effective_value<dailyMinBatteryCurrent)dailyMinBatteryCurrent=effective_value;
+	else if(effective_value > dailyMaxBatteryCurrent)dailyMaxBatteryCurrent=effective_value;
 	return effective_value;
 }
 
@@ -712,7 +727,7 @@ void enterArduinoSleep(void)
 	wdt_reset();
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);   /* EDIT: could also use SLEEP_MODE_PWR_DOWN for lowest power consumption. */
 	//sleep_enable();
-
+	long currentSleepSeconds = getCurrentTimeInSeconds();
 	/* Now enter sleep mode. */
 	sleep_mode();
 
@@ -723,6 +738,8 @@ void enterArduinoSleep(void)
 	// the min for wps then go into wps,
 	// otherwise go back to comma
 	//
+	long lastSleepSeconds = currentSleepSeconds - getCurrentTimeInSeconds();
+	poweredDownInLoopSeconds+=lastSleepSeconds;
 	float batteryVoltage = getBatteryVoltage();
 	if(batteryVoltage>minWPSVoltage){
 		// STORE a lifecycle comma exit record
@@ -735,7 +752,10 @@ void enterArduinoSleep(void)
 		lcd.print("Out of Comma");
 		lcd.setCursor(0,1);
 		lcd.print(batteryVoltage);
-		lcd.print("V");
+		lcd.print("V ");
+		lcd.print(lastSleepSeconds);
+		lcd.print("V ");
+
 		operatingStatus="WPS";
 		currentSleepStartTime = now;
 		wpsSleeping=true;
@@ -780,10 +800,19 @@ void pauseWPS(void)
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);   /* EDIT: could also use SLEEP_MODE_PWR_DOWN for lowest power consumption. */
 	sleep_enable();
 
+	long currentSleepSeconds = getCurrentTimeInSeconds();
 	/* Now enter sleep mode. */
 	sleep_mode();
 
 	/* The program will continue from here after the WDT timeout*/
+
+	//
+	// check the voltage of the battery, if its higher than
+	// the min for wps then go into wps,
+	// otherwise go back to comma
+	//
+	long lastSleepSeconds = currentSleepSeconds - getCurrentTimeInSeconds();
+	poweredDownInLoopSeconds+=lastSleepSeconds;
 
 	lcd.display();
 	lcd.setRGB(255,255,0);
@@ -924,7 +953,10 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
 		// calculate the energy used in mAhr
 		//
 		float energy = wpsPulseFrequencySeconds*current/3600;
+		dailyBatteryOutEnergy+=energy;
 		untransferredFile.print(energy);
+		untransferredFile.print("#");
+		untransferredFile.print(dailyBatteryOutEnergy);
 		untransferredFile.print("#");
 		untransferredFile.print(sc);
 		untransferredFile.print("#");
@@ -1491,6 +1523,36 @@ void loop() {
 	toReturn.concat( operatingStatus);
 	toReturn.concat("#") ;
 
+	char dailyMinBatteryVoltageStr[15];
+	dtostrf(dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
+	toReturn.concat(dailyMinBatteryVoltageStr) ;
+	toReturn.concat("#") ;
+
+	char dailyMaxBatteryVoltageStr[15];
+	dtostrf(dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
+	toReturn.concat(dailyMaxBatteryVoltageStr) ;
+	toReturn.concat("#") ;
+
+	char dailyMinBatteryCurrentStr[15];
+	dtostrf(dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
+	toReturn.concat(dailyMinBatteryCurrentStr) ;
+	toReturn.concat("#") ;
+
+	char dailyMaxBatteryCurrentStr[15];
+	dtostrf(dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
+	toReturn.concat(dailyMaxBatteryCurrentStr) ;
+	toReturn.concat("#") ;
+
+	char dailyBatteryOutEnergyStr[15];
+	dtostrf(dailyBatteryOutEnergy,4, 0, dailyBatteryOutEnergyStr);
+	toReturn.concat(dailyBatteryOutEnergyStr) ;
+	toReturn.concat("#") ;
+
+	char dailyPoweredDownInLoopSecondsStr[15];
+	dtostrf(dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
+	toReturn.concat(dailyPoweredDownInLoopSecondsStr) ;
+	toReturn.concat("#") ;
+
 	File sensorFile = SD.open(sensorDirName );
 	long totalDiskUse=getSDCardDiskUse(sensorFile);
 	File lifeCycleFile = SD.open(lifeCycleFileName);
@@ -1512,6 +1574,7 @@ void loop() {
 	//lcd.setCursor(0, 0);
 
 	long now = getCurrentTimeInSeconds();
+	poweredDownInLoopSeconds=0;
 	defineState(now,  batteryVoltage, internalBatteryStateOfCharge, currentValue, piIsOn);
 	//
 	// the commands
@@ -1912,6 +1975,14 @@ void loop() {
 			Serial.flush();
 		}
 	}
+	//
+	// this is the end of the loop, to calculate the energy spent on this loop
+	// take the time substract the time at the beginning of the loop (the now variable defined above)
+	// and also substract the seconds spent in powerdownMode
+	// finally add the poweredDownInLoopSeconds to the daily total
 
+	int loopConsumingPowerSeconds = getCurrentTimeInSeconds()-now -poweredDownInLoopSeconds;
+
+	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 }
 
