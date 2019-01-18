@@ -848,7 +848,9 @@ void pauseWPS(void)
 	lcd.setCursor(0,1);
 	float batteryVoltage = getBatteryVoltage();
 	lcd.print(batteryVoltage);
-	lcd.print("V");
+	lcd.print("V ");
+	lcd.print(pauseDuringWPS);
+
 	operatingStatus="WPS";
 	//lcd.setCursor(0, 1);
 	//lcd.print("Awake") ;
