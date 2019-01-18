@@ -143,6 +143,9 @@ char *faultData;
 long secondsToForcedWPS=60L;
 long wpsAlertTime=0L;
 
+
+
+int currentHour=0;
 int currentDay=0;
 int currentMonth=0;
 int currentYear=0;
@@ -153,6 +156,10 @@ float dailyMinBatteryCurrent=0;
 float dailyMaxBatteryCurrent=0;
 float dailyBatteryOutEnergy=0;
 float dailyPoweredDownInLoopSeconds=0;
+
+float hourlyBatteryOutEnergy=0;
+float hourlyPoweredDownInLoopSeconds=0;
+
 //Sd2Card card;
 //SdVolume volume;
 //SdFile root;
@@ -302,7 +309,10 @@ long dateAsSeconds(int year, int month, int date, int hour, int minute, int seco
 	return seconds;
 }
 
-
+void hourlyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayYear ){
+	hourlyBatteryOutEnergy=0;
+	hourlyPoweredDownInLoopSeconds=0;
+}
 
 /*
  * this function is called at the beginning of a new day
@@ -350,6 +360,16 @@ long getCurrentTimeInSeconds(){
 	rtc.read();
 	int month = rtc.month-1;
 	long now=dateAsSeconds(rtc.year, month, rtc.day, rtc.hour, rtc.minute, rtc.second);
+	if (currentHour != rtc.hour) {
+		//
+		// we are in a new hour,
+		int previousHour=currentHour;
+
+		//
+		// now reset
+		currentHour = rtc.hour;
+		hourlyTasks(now,previousHour, yesterdayMonth, yesterdayYear
+	}
 	if (currentDay != rtc.day) {
 		//
 		// we are in a new day, so get yesterdays day, month and year
@@ -956,11 +976,27 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
 		dailyBatteryOutEnergy+=energy;
 		untransferredFile.print(energy);
 		untransferredFile.print("#");
+
+
+		hourlyBatteryOutEnergy+=energy;
+		untransferredFile.print(hourlyBatteryOutEnergy);
+		untransferredFile.print("#");
+
 		untransferredFile.print(dailyBatteryOutEnergy);
 		untransferredFile.print("#");
+
+		untransferredFile.print(hourlyPoweredDownInLoopSeconds);
+		untransferredFile.print("#");
+
+		untransferredFile.print(dailyPoweredDownInLoopSeconds);
+		untransferredFile.print("#");
+
 		untransferredFile.print(sc);
 		untransferredFile.print("#");
 		untransferredFile.print(operatingStatus);
+
+
+
 
 		long totalDiskUse= getDiskUsage();
 
@@ -1978,6 +2014,9 @@ void loop() {
 
 	int loopConsumingPowerSeconds = getCurrentTimeInSeconds()-now -poweredDownInLoopSeconds;
 	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*currentValue/3600;
+	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*currentValue/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
+	hourlyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
+
 }
 
