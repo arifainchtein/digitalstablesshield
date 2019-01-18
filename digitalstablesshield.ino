@@ -831,7 +831,7 @@ void pauseWPS(void)
 	// the min for wps then go into wps,
 	// otherwise go back to comma
 	//
-	long lastSleepSeconds = currentSleepSeconds - getCurrentTimeInSeconds();
+	long lastSleepSeconds = getCurrentTimeInSeconds()-currentSleepSeconds ;
 	poweredDownInLoopSeconds+=lastSleepSeconds;
 
 	lcd.display();
