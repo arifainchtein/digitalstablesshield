@@ -1551,7 +1551,7 @@ void loop() {
 	char dailyPoweredDownInLoopSecondsStr[15];
 	dtostrf(dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
 	toReturn.concat(dailyPoweredDownInLoopSecondsStr) ;
-	toReturn.concat("#") ;
+	//toReturn.concat("#") ;
 
 	File sensorFile = SD.open(sensorDirName );
 	long totalDiskUse=getSDCardDiskUse(sensorFile);
@@ -1982,7 +1982,7 @@ void loop() {
 	// finally add the poweredDownInLoopSeconds to the daily total
 
 	int loopConsumingPowerSeconds = getCurrentTimeInSeconds()-now -poweredDownInLoopSeconds;
-
+	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*currentValue;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 }
 
