@@ -999,6 +999,9 @@ void saveWPSSensorRecord(long lastWPSRecordSeconds){
 		untransferredFile.print(dailyPoweredDownInLoopSeconds);
 		untransferredFile.print("#");
 
+		untransferredFile.print(pauseDuringWPS);
+		untransferredFile.print("#");
+
 		untransferredFile.print(sc);
 		untransferredFile.print("#");
 		untransferredFile.print(operatingStatus);
@@ -1615,7 +1618,8 @@ void loop() {
 	long totalDiskUse=getDiskUsage();
 	toReturn.concat(totalDiskUse/1024);
 	toReturn.concat("#");
-
+	toReturn.concat(pauseDuringWPS);
+	toReturn.concat("#");
 
 
 	//lcd.clear();
