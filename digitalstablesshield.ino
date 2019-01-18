@@ -1595,6 +1595,16 @@ void loop() {
 	toReturn.concat(dailyPoweredDownInLoopSecondsStr) ;
 	toReturn.concat("#") ;
 
+	char hourlyBatteryOutEnergyStr[15];
+	dtostrf(hourlyBatteryOutEnergy,4, 0, hourlyBatteryOutEnergyStr);
+	toReturn.concat(hourlyBatteryOutEnergyStr) ;
+	toReturn.concat("#") ;
+
+	char hourlyPoweredDownInLoopSecondsStr[15];
+	dtostrf(hourlyPoweredDownInLoopSeconds,4, 0, hourlyPoweredDownInLoopSecondsStr);
+	toReturn.concat(hourlyPoweredDownInLoopSecondsStr) ;
+	toReturn.concat("#") ;
+
 	long totalDiskUse=getDiskUsage();
 	toReturn.concat(totalDiskUse/1024);
 	toReturn.concat("#");
