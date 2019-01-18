@@ -309,7 +309,7 @@ long dateAsSeconds(int year, int month, int date, int hour, int minute, int seco
 	return seconds;
 }
 
-void hourlyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayYear ){
+void hourlyTasks(long time, int previousHour ){
 	hourlyBatteryOutEnergy=0;
 	hourlyPoweredDownInLoopSeconds=0;
 }
@@ -368,7 +368,7 @@ long getCurrentTimeInSeconds(){
 		//
 		// now reset
 		currentHour = rtc.hour;
-		hourlyTasks(now,previousHour, yesterdayMonth, yesterdayYear
+		hourlyTasks(now,previousHour);
 	}
 	if (currentDay != rtc.day) {
 		//
