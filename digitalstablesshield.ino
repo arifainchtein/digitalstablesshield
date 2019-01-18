@@ -64,7 +64,9 @@ const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
 const char *DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
 const char *DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
 const char *DAILY_ENERGY="Daily Energy";
-const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Daily Powered Down In Loop Seconds";
+const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
+const char *HOURLY_ENERGY="Daily Energy";
+const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
 
 
 const char *MAXIMUM_VALUE="Max";
@@ -310,8 +312,13 @@ long dateAsSeconds(int year, int month, int date, int hour, int minute, int seco
 }
 
 void hourlyTasks(long time, int previousHour ){
-	hourlyBatteryOutEnergy=0;
-	hourlyPoweredDownInLoopSeconds=0;
+
+	storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+    storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
+
+    hourlyBatteryOutEnergy=0;
+    hourlyPoweredDownInLoopSeconds=0;
+
 }
 
 /*
@@ -338,12 +345,12 @@ void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayY
 	storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
 	storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
 
-	dailyMinBatteryVoltage = 9999;
-	dailyMaxBatteryVoltage = -1;
-	dailyMinBatteryCurrent = 9999;
-	dailyMaxBatteryCurrent = -1;
-	dailyBatteryOutEnergy=0;
-	dailyPoweredDownInLoopSeconds=0;
+	dailyMinBatteryVoltage = 9999.0;
+	dailyMaxBatteryVoltage = -1.0;
+	dailyMinBatteryCurrent = 9999.0;
+	dailyMaxBatteryCurrent = -1.0;
+	dailyBatteryOutEnergy=0.0;
+	dailyPoweredDownInLoopSeconds=0.0;
 
 }
 
