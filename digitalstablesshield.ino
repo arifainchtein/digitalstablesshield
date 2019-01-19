@@ -319,26 +319,19 @@ void hourlyTasks(long time, int previousHour ){
  * this function is called at the beginning of a new day
  */
 void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayYear ){
-
 	//
 	// move whatever is in untrasferred to the correct date
 	boolean result = readUntransferredFileFromSDCardByDate( 1,false, RememberedValueDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear );
 	result = readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 	result = readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
-
-
 	long yesterdayDateSeconds = dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
-
 	storeRememberedValue(time,DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, UNIT_NO_UNIT);
 	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
 	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
-
 	storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, UNIT_MILLI_AMPERES);
 	storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, UNIT_MILLI_AMPERES);
-
 	storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
 	storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
-
 	dailyMinBatteryVoltage = 9999.0;
 	dailyMaxBatteryVoltage = -1.0;
 	dailyMinBatteryCurrent = 9999.0;
@@ -365,7 +358,6 @@ long getCurrentTimeInSeconds(){
 		//
 		// we are in a new hour,
 		int previousHour=currentHour;
-
 		//
 		// now reset
 		currentHour = rtc.hour;
@@ -377,7 +369,6 @@ long getCurrentTimeInSeconds(){
 		int yesterdayDate=currentDay;
 		int yesterdayMonth=currentMonth;
 		int yesterdayYear=currentYear;
-
 		//
 		// now reset
 		currentDay = rtc.day;
@@ -421,17 +412,6 @@ float searchRememberedValue(const char *label, int date, int month, int year, ch
 	float value=0;
 	int sampleCount=0;
 	int sampleSum=0;
-	//	char fileName[23]="/";
-	//	strcat(fileName, *RememberedValueDataDirName);
-	//	strcat(fileName, "/");
-	//	strcat(fileName, date);
-	//	strcat(fileName, "_");
-	//	strcat(fileName, month);
-	//	strcat(fileName, "_");
-	//	strcat(fileName, year);
-	//	strcat(fileName, ".txt");
-	//	File todayFile = SD.open(fileName, FILE_WRITE);
-
 	char fileName[32];
 	sprintf(fileName,"/%s/%i_%i_%i/.txt",RememberedValueDataDirName,date,month,year);
 	File todayFile = SD.open(fileName, FILE_WRITE);
