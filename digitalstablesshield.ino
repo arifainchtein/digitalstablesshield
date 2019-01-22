@@ -68,7 +68,7 @@ const char *DAILY_ENERGY="Daily Energy";
 const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
 const char *HOURLY_ENERGY="Hourly Energy";
 const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
-
+const char *HOURLY_OPERATING_IN_LOOP_SECONDS="Hourly Operating In Loop Seconds";
 
 const char *MAXIMUM_VALUE="Max";
 const char *MINIMUM_VALUE="Min";
@@ -311,6 +311,7 @@ void hourlyTasks(long time, int previousHour ){
 
 	storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
     storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
+    storeRememberedValue(time,HOURLY_OPERATING_IN_LOOP_SECONDS, 3600-hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
     hourlyBatteryOutEnergy=0;
     hourlyPoweredDownInLoopSeconds=0;
 }
@@ -1543,6 +1544,12 @@ void loop() {
 	dtostrf(currentValue,4, 0, currentValueStr);
 	toReturn.concat(currentValueStr) ;
 	toReturn.concat("#") ;
+
+	char capacitorVoltageStr[15];
+	dtostrf(capacitorVoltage,2, 1, capacitorVoltageStr);
+	toReturn.concat(capacitorVoltageStr) ;
+	toReturn.concat("#") ;
+
 
 	toReturn.concat( internalBatteryStateOfCharge);
 	toReturn.concat("#") ;
