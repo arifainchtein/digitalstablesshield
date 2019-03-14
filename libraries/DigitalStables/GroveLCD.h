@@ -13,15 +13,14 @@
 class GroveLCD: public LCDDisplay {
 public:
 	GroveLCD();
-	void begin(int, int);
-	void display();
-	void clear();
-	void setRGB(int, int, int);
-	void setCursor(uint8_t, uint8_t);
-	void print(const String &);
-	void print(float);
-	void noDisplay();
-	void display();
+		virtual void begin(long);
+		virtual void clear();
+		virtual void setRGB(int, int, int);
+		virtual void setCursor(uint8_t, uint8_t);
+		virtual void print(const String &);
+		virtual void print(float);
+		virtual void noDisplay();
+		virtual void display();
 
 	virtual ~GroveLCD();
 

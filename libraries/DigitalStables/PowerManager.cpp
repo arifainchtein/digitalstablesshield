@@ -13,7 +13,8 @@
 #include <avr/wdt.h>
 #include <totp.h>
 #include "GeneralConstants.h"
-
+#include <SPI.h>
+#include <SD.h>
 
 //
 // the wps variables
@@ -114,8 +115,13 @@ PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, T
 {}
 
 void PowerManager::start(){
+	pinMode(52, OUTPUT);
+	digitalWrite(52, LOW);
+	SPI.begin();
 	pinMode(PI_POWER_PIN, OUTPUT);
-	digitalWrite(PI_POWER_PIN, LOW);
+	long now = timeManager.getCurrentTimeInSeconds();
+	turnPiOff(now);
+	initializeWDT();
 }
 void PowerManager::hourlyTasks(long time, int previousHour ){
 
@@ -1066,10 +1072,6 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		delay(delayTime);
 		isHost=false;
 		processed=true;
-	}else if(command.startsWith("GetSensorData")){
-		_HardSerial.println(sensorDataString);
-		_HardSerial.flush();
-		processed=true;
 	}else if(command.startsWith("EnterWPS")){
 		//EnterWPS#10#45#30#1
 		secondsToTurnPowerOff = (long)generalFunctions.getValue(command, '#', 1).toInt();
@@ -1264,7 +1266,7 @@ float PowerManager::getLockCapacitorVoltage(){
 	float capacitorVoltage= lockCapacitorValue * (5.0 / 1023.0);
 	return capacitorVoltage;
 }
-void toggleWDT(){
+void PowerManager::toggleWDT(){
 	if(f_wdt == 0)
 	{
 		f_wdt=1;

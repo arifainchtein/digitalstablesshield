@@ -1,17 +1,32 @@
 
-#include <Wire.h>
-#include <Arduino.h>
 
-#include <avr/sleep.h>
-#include <avr/power.h>
-#include <avr/wdt.h>
-#include <SPI.h>
-#include <SD.h>
-#include "rgb_lcd.h"
-
+#include <GeneralConstants.h>
+#include <GeneralFunctions.h>
+#include <GroveLCD.h>
+#include <LCDDisplay.h>
+#include <PowerManager.h>
 #include <RTCInfoRecord.h>
+#include <avr/wdt.h>
+
+#include <SDCardManager.h>
+#include <SecretManager.h>
+#include <TimeManager.h>
 #include <WPSSensorRecord.h>
 
+#include <GeneralConstants.h>
+#include <GeneralFunctions.h>
+#include <GroveLCD.h>
+#include <LCDDisplay.h>
+#include <PowerManager.h>
+#include <RTCInfoRecord.h>
+#include <SDCardManager.h>
+#include <SecretManager.h>
+#include <TimeManager.h>
+#include <WPSSensorRecord.h>
+
+
+
+#include <Wire.h>
 #include <TimeManager.h>
 #include <GeneralFunctions.h>
 #include <PowerManager.h>
@@ -32,6 +47,9 @@ TimeManager timeManager(generalFunctions, Serial);
 SecretManager secretManager(timeManager);
 SDCardManager sdCardManager(timeManager, generalFunctions, Serial);
 PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
+
+
+
 
 const char  *WPSSensorDataDirName="WPSSensr";
 const char  *LifeCycleDataDirName="LifeCycl";
@@ -59,56 +77,48 @@ ISR(WDT_vect){
 	//wdt_reset();
 
 	aPowerManager.toggleWDT();
-//	if(f_wdt == 0)
-//	{
-//		f_wdt=1;
-//	}
-//	else
-//	{
-//		//_HardSerial.println("WDT Overrun!!!");
-//	}
+	//	if(f_wdt == 0)
+	//	{
+	//		f_wdt=1;
+	//	}
+	//	else
+	//	{
+	//		//_HardSerial.println("WDT Overrun!!!");
+	//	}
 }
 
 void setup() {
+	//
+	// Start the Serial Ports
+	//
 	Serial.begin(9600);
+	Serial1.begin(9600);
+	Serial2.begin(9600);
+	Serial3.begin(9600);
 
-	pinMode(52, OUTPUT);
-	digitalWrite(52, LOW);
-	SPI.begin();
 
 
+	//
+	// Start The Managers
+	//
 	timeManager.start();
 	sdCardManager.start();
+	aPowerManager.start();
+
+	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
+
+	//
+	// Initialize the LCD Screen
+	//
+	String line1="Finish Init";
+
+
+
+
+	delay(2000);
 	long now = timeManager.getCurrentTimeInSeconds();
 	sdCardManager.storeLifeCycleEvent(now, GeneralConstants::LIFE_CYCLE_EVENT_SETUP_COMPLETED, GeneralConstants::LIFE_CYCLE_EVENT_COMMA_VALUE);
-
-	//Set the RTC time automatically: Calibrate RTC time by your computer time
-	//rtc.adjustRtc(F(__DATE__), F(__TIME__));
-
-	long now = timeManager.getCurrentTimeInSeconds();
-	aPowerManager.turnPiOff(now);
-	groveLCD.begin(16,2);
-	delay(100); //Allow for serial print to complete.
-	aPowerManager.initializeWDT();
-	long totalDiskUse=sdCardManager.getDiskUsage();
-
-
-	groveLCD.setCursor(0, 0);
-	groveLCD.print("Finish Init") ;
-	groveLCD.setCursor(0, 1);
-	groveLCD.print("SD use ") ;
-	groveLCD.print(totalDiskUse/1024) ;
-	groveLCD.print("Kb") ;
-
-	long now = timeManager.getCurrentTimeInSeconds();
-	sdCardManager.storeLifeCycleEvent(now, GeneralConstants::LIFE_CYCLE_EVENT_SETUP_COMPLETED, GeneralConstants::LIFE_CYCLE_EVENT_COMMA_VALUE);
-
 }
-
-//	wdt_enable(WDTO_8S);
-
-
-
 
 
 void loop() {
@@ -124,6 +134,16 @@ void loop() {
 	//
 	// now add the teleonome specific sensors
 	//
+
+
+	//
+	// end of teleonome specific sensors
+	//
+
+
+	//
+	// now define the state its in
+	//
 	aPowerManager.defineState();
 	//
 	// the commands
@@ -134,11 +154,20 @@ void loop() {
 		groveLCD.setCursor(0, 0);
 		groveLCD.print(command);
 		boolean commandProcessed = aPowerManager.processDefaultCommands( command, sensorDataString);
+		String sensorDataString = aPowerManager.getBaseSensorString();
+		//
+		// teleonome specific sensors
+		//
+
+		//
+		// end of teleonome soecific sensor
+		//
 		if(!commandProcessed){
 			//
 			// add device specific
-			boolean keepGoing=false;
-			if(keepGoing){
+			if(command.startsWith("GetSensorData")){
+				Serial.println(sensorDataString);
+				Serial.flush();
 			}else{
 				//
 				// call read to flush the incoming
@@ -148,6 +177,9 @@ void loop() {
 				Serial.flush();
 			}
 		}
+
+
+
 		//
 		// this is the end of the loop, to calculate the energy spent on this loop
 		// take the time substract the time at the beginning of the loop (the now variable defined above)

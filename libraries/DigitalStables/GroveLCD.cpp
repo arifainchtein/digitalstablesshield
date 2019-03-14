@@ -6,8 +6,8 @@
  */
 
 #include <GroveLCD.h>
-#include "rgb_lcd.h"
-#include <LCDDisplay.h>
+#include <rgb_lcd.h>
+
 rgb_lcd lcd;
 
 GroveLCD::GroveLCD() {
@@ -15,8 +15,14 @@ GroveLCD::GroveLCD() {
 
 }
 
-void GroveLCD::begin(int c,int r){
-	lcd.begin(c,r);
+void GroveLCD::begin(long totalDiskUse){
+	lcd.begin(16,2);
+	lcd.setCursor(0, 0);
+	lcd.print("Finish Init") ;
+	lcd.setCursor(0, 1);
+	lcd.print("SD use ") ;
+	lcd.print(totalDiskUse) ;
+	lcd.print("Kb") ;
 }
 
 void GroveLCD::clear(){
@@ -33,6 +39,11 @@ void GroveLCD::print(const String & s){
 	lcd.print(s);
 
 }
+
+void GroveLCD::print(float s){
+	lcd.print(s);
+}
+
 void GroveLCD::noDisplay(){
 	lcd.noDisplay();
 }
