@@ -94,6 +94,21 @@ volatile int f_wdt=1;
 
 
 extern int SHARED_SECRET_LENGTH;
+float dailyMinBatteryVoltage=0;
+float dailyMaxBatteryVoltage=0;
+
+float dailyMinBatteryCurrent=0;
+float dailyMaxBatteryCurrent=0;
+float dailyBatteryOutEnergy=0;
+float dailyPoweredDownInLoopSeconds=0;
+
+float hourlyBatteryOutEnergy=0;
+float hourlyPoweredDownInLoopSeconds=0;
+boolean pauseDuringWPS=false;
+boolean inPulse=false;
+String pulseStartTime="";
+String pulseStopTime="";
+int PI_POWER_PIN=8;
 
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
@@ -376,8 +391,16 @@ void PowerManager::turnPiOn(long time){
 
 
 
-void PowerManager::defineState(long time, float batteryVoltage,int internalBatteryStateOfCharge, float currentValue, boolean piIsOn){
+void PowerManager::defineState(){
 	poweredDownInLoopSeconds=0;
+	long time = timeManager.getCurrentTimeInSeconds();
+
+	float batteryVoltage = getBatteryVoltage();
+	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+	float currentValue = getCurrentValue();
+
+	boolean piIsOn = digitalRead(PI_POWER_PIN);
+
 	if(shuttingDownPiCountdown){
 		currentSecondsToPowerOff = secondsToTurnPowerOff -( time - shutDownRequestedseconds );
 		lcd.clear();
@@ -1236,18 +1259,151 @@ void PowerManager::endOfLoopProcessing(){
 	hourlyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 }
 
-float getLockCapacitorVoltage(){
+float PowerManager::getLockCapacitorVoltage(){
 	long  lockCapacitorValue = analogRead(LOCK_CAPACITOR_PIN);
 	float capacitorVoltage= lockCapacitorValue * (5.0 / 1023.0);
 	return capacitorVoltage;
 }
 void toggleWDT(){
 	if(f_wdt == 0)
-		{
-			f_wdt=1;
-		}
-		else
-		{
-			//_HardSerial.println("WDT Overrun!!!");
-		}
+	{
+		f_wdt=1;
+	}
+	else
+	{
+		//_HardSerial.println("WDT Overrun!!!");
+	}
+}
+
+String PowerManager::getBaseSensorString(){
+	float batteryVoltage = getBatteryVoltage();
+	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+	float currentValue = getCurrentValue();
+	float capacitorVoltage= getLockCapacitorVoltage();
+	boolean piIsOn = digitalRead(PI_POWER_PIN);
+	// Generate the SensorData String
+	String sensorDataString="";
+	//
+	// Sensor Request Queue Position 1
+	//
+	char batteryVoltageStr[15];
+	dtostrf(batteryVoltage,4, 1, batteryVoltageStr);
+	sensorDataString.concat(batteryVoltageStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 2
+	//
+	char currentValueStr[15];
+	dtostrf(currentValue,4, 0, currentValueStr);
+	sensorDataString.concat(currentValueStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 3
+	//
+	char capacitorVoltageStr[15];
+	dtostrf(capacitorVoltage,2, 1, capacitorVoltageStr);
+	sensorDataString.concat(capacitorVoltageStr) ;
+	sensorDataString.concat("#") ;
+
+
+	//
+	// Sensor Request Queue Position 4
+	//
+	sensorDataString.concat( internalBatteryStateOfCharge);
+	sensorDataString.concat("#") ;
+	//
+	// Sensor Request Queue Position 5
+	//
+
+	sensorDataString.concat( operatingStatus);
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 6
+	//
+
+	char dailyMinBatteryVoltageStr[15];
+	dtostrf(dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
+	sensorDataString.concat(dailyMinBatteryVoltageStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 7
+	//
+
+	char dailyMaxBatteryVoltageStr[15];
+	dtostrf(dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
+	sensorDataString.concat(dailyMaxBatteryVoltageStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 8
+	//
+
+	char dailyMinBatteryCurrentStr[15];
+	dtostrf(dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
+	sensorDataString.concat(dailyMinBatteryCurrentStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 9
+	//
+
+	char dailyMaxBatteryCurrentStr[15];
+	dtostrf(dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
+	sensorDataString.concat(dailyMaxBatteryCurrentStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 10
+	//
+
+	char dailyBatteryOutEnergyStr[15];
+	dtostrf(dailyBatteryOutEnergy,4, 0, dailyBatteryOutEnergyStr);
+	sensorDataString.concat(dailyBatteryOutEnergyStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 11
+	//
+
+	char dailyPoweredDownInLoopSecondsStr[15];
+	dtostrf(dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
+	sensorDataString.concat(dailyPoweredDownInLoopSecondsStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 12
+	//
+
+	char hourlyBatteryOutEnergyStr[15];
+	dtostrf(hourlyBatteryOutEnergy,4, 0, hourlyBatteryOutEnergyStr);
+	sensorDataString.concat(hourlyBatteryOutEnergyStr) ;
+	sensorDataString.concat("#") ;
+	//
+	// Sensor Request Queue Position 13
+	//
+
+	char hourlyPoweredDownInLoopSecondsStr[15];
+	dtostrf(hourlyPoweredDownInLoopSeconds,4, 0, hourlyPoweredDownInLoopSecondsStr);
+	sensorDataString.concat(hourlyPoweredDownInLoopSecondsStr) ;
+	sensorDataString.concat("#") ;
+
+	//
+	// Sensor Request Queue Position 14
+	//
+
+	long totalDiskUse=sdCardManager.getDiskUsage();
+	sensorDataString.concat(totalDiskUse/1024);
+	sensorDataString.concat("#");
+	//
+	// Sensor Request Queue Position 15
+	//
+
+	sensorDataString.concat(pauseDuringWPS);
+	sensorDataString.concat("#");
+	return sensorDataString;
+
 }

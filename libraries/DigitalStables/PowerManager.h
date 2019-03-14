@@ -29,23 +29,11 @@ public:
 	const char  *RememberedValueDataDirName  = "RememVal";
 	const char  *unstraferedFileName ="Untransf.txt";
 	int currentViewIndex=0;
-	int PI_POWER_PIN=8;
+
 	boolean isHost=true;
 	long poweredDownInLoopSeconds;
-	float dailyMinBatteryVoltage=0;
-	float dailyMaxBatteryVoltage=0;
 
-	float dailyMinBatteryCurrent=0;
-	float dailyMaxBatteryCurrent=0;
-	float dailyBatteryOutEnergy=0;
-	float dailyPoweredDownInLoopSeconds=0;
 
-	float hourlyBatteryOutEnergy=0;
-	float hourlyPoweredDownInLoopSeconds=0;
-	boolean pauseDuringWPS=false;
-	boolean inPulse=false;
-	String pulseStartTime="";
-	String pulseStopTime="";
 
 
 	PowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
@@ -63,11 +51,12 @@ public:
 	void turnPiOffForced(long time);
 	void turnPiOff(long time);
 	void turnPiOn(long time);
-	void defineState(long time, float batteryVoltage,int internalBatteryStateOfCharge, float currentValue, boolean piIsOn);
+	void defineState();
 	boolean processDefaultCommands(String command, String sensorDataString);
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
 	void toggleWDT();
+	String getBaseSensorString();
 private:
 
 

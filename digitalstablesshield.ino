@@ -115,146 +115,16 @@ void loop() {
 
 	wdt_reset();
 
-	float batteryVoltage = aPowerManager.getBatteryVoltage();
-	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
-	float currentValue = aPowerManager.getCurrentValue();
-	float capacitorVoltage= aPowerManager.getLockCapacitorVoltage();
-	boolean piIsOn = digitalRead(aPowerManager.PI_POWER_PIN);
 
 
 
 	//
 	// Generate the SensorData String
-	String sensorDataString="";
+	String sensorDataString=aPowerManager.getBaseSensorString();
 	//
-	// Sensor Request Queue Position 1
+	// now add the teleonome specific sensors
 	//
-	char batteryVoltageStr[15];
-	dtostrf(batteryVoltage,4, 1, batteryVoltageStr);
-	sensorDataString.concat(batteryVoltageStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 2
-	//
-	char currentValueStr[15];
-	dtostrf(currentValue,4, 0, currentValueStr);
-	sensorDataString.concat(currentValueStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 3
-	//
-	char capacitorVoltageStr[15];
-	dtostrf(capacitorVoltage,2, 1, capacitorVoltageStr);
-	sensorDataString.concat(capacitorVoltageStr) ;
-	sensorDataString.concat("#") ;
-
-
-	//
-	// Sensor Request Queue Position 4
-	//
-	sensorDataString.concat( internalBatteryStateOfCharge);
-	sensorDataString.concat("#") ;
-	//
-	// Sensor Request Queue Position 5
-	//
-
-	sensorDataString.concat( aPowerManager.operatingStatus);
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 6
-	//
-
-	char dailyMinBatteryVoltageStr[15];
-	dtostrf(aPowerManager.dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
-	sensorDataString.concat(dailyMinBatteryVoltageStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 7
-	//
-
-	char dailyMaxBatteryVoltageStr[15];
-	dtostrf(aPowerManager.dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
-	sensorDataString.concat(dailyMaxBatteryVoltageStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 8
-	//
-
-	char dailyMinBatteryCurrentStr[15];
-	dtostrf(aPowerManager.dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
-	sensorDataString.concat(dailyMinBatteryCurrentStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 9
-	//
-
-	char dailyMaxBatteryCurrentStr[15];
-	dtostrf(aPowerManager.dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
-	sensorDataString.concat(dailyMaxBatteryCurrentStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 10
-	//
-
-	char dailyBatteryOutEnergyStr[15];
-	dtostrf(aPowerManager.dailyBatteryOutEnergy,4, 0, dailyBatteryOutEnergyStr);
-	sensorDataString.concat(dailyBatteryOutEnergyStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 11
-	//
-
-	char dailyPoweredDownInLoopSecondsStr[15];
-	dtostrf(aPowerManager.dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
-	sensorDataString.concat(dailyPoweredDownInLoopSecondsStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 12
-	//
-
-	char hourlyBatteryOutEnergyStr[15];
-	dtostrf(aPowerManager.hourlyBatteryOutEnergy,4, 0, hourlyBatteryOutEnergyStr);
-	sensorDataString.concat(hourlyBatteryOutEnergyStr) ;
-	sensorDataString.concat("#") ;
-	//
-	// Sensor Request Queue Position 13
-	//
-
-	char hourlyPoweredDownInLoopSecondsStr[15];
-	dtostrf(aPowerManager.hourlyPoweredDownInLoopSeconds,4, 0, hourlyPoweredDownInLoopSecondsStr);
-	sensorDataString.concat(hourlyPoweredDownInLoopSecondsStr) ;
-	sensorDataString.concat("#") ;
-
-	//
-	// Sensor Request Queue Position 14
-	//
-
-	long totalDiskUse=sdCardManager.getDiskUsage();
-	sensorDataString.concat(totalDiskUse/1024);
-	sensorDataString.concat("#");
-	//
-	// Sensor Request Queue Position 15
-	//
-
-	sensorDataString.concat(aPowerManager.pauseDuringWPS);
-	sensorDataString.concat("#");
-
-
-	//lcd.clear();
-	//lcd.setCursor(0, 0);
-
-	long now = timeManager.getCurrentTimeInSeconds();
-	aPowerManager.poweredDownInLoopSeconds=0;
-	aPowerManager.defineState(now,  batteryVoltage, internalBatteryStateOfCharge, currentValue, piIsOn);
+	aPowerManager.defineState();
 	//
 	// the commands
 	//
@@ -265,7 +135,10 @@ void loop() {
 		groveLCD.print(command);
 		boolean commandProcessed = aPowerManager.processDefaultCommands( command, sensorDataString);
 		if(!commandProcessed){
-			if(){
+			//
+			// add device specific
+			boolean keepGoing=false;
+			if(keepGoing){
 			}else{
 				//
 				// call read to flush the incoming
