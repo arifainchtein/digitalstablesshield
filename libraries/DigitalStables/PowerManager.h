@@ -64,7 +64,7 @@ public:
 	void turnPiOffForced(long time);
 	void turnPiOff(long time);
 	void turnPiOn(long time);
-	void defineState();
+	void defineState(int );
 	boolean processDefaultCommands(String command, String sensorDataString);
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
