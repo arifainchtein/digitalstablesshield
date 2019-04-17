@@ -75,23 +75,23 @@ void setup() {
 	Serial2.begin(9600);
 	Serial3.begin(9600);
 
-	//
-	// Start The Managers
-	//
-	groveLCD.setCursor(0, 0);
-	groveLCD.clear();
-	groveLCD.print("Init Time Manager") ;
-	timeManager.start();
-
+//	//
+//	// Start The Managers
+//	//
+//	groveLCD.setCursor(0, 0);
+//	groveLCD.clear();
+//	groveLCD.print("Init Time Manager") ;
+//	timeManager.start();
+//
 //	groveLCD.clear();
 //	groveLCD.print("Init SDCard Manager") ;
 //	sdCardManager.start();
-
-	groveLCD.clear();
-	groveLCD.print("Init Power Manager") ;
-	aPowerManager.start();
-
-	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
+//
+//	groveLCD.clear();
+//	groveLCD.print("Init Power Manager") ;
+//	aPowerManager.start();
+//
+//	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
 
 	/*
 	 * Initialize the LCD Screen
@@ -125,7 +125,7 @@ void loop() {
 	//
 	// now define the state its in
 	//
-	aPowerManager.defineState(counter);
+	//aPowerManager.defineState(counter);
 	//
 	// the commands
 	//
