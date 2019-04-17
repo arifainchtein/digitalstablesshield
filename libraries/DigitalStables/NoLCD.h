@@ -9,9 +9,8 @@
 #define LIBRARIES_DIGITALSTABLES_NOLCD_H_
 
 #include <Arduino.h>
-#include <LCDDisplay.h>
 
-class NoLCD: public LCDDisplay {
+class NoLCD {
 public:
 	NoLCD();
 	void begin(long);
@@ -19,10 +18,10 @@ public:
 	void clear();
 	void setRGB(int, int, int);
 	void setCursor(uint8_t, uint8_t);
-	void print(const String &);
+	void print( String );
 	void print(float);
 	void noDisplay();
-	void display();
+
 	virtual ~NoLCD();
 };
 

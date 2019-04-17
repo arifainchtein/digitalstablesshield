@@ -1,8 +1,9 @@
 #include "Arduino.h"
-#include <SecretManager.h>
 #include <EEPROM.h>
 #include <totp.h>
 #include <TimeManager.h>
+#include <SecretManager.h>
+
 
 extern int SHARED_SECRET_LENGTH;
 char code[7];

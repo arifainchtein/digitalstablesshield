@@ -7,7 +7,7 @@
 #define SecretManager_h
 #include "Arduino.h"
 #include "TimeManager.h"
-#include "EEPROM.h"
+
 
 class SecretManager{
 		TimeManager & timeManager;
@@ -20,6 +20,7 @@ class SecretManager{
 		void readSecret(char *secretCode);
 		long generateCode();
 		boolean checkCode(long userCode);
+		int SHARED_SECRET_LENGTH=27;
 
 	private:
 

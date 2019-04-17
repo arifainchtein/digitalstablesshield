@@ -10,7 +10,6 @@
 #include <Arduino.h>
 
 #include <GravityRtc.h>
-//#include "/home/pi/Teleonome/Arduino/libraries/GravityRtc/GravityRtc.h"
 #include <RTCInfoRecord.h>
 #include <GeneralFunctions.h>
 

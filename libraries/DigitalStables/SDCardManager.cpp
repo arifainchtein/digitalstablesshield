@@ -17,7 +17,7 @@
 #include <GravityRtc.h>
 #include <RTCInfoRecord.h>
 #define SD_PIN 53
-extern rgb_lcd lcd;
+
 extern char sensorDirName[10];
 extern char lifeCycleFileName[10];
 extern char remFileName[10];
@@ -38,7 +38,7 @@ extern char remFileName[10];
 //	GeneralFunctions & generalFunctions;
 //	HardwareSerial& _HardSerial;
 
-SDCardManager::SDCardManager(TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): timeManager(t), generalFunctions(f), _HardSerial(serial)
+SDCardManager::SDCardManager(TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ): timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
 {}
 
 boolean SDCardManager::start(){
@@ -48,8 +48,8 @@ boolean SDCardManager::start(){
 	if (!SD.begin(SD_PIN)) {
 		_HardSerial.println("No SD-card.");
 		_HardSerial.flush();
-		lcd.setCursor(0, 0);
-		lcd.print("No SD-card.") ;
+		lcdDisplay.setCursor(0, 0);
+		lcdDisplay.print("No SD-card.") ;
 		return false;
 	}else{
 		// Check dir for db files
@@ -79,12 +79,12 @@ boolean SDCardManager::start(){
 		lifeCycleFile.close();
 		rememberedValueFile.close();
 
-		lcd.setCursor(0, 0);
-		lcd.print("Finish Init") ;
-		lcd.setCursor(0, 1);
-		lcd.print("SD use ") ;
-		lcd.print(totalDiskUse/1024) ;
-		lcd.print("Kb") ;
+		lcdDisplay.setCursor(0, 0);
+		lcdDisplay.print("Finish Init") ;
+		lcdDisplay.setCursor(0, 1);
+		lcdDisplay.print("SD use ") ;
+		lcdDisplay.print(totalDiskUse/1024) ;
+		lcdDisplay.print("Kb") ;
 
 
 		_HardSerial.println("card initialized.");
@@ -384,7 +384,7 @@ void SDCardManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
 	File untransferredFile = SD.open(fileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
-		lcd.setRGB(0,0,255);
+		lcdDisplay.setRGB(0,0,255);
 		float batteryVoltage = anWPSSensorRecord.batteryVoltage;
 		float current = anWPSSensorRecord.current;
 		int sc = anWPSSensorRecord.stateOfCharge;
@@ -436,18 +436,18 @@ void SDCardManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
 		untransferredFile.println(anWPSSensorRecord.totalDiskUse/1024);
 
 		untransferredFile.close(); // close the file
-		lcd.setCursor(0,0);
-		lcd.print("saved wps record");
-		lcd.setCursor(0,1);
-		lcd.print("to SD card ");
+		lcdDisplay.setCursor(0,0);
+		lcdDisplay.print("saved wps record");
+		lcdDisplay.setCursor(0,1);
+		lcdDisplay.print("to SD card ");
 
 
 	} else {
-		lcd.setRGB(255,255,0);
-		lcd.setCursor(0,0);
-		lcd.print("error opening");
-		lcd.setCursor(0,1);
-		lcd.print(fileName);
+		lcdDisplay.setRGB(255,255,0);
+		lcdDisplay.setCursor(0,0);
+		lcdDisplay.print("error opening");
+		lcdDisplay.setCursor(0,1);
+		lcdDisplay.print(fileName);
 		delay(2000);
 	}
 }

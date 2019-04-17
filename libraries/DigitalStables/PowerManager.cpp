@@ -1,18 +1,22 @@
-#include <Arduino.h>
+#include "Arduino.h"
+#include <LCDDisplay.h>
 #include <PowerManager.h>
+
+#include <GeneralConstants.h>
+
 #include <SDCardManager.h>
 #include <GeneralFunctions.h>
 #include <GeneralConstants.h>
 #include <TimeManager.h>
 
 #include <SecretManager.h>
-#include <LCDDisplay.h>
+
 
 #include <avr/sleep.h>
 #include <avr/power.h>
 #include <avr/wdt.h>
 #include <totp.h>
-#include "GeneralConstants.h"
+
 #include <SPI.h>
 #include <SD.h>
 
@@ -75,13 +79,6 @@ int currentMonth=0;
 int currentYear=0;
 
 
-TimeManager & timeManager;
-SecretManager & secretManager;
-
-GeneralFunctions & generalFunctions;
-SDCardManager & sdCardManager;
-HardwareSerial& _HardSerial;
-LCDDisplay & lcd;
 
 
 
@@ -411,7 +408,8 @@ void PowerManager::defineState(){
 		currentSecondsToPowerOff = secondsToTurnPowerOff -( time - shutDownRequestedseconds );
 		lcd.clear();
 		lcd.setCursor(0,0);
-		lcd.print("Shutting down");
+		String s = "Shutting down";
+		lcd.print(s);
 		lcd.setCursor(0,1);
 
 		if(currentSecondsToPowerOff<=0){

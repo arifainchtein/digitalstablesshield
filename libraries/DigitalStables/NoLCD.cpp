@@ -6,7 +6,7 @@
  */
 
 #include <NoLCD.h>
-#include <LCDDisplay.h>
+
 
 
 
@@ -29,7 +29,7 @@ void NoLCD::setRGB(int r, int g, int b){
 void NoLCD::setCursor(uint8_t c, uint8_t r){
 
 }
-void NoLCD::print(const String & s){
+void NoLCD::print(const String){
 
 
 }

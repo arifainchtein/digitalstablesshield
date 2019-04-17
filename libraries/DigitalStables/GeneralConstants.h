@@ -13,6 +13,11 @@ class GeneralConstants{
 
 public:
 
+	static const char  *WPSSensorDataDirName="WPSSensr";
+	static const char  *LifeCycleDataDirName="LifeCycl";
+	static const char  *RememberedValueDataDirName  = "RememVal";
+	static const char  *unstraferedFileName ="Untransf.txt";
+
 	static const char *DAILY_STATS_TIMESTAMP="Daily Timestamp";
 	static const char *DAILY_MINIMUM_BATTERY_VOLTAGE="Daily Minimum Battery Voltage";
 	static const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
@@ -45,8 +50,9 @@ public:
 	static const char *LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
 	static const char *LIFE_CYCLE_EVENT_END_WPS     ="End WPS";
 	static const char *LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
-	static static const char *LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
-	static static const char *LIFE_CYCLE_EVENT_SETUP_COMPLETED="Setup Method Completed";
+
+	static const char *LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
+	static const char *LIFE_CYCLE_EVENT_SETUP_COMPLETED="Setup Method Completed";
 
 	static const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 	static const int LIFE_CYCLE_EVENT_WPS_VALUE=2;

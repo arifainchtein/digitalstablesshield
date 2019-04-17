@@ -4,7 +4,7 @@
  *  Created on: 14 Mar. 2019
  *      Author: arifainchtein
  */
-
+#include "Arduino.h"
 #include <GroveLCD.h>
 #include <rgb_lcd.h>
 
@@ -35,7 +35,7 @@ void GroveLCD::setRGB(int r, int g, int b){
 void GroveLCD::setCursor(uint8_t c, uint8_t r){
 	lcd.setCursor(c, r);
 }
-void GroveLCD::print(const String & s){
+void GroveLCD::print( String  s){
 	lcd.print(s);
 
 }

@@ -6,21 +6,22 @@
 #ifndef SDCardManager_h
 #define SDCardManager_h
 #include <WPSSensorRecord.h>
-
+#include <LCDDisplay.h>
 #include "Arduino.h"
 #include <SD.h>
 #include <GeneralFunctions.h>
+#include <LCDDisplay.h>
 #include <TimeManager.h>
 
 class SDCardManager{
 	TimeManager & timeManager;
 	GeneralFunctions & generalFunctions;
 	HardwareSerial& _HardSerial;
-
+	LCDDisplay&  lcdDisplay;
 public:
 
 
-	SDCardManager(TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
+	SDCardManager(TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
 	boolean start();
 	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
 	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);

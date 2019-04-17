@@ -1,60 +1,41 @@
+#include <GroveLCD.h>
+#include <NoLCD.h>
+
 
 
 #include <GeneralConstants.h>
-#include <GeneralFunctions.h>
-#include <GroveLCD.h>
-#include <LCDDisplay.h>
-#include <PowerManager.h>
-#include <RTCInfoRecord.h>
 #include <avr/wdt.h>
-
-#include <SDCardManager.h>
-#include <SecretManager.h>
-#include <TimeManager.h>
-#include <WPSSensorRecord.h>
-
-#include <GeneralConstants.h>
-#include <GeneralFunctions.h>
-#include <GroveLCD.h>
-#include <LCDDisplay.h>
-#include <PowerManager.h>
-#include <RTCInfoRecord.h>
-#include <SDCardManager.h>
-#include <SecretManager.h>
-#include <TimeManager.h>
-#include <WPSSensorRecord.h>
-
-
-
-#include <Wire.h>
-#include <TimeManager.h>
-#include <GeneralFunctions.h>
 #include <PowerManager.h>
 
-#include <SecretManager.h>
-#include <SDCardManager.h>
-#include <GroveLCD.h>
 
-#include <OneWire.h>
+/**
+ * teleonome speciifc libraries
+ */
 
-#include <totp.h>
-#include "libraries/DigitalStables/GeneralConstants.h"
 
-int SHARED_SECRET_LENGTH=27;
+/**
+ * teleonome speciifc variables
+ */
 GroveLCD groveLCD;
+NoLCD noLCD;
+
+
+
+
+
+
+
+
 GeneralFunctions generalFunctions;
 TimeManager timeManager(generalFunctions, Serial);
 SecretManager secretManager(timeManager);
-SDCardManager sdCardManager(timeManager, generalFunctions, Serial);
+SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
 PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
 
 
 
 
-const char  *WPSSensorDataDirName="WPSSensr";
-const char  *LifeCycleDataDirName="LifeCycl";
-const char  *RememberedValueDataDirName  = "RememVal";
-const char  *unstraferedFileName ="Untransf.txt";
+
 
 
 
@@ -96,8 +77,6 @@ void setup() {
 	Serial2.begin(9600);
 	Serial3.begin(9600);
 
-
-
 	//
 	// Start The Managers
 	//
@@ -107,14 +86,13 @@ void setup() {
 
 	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
 
+	/*
+	 * Initialize the LCD Screen
+	 */
+	groveLCD.begin(totalDiskUse);
 	//
-	// Initialize the LCD Screen
+	// end of initializing lcd
 	//
-	String line1="Finish Init";
-
-
-
-
 	delay(2000);
 	long now = timeManager.getCurrentTimeInSeconds();
 	sdCardManager.storeLifeCycleEvent(now, GeneralConstants::LIFE_CYCLE_EVENT_SETUP_COMPLETED, GeneralConstants::LIFE_CYCLE_EVENT_COMMA_VALUE);
@@ -155,13 +133,13 @@ void loop() {
 		groveLCD.print(command);
 		boolean commandProcessed = aPowerManager.processDefaultCommands( command, sensorDataString);
 		String sensorDataString = aPowerManager.getBaseSensorString();
-		//
-		// teleonome specific sensors
-		//
+		/*
+		 * teleonome specific sensors
+		 */
 
-		//
-		// end of teleonome soecific sensor
-		//
+		/*
+		 * end f teleonome specific sensors
+		 */
 		if(!commandProcessed){
 			//
 			// add device specific
@@ -177,9 +155,6 @@ void loop() {
 				Serial.flush();
 			}
 		}
-
-
-
 		//
 		// this is the end of the loop, to calculate the energy spent on this loop
 		// take the time substract the time at the beginning of the loop (the now variable defined above)

@@ -3,17 +3,22 @@
   Created by Ari Fainchtein, March 13, 2019.
   Released into the public domain.
  */
+#include "Arduino.h"
+
 #ifndef PowerManager_h
 #define PowerManager_h
+
+#include <LCDDisplay.h>
 #include <WPSSensorRecord.h>
 
-#include "Arduino.h"
+
 #include <SD.h>
 #include <GeneralFunctions.h>
-#include <SDCardManager.h>
 #include <TimeManager.h>
 #include <SecretManager.h>
-#include <LCDDisplay.h>
+
+#include <SDCardManager.h>
+
 
 
 
@@ -33,7 +38,13 @@ public:
 	boolean isHost=true;
 	long poweredDownInLoopSeconds;
 
+	TimeManager  timeManager;
+	SecretManager  secretManager;
 
+	GeneralFunctions  generalFunctions;
+	SDCardManager  sdCardManager;
+	HardwareSerial _HardSerial;
+	LCDDisplay&  lcd;
 
 
 	PowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
