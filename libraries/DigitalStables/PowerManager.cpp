@@ -53,8 +53,8 @@ boolean waitingManualPiStart=false;
 
 // the battery voltage
 //
-#define batteryVoltagePin A13
-#define CURRENT_SENSOR A15
+#define batteryVoltagePin A15
+#define CURRENT_SENSOR A13
 float amplitude_current;               //amplitude current
 float effective_value;       //effective current
 boolean powerSupplyOn=false;
