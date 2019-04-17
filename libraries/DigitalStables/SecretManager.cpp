@@ -5,7 +5,6 @@
 #include <SecretManager.h>
 
 
-extern int SHARED_SECRET_LENGTH;
 char code[7];
 int currentCommandCodeHistoryPos=0;
 int numberOfCommandCodesInHistory=5;

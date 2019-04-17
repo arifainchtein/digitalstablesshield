@@ -1,16 +1,11 @@
 #include "Arduino.h"
 #include <LCDDisplay.h>
 #include <PowerManager.h>
-
-
-
 #include <SDCardManager.h>
 #include <GeneralFunctions.h>
 #include <TimeManager.h>
 
 #include <SecretManager.h>
-
-
 #include <avr/sleep.h>
 #include <avr/power.h>
 #include <avr/wdt.h>
