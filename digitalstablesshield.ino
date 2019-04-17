@@ -3,7 +3,7 @@
 
 
 #include <avr/wdt.h>
-#include <PowerManager.h>
+//#include <PowerManager.h>
 
 
 /**
@@ -56,7 +56,7 @@ ISR(WDT_vect){
 	//wdt_reset();
 
 	// uncomment
-//	aPowerManager.toggleWDT();
+	//	aPowerManager.toggleWDT();
 
 
 
@@ -79,23 +79,23 @@ void setup() {
 	Serial2.begin(9600);
 	Serial3.begin(9600);
 
-//	//
-//	// Start The Managers
-//	//
-//	groveLCD.setCursor(0, 0);
-//	groveLCD.clear();
-//	groveLCD.print("Init Time Manager") ;
-//	timeManager.start();
-//
-//	groveLCD.clear();
-//	groveLCD.print("Init SDCard Manager") ;
-//	sdCardManager.start();
-//
-//	groveLCD.clear();
-//	groveLCD.print("Init Power Manager") ;
-//	aPowerManager.start();
-//
-//	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
+	//	//
+	//	// Start The Managers
+	//	//
+	//	groveLCD.setCursor(0, 0);
+	//	groveLCD.clear();
+	//	groveLCD.print("Init Time Manager") ;
+	//	timeManager.start();
+	//
+	//	groveLCD.clear();
+	//	groveLCD.print("Init SDCard Manager") ;
+	//	sdCardManager.start();
+	//
+	//	groveLCD.clear();
+	//	groveLCD.print("Init Power Manager") ;
+	//	aPowerManager.start();
+	//
+	//	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
 
 	/*
 	 * Initialize the LCD Screen
@@ -121,7 +121,11 @@ void loop() {
 
 
 	counter++;
-
+	groveLCD.clear();
+	groveLCD.setCursor(0, 0);
+	groveLCD.print("counter ") ;
+	groveLCD.print(counter) ;
+	delay(1000)
 	//
 	// Generate the SensorData String
 
@@ -133,65 +137,65 @@ void loop() {
 	//
 	// the commands
 	//
-	if( Serial.available() != 0) {
-		//lcd.clear();
+	//	if( Serial.available() != 0) {
+	//		//lcd.clear();
+	//
+	//		String command = Serial.readString();
+	//		//
+	//		// end of teleonome specific sensors
+	//		//
+	//
+	//
+	//
+	//		boolean commandProcessed = true;// aPowerManager.processDefaultCommands( command);
+	//
+	//		/*
+	//		 * teleonome specific sensors
+	//		 */
+	//
+	//		/*
+	//		 * end f teleonome specific sensors
+	//		 */
+	//		if(!commandProcessed){
+	//			//
+	//			// add device specific
+	//			if(command.startsWith("GetSensorData")){
+	//
+	//				groveLCD.clear();
+	//
+	//				groveLCD.setCursor(0, 0);
+	//				groveLCD.print("b:");
+	//				long b = millis();
+	//				groveLCD.print(b);
+	//				String sensorDataString= "";//aPowerManager.getBaseSensorString();
+	//				int now = (int)(millis() - b);
+	//				//
+	//				// now add the teleonome specific sensors
+	//				//
+	//
+	//				groveLCD.setCursor(0, 1);
+	//				groveLCD.print("e:");
+	//				groveLCD.print(now);
+	//
+	//
+	//				Serial.println(sensorDataString);
+	//				Serial.flush();
+	//			}else{
+	//				//
+	//				// call read to flush the incoming
+	//				//
+	//				Serial.read();
+	//				Serial.println("Failure-Bad Command " + command);
+	//				Serial.flush();
+	//			}
+	//		}
+	//
+	// this is the end of the loop, to calculate the energy spent on this loop
+	// take the time substract the time at the beginning of the loop (the now variable defined above)
+	// and also substract the seconds spent in powerdownMode
+	// finally add the poweredDownInLoopSeconds to the daily total
 
-		String command = Serial.readString();
-		//
-		// end of teleonome specific sensors
-		//
+	//aPowerManager.endOfLoopProcessing();
 
-
-
-		boolean commandProcessed = true;// aPowerManager.processDefaultCommands( command);
-
-		/*
-		 * teleonome specific sensors
-		 */
-
-		/*
-		 * end f teleonome specific sensors
-		 */
-		if(!commandProcessed){
-			//
-			// add device specific
-			if(command.startsWith("GetSensorData")){
-
-				groveLCD.clear();
-
-				groveLCD.setCursor(0, 0);
-				groveLCD.print("b:");
-				long b = millis();
-				groveLCD.print(b);
-				String sensorDataString= "";//aPowerManager.getBaseSensorString();
-				int now = (int)(millis() - b);
-				//
-				// now add the teleonome specific sensors
-				//
-
-				groveLCD.setCursor(0, 1);
-				groveLCD.print("e:");
-				groveLCD.print(now);
-
-
-				Serial.println(sensorDataString);
-				Serial.flush();
-			}else{
-				//
-				// call read to flush the incoming
-				//
-				Serial.read();
-				Serial.println("Failure-Bad Command " + command);
-				Serial.flush();
-			}
-		}
-		//
-		// this is the end of the loop, to calculate the energy spent on this loop
-		// take the time substract the time at the beginning of the loop (the now variable defined above)
-		// and also substract the seconds spent in powerdownMode
-		// finally add the poweredDownInLoopSeconds to the daily total
-
-		//aPowerManager.endOfLoopProcessing();
-
-	}
+}
 }
