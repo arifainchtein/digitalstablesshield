@@ -119,16 +119,7 @@ static const char *BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi 
 static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
 static const char *PI_TURN_OFF ="Pi Turn Off";
 static const char *UNIT_NO_UNIT =" ";
-static const char *UNIT_VOLT ="Volt";
-static const char *UNIT_SECONDS="seconds";
-static const char *UNIT_MILLI_AMPERES ="mA";
-static const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
-static const char *UNIT_PERCENTAGE ="%";
-static const char *FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
-static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
-static const char *BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
-static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
-static const char *PI_TURN_OFF ="Pi Turn Off";
+
 
 static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="Forced Start WPS";
 static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="Manual Shutdown";
