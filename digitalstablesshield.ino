@@ -24,11 +24,11 @@ static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
 
 
-GeneralFunctions generalFunctions;
-TimeManager timeManager(generalFunctions, Serial);
-SecretManager secretManager(timeManager);
-SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
-PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
+//GeneralFunctions generalFunctions;
+//TimeManager timeManager(generalFunctions, Serial);
+//SecretManager secretManager(timeManager);
+//SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
+//PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
 
 
 int counter;
@@ -187,7 +187,7 @@ void loop() {
 		// and also substract the seconds spent in powerdownMode
 		// finally add the poweredDownInLoopSeconds to the daily total
 
-		aPowerManager.endOfLoopProcessing();
+		//aPowerManager.endOfLoopProcessing();
 
 	}
 }
