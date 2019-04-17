@@ -426,7 +426,7 @@ void PowerManager::turnPiOn(long time){
 
 
 
-void PowerManager::defineState(int counter){
+void PowerManager::defineState(){
 	poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();
 
@@ -487,14 +487,14 @@ void PowerManager::defineState(int counter){
 			// i
 			switch(currentViewIndex){
 			case 0:
+				//
+				// this is the most
 				lcd.clear();
 				lcd.setCursor(0, 0);
 
-				//lcd.print((int)currentValue);
-				//lcd.print("mA ") ;
+				lcd.print((int)currentValue);
+				lcd.print("mA ") ;
 
-				lcd.print(counter);
-				lcd.print(" ") ;
 				lcd.print(batteryVoltage) ;
 				lcd.print("V ") ;
 				lcd.print(internalBatteryStateOfCharge);
@@ -907,20 +907,7 @@ void PowerManager::defineState(int counter){
 			}
 		}
 	}
-	lcd.clear();
-					lcd.setCursor(0, 0);
 
-					//lcd.print((int)currentValue);
-					//lcd.print("mA ") ;
-					lcd.print("E");
-					lcd.print(counter);
-					lcd.print(" ") ;
-					lcd.print(batteryVoltage) ;
-					lcd.print("V ") ;
-					lcd.print(internalBatteryStateOfCharge);
-					lcd.print("%") ;
-					lcd.setCursor(0, 1);
-					lcd.print(timeManager.getCurrentDateTimeForDisplay());
 
 }
 
