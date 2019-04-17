@@ -108,7 +108,7 @@ void setup() {
 	//
 	// end of initializing lcd
 	//
-	delay(1000);
+	//delay(1000);
 	//long now = timeManager.getCurrentTimeInSeconds();
 
 	//sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
