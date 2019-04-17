@@ -85,7 +85,7 @@ int delayTime=1;
 volatile int f_wdt=1;
 
 
- int SHARED_SECRET_LENGTH;
+int SHARED_SECRET_LENGTH;
 float dailyMinBatteryVoltage=0;
 float dailyMaxBatteryVoltage=0;
 
@@ -139,6 +139,7 @@ static const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Lo
 static const char *HOURLY_ENERGY="Hourly Energy";
 static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
 static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="Hourly Operating In Loop Seconds";
+long previousUpdate;
 
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
@@ -489,18 +490,24 @@ void PowerManager::defineState(){
 			case 0:
 				//
 				// this is the most
-				lcd.clear();
-				lcd.setCursor(0, 0);
+				// common state so as to
+				//avoid flickering, only refresh once per second
+				if((millis()-previousUpdate) >1000){
+					previousUpdate = millis();
+					lcd.clear();
+					lcd.setCursor(0, 0);
 
-				lcd.print((int)currentValue);
-				lcd.print("mA ") ;
+					lcd.print((int)currentValue);
+					lcd.print("mA ") ;
 
-				lcd.print(batteryVoltage) ;
-				lcd.print("V ") ;
-				lcd.print(internalBatteryStateOfCharge);
-				lcd.print("%") ;
-				lcd.setCursor(0, 1);
-				lcd.print(timeManager.getCurrentDateTimeForDisplay());
+					lcd.print(batteryVoltage) ;
+					lcd.print("V ") ;
+					lcd.print(internalBatteryStateOfCharge);
+					lcd.print("%") ;
+					lcd.setCursor(0, 1);
+					lcd.print(timeManager.getCurrentDateTimeForDisplay());
+				}
+
 				break;
 
 			case 1:
