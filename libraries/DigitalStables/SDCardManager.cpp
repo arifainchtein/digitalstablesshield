@@ -22,15 +22,12 @@ extern char sensorDirName[10];
 extern char lifeCycleFileName[10];
 extern char remFileName[10];
 const int chipSelect = 10;
-extern const char *MAXIMUM_VALUE;//="Max";
-extern const char *MINIMUM_VALUE;//="Min";
-extern const char *AVERAGE_VALUE;//="Avg";
+ const char *MAXIMUM_VALUE="Max";
+ const char *MINIMUM_VALUE="Min";
+ const char *AVERAGE_VALUE="Avg";
 
 
-extern const char  *WPSSensorDataDirName; //="WPSSensr";
-extern const char  *LifeCycleDataDirName; //="LifeCycl";
-extern const char  *RememberedValueDataDirName;//  = "RememVal";
-extern const char  *unstraferedFileName;// ="Untransf.txt";
+
 extern char sensorDirName[10];
 extern char lifeCycleFileName[10];
 extern char remFileName[10];
