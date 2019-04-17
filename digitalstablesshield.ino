@@ -160,7 +160,7 @@ void loop() {
 		// and also substract the seconds spent in powerdownMode
 		// finally add the poweredDownInLoopSeconds to the daily total
 
-		aPowerManager.endOfLoopProcessing();
+		//aPowerManager.endOfLoopProcessing();
 
 	}
 }
