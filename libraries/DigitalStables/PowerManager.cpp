@@ -1331,7 +1331,7 @@ String PowerManager::getBaseSensorString(){
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
 	float currentValue = getCurrentValue();
 	float capacitorVoltage= getLockCapacitorVoltage();
-	boolean piIsOn = digitalRead(PI_POWER_PIN);
+	//boolean piIsOn = digitalRead(PI_POWER_PIN);
 	// Generate the SensorData String
 	String sensorDataString="";
 	//

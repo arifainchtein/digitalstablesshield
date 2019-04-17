@@ -107,11 +107,20 @@ counter++;
 
 	//
 	// Generate the SensorData String
+groveLCD.clear();
+	groveLCD.setCursor(0, 0);
+	groveLCD.print("b");
+	groveLCD.print(counter);
+	long b = millis();
 	String sensorDataString=aPowerManager.getBaseSensorString();
+	int now = (int)(millis() - b);
 	//
 	// now add the teleonome specific sensors
 	//
-
+	groveLCD.clear();
+		groveLCD.setCursor(0, 0);
+		groveLCD.print("b");
+		groveLCD.print(counter);
 
 	//
 	// end of teleonome specific sensors
@@ -121,7 +130,7 @@ counter++;
 	//
 	// now define the state its in
 	//
-	aPowerManager.defineState(counter);
+	aPowerManager.defineState(now);
 	//
 	// the commands
 	//
