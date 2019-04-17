@@ -2,11 +2,10 @@
 #include <LCDDisplay.h>
 #include <PowerManager.h>
 
-#include <GeneralConstants.h>
+
 
 #include <SDCardManager.h>
 #include <GeneralFunctions.h>
-#include <GeneralConstants.h>
 #include <TimeManager.h>
 
 #include <SecretManager.h>
@@ -108,6 +107,53 @@ String pulseStartTime="";
 String pulseStopTime="";
 int PI_POWER_PIN=8;
 
+
+static const char *UNIT_VOLT ="Volt";
+static const char *UNIT_SECONDS="seconds";
+static const char *UNIT_MILLI_AMPERES ="mA";
+static const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
+static const char *UNIT_PERCENTAGE ="%";
+static const char *FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
+static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
+static const char *BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
+static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
+static const char *PI_TURN_OFF ="Pi Turn Off";
+static const char *UNIT_NO_UNIT =" ";
+static const char *UNIT_VOLT ="Volt";
+static const char *UNIT_SECONDS="seconds";
+static const char *UNIT_MILLI_AMPERES ="mA";
+static const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
+static const char *UNIT_PERCENTAGE ="%";
+static const char *FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
+static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
+static const char *BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
+static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
+static const char *PI_TURN_OFF ="Pi Turn Off";
+
+static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="Forced Start WPS";
+static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="Manual Shutdown";
+static const char *LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
+static const char *LIFE_CYCLE_EVENT_END_WPS     ="End WPS";
+static const char *LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
+
+static const char *LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
+
+
+static const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
+static const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
+static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
+
+static const char *DAILY_STATS_TIMESTAMP="Daily Timestamp";
+static const char *DAILY_MINIMUM_BATTERY_VOLTAGE="Daily Minimum Battery Voltage";
+static const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
+static const char *DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
+static const char *DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
+static const char *DAILY_ENERGY="Daily Energy";
+static const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
+static const char *HOURLY_ENERGY="Hourly Energy";
+static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
+static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="Hourly Operating In Loop Seconds";
+
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
 
@@ -122,9 +168,9 @@ void PowerManager::start(){
 }
 void PowerManager::hourlyTasks(long time, int previousHour ){
 
-	sdCardManager.storeRememberedValue(time,GeneralConstants::HOURLY_ENERGY, hourlyBatteryOutEnergy, GeneralConstants::UNIT_MILLI_AMPERES_HOURS);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, GeneralConstants::UNIT_SECONDS);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::HOURLY_OPERATING_IN_LOOP_SECONDS, 3600-hourlyPoweredDownInLoopSeconds, GeneralConstants::UNIT_SECONDS);
+	sdCardManager.storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	sdCardManager.storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
+	sdCardManager.storeRememberedValue(time,HOURLY_OPERATING_IN_LOOP_SECONDS, 3600-hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
 	hourlyBatteryOutEnergy=0;
 	hourlyPoweredDownInLoopSeconds=0;
 }
@@ -139,13 +185,13 @@ void PowerManager::dailyTasks(long time, int yesterdayDate, int yesterdayMonth, 
 	result = sdCardManager.readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 	result = sdCardManager.readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 	long yesterdayDateSeconds = timeManager.dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, GeneralConstants::UNIT_NO_UNIT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, GeneralConstants::UNIT_MILLI_AMPERES);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, GeneralConstants::GeneralConstants::UNIT_MILLI_AMPERES);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_ENERGY, dailyBatteryOutEnergy, GeneralConstants::UNIT_MILLI_AMPERES_HOURS);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, GeneralConstants::UNIT_SECONDS);
+	sdCardManager.storeRememberedValue(time,DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, UNIT_NO_UNIT);
+	sdCardManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, UNIT_MILLI_AMPERES);
+	sdCardManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, UNIT_MILLI_AMPERES);
+	sdCardManager.storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	sdCardManager.storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
 	dailyMinBatteryVoltage = 9999.0;
 	dailyMaxBatteryVoltage = -1.0;
 	dailyMinBatteryCurrent = 9999.0;
@@ -361,10 +407,10 @@ void PowerManager::turnPiOffForced(long time){
 	delay(1000);
 	float batteryVoltageAfter = getBatteryVoltage();
 	float voltageDifferential = 1-(batteryVoltageBefore/batteryVoltageAfter);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::FORCED_PI_TURN_OFF,0 , operatingStatus);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, GeneralConstants::UNIT_PERCENTAGE);
+	sdCardManager.storeRememberedValue(time,FORCED_PI_TURN_OFF,0 , operatingStatus);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 void PowerManager::turnPiOff(long time){
@@ -373,10 +419,10 @@ void PowerManager::turnPiOff(long time){
 	delay(1000);
 	float batteryVoltageAfter = getBatteryVoltage();
 	float voltageDifferential = 1-(batteryVoltageBefore/batteryVoltageAfter);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::PI_TURN_OFF,0 , operatingStatus);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, GeneralConstants::UNIT_PERCENTAGE);
+	sdCardManager.storeRememberedValue(time,PI_TURN_OFF,0 , operatingStatus);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 
@@ -387,9 +433,9 @@ void PowerManager::turnPiOn(long time){
 	float batteryVoltageAfter = getBatteryVoltage();
 	float voltageDifferential = 1-(batteryVoltageAfter/batteryVoltageBefore);
 
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, GeneralConstants::UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,GeneralConstants::BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, GeneralConstants::UNIT_PERCENTAGE);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 
@@ -417,7 +463,7 @@ void PowerManager::defineState(){
 			manualShutdown=true;
 			inPulse=false;
 			turnPiOff(time);
-			sdCardManager.storeLifeCycleEvent(time, GeneralConstants::LIFE_CYCLE_MANUAL_SHUTDOWN, GeneralConstants::LIFE_CYCLE_EVENT_COMMA_VALUE);
+			sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_MANUAL_SHUTDOWN, LIFE_CYCLE_EVENT_COMMA_VALUE);
 			lcd.print("Pi is OFF");
 			currentViewIndex=3;
 		}else{
@@ -776,7 +822,7 @@ void PowerManager::defineState(){
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
 					operatingStatus="WPS";
-					//sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					currentSecondsToPowerOff=0L;
 					if(piIsOn)turnPiOff(time);
@@ -794,7 +840,7 @@ void PowerManager::defineState(){
 						delay(2000);
 						lcd.setRGB(0,0,0);
 						lcd.noDisplay();
-						//sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 						enterArduinoSleep();
 					}
 				}else{

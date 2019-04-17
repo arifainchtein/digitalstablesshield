@@ -2,8 +2,6 @@
 #include <NoLCD.h>
 
 
-
-#include <GeneralConstants.h>
 #include <avr/wdt.h>
 #include <PowerManager.h>
 
@@ -19,8 +17,8 @@
 GroveLCD groveLCD;
 NoLCD noLCD;
 
-
-
+static const char *LIFE_CYCLE_EVENT_SETUP_COMPLETED="Setup Method Completed";
+static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
 
 
@@ -95,7 +93,8 @@ void setup() {
 	//
 	delay(2000);
 	long now = timeManager.getCurrentTimeInSeconds();
-	sdCardManager.storeLifeCycleEvent(now, GeneralConstants::LIFE_CYCLE_EVENT_SETUP_COMPLETED, GeneralConstants::LIFE_CYCLE_EVENT_COMMA_VALUE);
+
+	sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
 }
 
 
