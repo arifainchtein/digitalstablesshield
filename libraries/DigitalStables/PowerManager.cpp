@@ -942,7 +942,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		_HardSerial.println(" ");
 		_HardSerial.println(" ");
 		_HardSerial.println(sensorDirName);
-		float total = 0.0;//sdCardListFiles();
+		float total = sdCardManager.listFiles();
 
 
 		_HardSerial.println(" ");
