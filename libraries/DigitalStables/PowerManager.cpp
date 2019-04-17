@@ -907,6 +907,21 @@ void PowerManager::defineState(int counter){
 			}
 		}
 	}
+	lcd.clear();
+					lcd.setCursor(0, 0);
+
+					//lcd.print((int)currentValue);
+					//lcd.print("mA ") ;
+					lcd.print("E");
+					lcd.print(counter);
+					lcd.print(" ") ;
+					lcd.print(batteryVoltage) ;
+					lcd.print("V ") ;
+					lcd.print(internalBatteryStateOfCharge);
+					lcd.print("%") ;
+					lcd.setCursor(0, 1);
+					lcd.print(timeManager.getCurrentDateTimeForDisplay());
+
 }
 
 boolean PowerManager::processDefaultCommands(String command, String sensorDataString){
