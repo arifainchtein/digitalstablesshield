@@ -100,14 +100,14 @@ void setup() {
 	groveLCD.setCursor(0, 0);
 	groveLCD.print("Init Finished") ;
 	groveLCD.setCursor(0, 1);
-	groveLCD.begin(totalDiskUse);
+	//groveLCD.begin(totalDiskUse);
 	//
 	// end of initializing lcd
 	//
 	delay(1000);
-	long now = timeManager.getCurrentTimeInSeconds();
+	//long now = timeManager.getCurrentTimeInSeconds();
 
-	sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
+	//sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
 }
 
 
