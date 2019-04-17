@@ -46,7 +46,7 @@ boolean SDCardManager::start(){
 //		_HardSerial.println("No SD-card.");
 //		_HardSerial.flush();
 		lcdDisplay.setCursor(0, 0);
-		lcdDisplay.print("No SD-card.") ;
+		lcdDisplay.print("No SD-card1.") ;
 		return false;
 	}else{
 		// Check dir for db files
