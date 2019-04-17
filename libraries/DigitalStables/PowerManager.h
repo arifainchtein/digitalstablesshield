@@ -65,7 +65,7 @@ public:
 	void turnPiOff(long time);
 	void turnPiOn(long time);
 	void defineState(int );
-	boolean processDefaultCommands(String command, String sensorDataString);
+	boolean processDefaultCommands(String command);
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
 	void toggleWDT();

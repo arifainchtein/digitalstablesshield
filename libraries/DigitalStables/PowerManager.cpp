@@ -924,7 +924,7 @@ void PowerManager::defineState(int counter){
 
 }
 
-boolean PowerManager::processDefaultCommands(String command, String sensorDataString){
+boolean PowerManager::processDefaultCommands(String command){
 	boolean processed=false;
 	if(command=="TestWPSSensor"){
 		float batteryVoltage = getBatteryVoltage();
