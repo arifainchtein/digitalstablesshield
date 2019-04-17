@@ -80,8 +80,7 @@ boolean TimeManager::printTimeToSerial(){
 
 void TimeManager::start(){
 	rtc.setup();
-	_HardSerial.println("Time Manager Finished start");
-	_HardSerial.flush();
+
 }
 
 

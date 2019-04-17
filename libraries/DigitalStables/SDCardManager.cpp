@@ -43,21 +43,21 @@ boolean SDCardManager::start(){
 	_HardSerial.print("Initializing SD card...");
 
 	if (!SD.begin(SD_PIN)) {
-		_HardSerial.println("No SD-card.");
-		_HardSerial.flush();
+//		_HardSerial.println("No SD-card.");
+//		_HardSerial.flush();
 		lcdDisplay.setCursor(0, 0);
 		lcdDisplay.print("No SD-card.") ;
 		return false;
 	}else{
 		// Check dir for db files
 		if (!SD.exists(sensorDirName )) {
-			_HardSerial.println("wpsSensorData Dir does not exist, creating...");
-			_HardSerial.flush();
+//			_HardSerial.println("wpsSensorData Dir does not exist, creating...");
+//			_HardSerial.flush();
 			SD.mkdir(sensorDirName);
 		}
 		if (!SD.exists(lifeCycleFileName)) {
-			_HardSerial.println("LifeCycle Dir does not exist, creating...");
-			_HardSerial.flush();
+//			_HardSerial.println("LifeCycle Dir does not exist, creating...");
+//			_HardSerial.flush();
 			SD.mkdir(lifeCycleFileName);
 		}
 		if (!SD.exists(remFileName)) {
@@ -76,16 +76,10 @@ boolean SDCardManager::start(){
 		lifeCycleFile.close();
 		rememberedValueFile.close();
 
-		lcdDisplay.setCursor(0, 0);
-		lcdDisplay.print("Finish Init") ;
-		lcdDisplay.setCursor(0, 1);
-		lcdDisplay.print("SD use ") ;
-		lcdDisplay.print(totalDiskUse/1024) ;
-		lcdDisplay.print("Kb") ;
 
 
-		_HardSerial.println("card initialized.");
-		_HardSerial.flush();
+//		_HardSerial.println("card initialized.");
+//		_HardSerial.flush();
 		return true;
 
 	}

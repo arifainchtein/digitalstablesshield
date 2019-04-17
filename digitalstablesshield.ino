@@ -78,8 +78,20 @@ void setup() {
 	//
 	// Start The Managers
 	//
+	groveLCD.setCursor(0, 0);
+	groveLCD.clear();
+	groveLCD.print("Init Time Manager") ;
+
+
+
 	timeManager.start();
+	groveLCD.clear();
+	groveLCD.print("Init SDCard Manager") ;
+
 	sdCardManager.start();
+	groveLCD.clear();
+	groveLCD.print("Init Power Manager") ;
+
 	aPowerManager.start();
 
 	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
@@ -87,6 +99,10 @@ void setup() {
 	/*
 	 * Initialize the LCD Screen
 	 */
+	groveLCD.clear();
+	groveLCD.setCursor(0, 0);
+	groveLCD.print("Init Finished") ;
+	groveLCD.setCursor(0, 1);
 	groveLCD.begin(totalDiskUse);
 	//
 	// end of initializing lcd
@@ -103,34 +119,16 @@ void loop() {
 	wdt_reset();
 
 
-counter++;
+	counter++;
 
 	//
 	// Generate the SensorData String
-groveLCD.clear();
-	groveLCD.setCursor(0, 0);
-	groveLCD.print("b:");
-	long b = millis();
-	groveLCD.print(b);
-	String sensorDataString=aPowerManager.getBaseSensorString();
-	int now = (int)(millis() - b);
-	//
-	// now add the teleonome specific sensors
-	//
-
-		groveLCD.setCursor(1, 0);
-		groveLCD.print("e:");
-		groveLCD.print(now);
-
-	//
-	// end of teleonome specific sensors
-	//
 
 
 	//
 	// now define the state its in
 	//
-	aPowerManager.defineState(now);
+	aPowerManager.defineState(counter);
 	//
 	// the commands
 	//
@@ -152,6 +150,26 @@ groveLCD.clear();
 			//
 			// add device specific
 			if(command.startsWith("GetSensorData")){
+				groveLCD.clear();
+				groveLCD.setCursor(0, 0);
+				groveLCD.print("b:");
+				long b = millis();
+				groveLCD.print(b);
+				String sensorDataString=aPowerManager.getBaseSensorString();
+				int now = (int)(millis() - b);
+				//
+				// now add the teleonome specific sensors
+				//
+
+				groveLCD.setCursor(0, 1);
+				groveLCD.print("e:");
+				groveLCD.print(now);
+
+				//
+				// end of teleonome specific sensors
+				//
+
+
 				Serial.println(sensorDataString);
 				Serial.flush();
 			}else{
