@@ -16,7 +16,7 @@
 
 //
 // the wps variables
-#define LOCK_CAPACITOR_PIN A2
+#define LOCK_CAPACITOR_PIN A0
 long secondsToTurnPowerOff = 30;
 long secondsToNextPiOn=90L;
 long currentSecondsToPowerOff=0L;
@@ -53,8 +53,8 @@ boolean waitingManualPiStart=false;
 
 // the battery voltage
 //
-#define batteryVoltagePin A15
-#define CURRENT_SENSOR A13
+#define batteryVoltagePin A14
+#define CURRENT_SENSOR A12
 float amplitude_current;               //amplitude current
 float effective_value;       //effective current
 boolean powerSupplyOn=false;
@@ -100,7 +100,7 @@ boolean pauseDuringWPS=false;
 boolean inPulse=false;
 String pulseStartTime="";
 String pulseStopTime="";
-int PI_POWER_PIN=8;
+int PI_POWER_PIN=4;
 
 
 static const char *UNIT_VOLT ="Volt";
