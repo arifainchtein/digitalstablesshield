@@ -84,14 +84,20 @@ void setup() {
 	groveLCD.setCursor(0, 0);
 	groveLCD.clear();
 	groveLCD.print("Init Time Manager") ;
+	groveLCD.setCursor(0, 1);
+	groveLCD.print("1 of 3") ;
 	timeManager.start();
 	//
 	groveLCD.clear();
 	groveLCD.print("Init SDCard Manager") ;
+	groveLCD.setCursor(0, 1);
+	groveLCD.print("2 of 3") ;
 	sdCardManager.start();
 	//
 	groveLCD.clear();
 	groveLCD.print("Init Power Manager") ;
+	groveLCD.setCursor(0, 1);
+	groveLCD.print("3 of 3") ;
 	aPowerManager.start();
 	//
 	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
