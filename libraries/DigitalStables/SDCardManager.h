@@ -18,6 +18,10 @@ class SDCardManager{
 	GeneralFunctions & generalFunctions;
 	HardwareSerial& _HardSerial;
 	LCDDisplay&  lcdDisplay;
+	const char  *WPSSensorDataDirName="WPSSensr";
+		const char  *LifeCycleDataDirName="LifeCycl";
+		const char  *RememberedValueDataDirName  = "RememVal";
+		const char  *unstraferedFileName ="Untransf.txt";
 public:
 
 

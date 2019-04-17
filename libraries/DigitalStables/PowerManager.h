@@ -29,10 +29,7 @@ public:
 
 	String operatingStatus ="Normal";
 
-	const char  *WPSSensorDataDirName="WPSSensr";
-	const char  *LifeCycleDataDirName="LifeCycl";
-	const char  *RememberedValueDataDirName  = "RememVal";
-	const char  *unstraferedFileName ="Untransf.txt";
+
 	int currentViewIndex=0;
 
 	boolean isHost=true;

@@ -289,7 +289,7 @@ void PowerManager::enterArduinoSleep(void)
 	if(batteryVoltage>minWPSVoltage){
 		// STORE a lifecycle comma exit record
 		long now = timeManager.getCurrentTimeInSeconds();
-		//sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+		sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 		lcd.display();
 		lcd.setRGB(255,255,0);
 		lcd.clear();
@@ -384,7 +384,7 @@ void PowerManager::sendWPSAlert(long time, char *faultData, int batteryVoltage){
 	inWPS=true;
 	operatingStatus="WPS";
 	wpsAlertTime=timeManager.getCurrentTimeInSeconds();
-	//sdCardManager.storeRememberedValue(time,faultData, batteryVoltage, UNIT_VOLT);
+	sdCardManager.storeRememberedValue(time,faultData, batteryVoltage, UNIT_VOLT);
 }
 
 void PowerManager::turnPiOffForced(long time){
@@ -568,7 +568,7 @@ void PowerManager::defineState(){
 			if(piSleepingRemaining<=0){
 				wpsSleeping=false;
 				if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-				//sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+				sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 				lcd.print("Pi ON WPS ");
 				lcd.setCursor(0,1);
@@ -612,10 +612,10 @@ void PowerManager::defineState(){
 					anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
 					anWPSSensorRecord.operatingStatus=operatingStatus;
-					anWPSSensorRecord.totalDiskUse= 0; //sdCardManager.getDiskUsage();
+					anWPSSensorRecord.totalDiskUse= 0; sdCardManager.getDiskUsage();
 
 
-					//sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
+					sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
 					lcd.setRGB(255,255,0);
 				}else{
 					//
@@ -664,7 +664,7 @@ void PowerManager::defineState(){
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
 					operatingStatus="WPS";
-					//sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					lcd.print("pi off");
 					wpsSleeping=true;
 					currentSleepStartTime = time;
@@ -690,7 +690,7 @@ void PowerManager::defineState(){
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
 					turnPiOff(time);
-					//sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=true;
 					wpsCountdown=false;
 					currentSleepStartTime=time;
@@ -707,7 +707,7 @@ void PowerManager::defineState(){
 				if(piSleepingRemaining<=0){
 					wpsSleeping=false;
 					if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-					//sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 					lcd.print("Pi ON WPS ");
 					lcd.setCursor(0,1);
@@ -751,9 +751,9 @@ void PowerManager::defineState(){
 						anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 						anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
 						anWPSSensorRecord.operatingStatus=operatingStatus;
-						anWPSSensorRecord.totalDiskUse=989; //sdCardManager.getDiskUsage();
+						anWPSSensorRecord.totalDiskUse=989; sdCardManager.getDiskUsage();
 
-						//sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
+						sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
 						lcd.setRGB(255,255,0);
 					}else{
 						//
@@ -848,7 +848,7 @@ void PowerManager::defineState(){
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
 					if(piIsOn)turnPiOff(time);
-					//sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					wpsCountdown=false;
 					if(f_wdt == 1){
@@ -863,7 +863,7 @@ void PowerManager::defineState(){
 						delay(2000);
 						lcd.setRGB(0,0,0);
 						lcd.noDisplay();
-						//sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 						enterArduinoSleep();
 					}
 				}
@@ -886,7 +886,7 @@ void PowerManager::defineState(){
 					delay(2000);
 					lcd.setRGB(0,0,0);
 					lcd.noDisplay();
-					//sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+					sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 					enterArduinoSleep();
 				}
 			}else if(piIsOn){
@@ -911,7 +911,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		float batteryVoltage = getBatteryVoltage();
 		float current = getCurrentValue();
 		int stateOfCharge= generalFunctions.getStateOfCharge(batteryVoltage);
-		boolean result = true;//sdCardManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
+		boolean result = sdCardManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
 		if(result){
 			_HardSerial.println("Ok-TestWPSSensor");
 		}else{
@@ -921,7 +921,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		processed=true;
 	}else if(command=="TestLifeCycle"){
 		long now = timeManager.getCurrentTimeInSeconds();
-		//sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+		sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 		_HardSerial.println("Ok-TestLifeCycle");
 		_HardSerial.flush();
 
@@ -1147,7 +1147,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 	}else if(command.startsWith("GetRememberedValueData")){
 		//GetRememberedValueData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = true;//sdCardManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
+		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetRememberedValueData");
 		}else {
@@ -1160,7 +1160,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 	}else if(command.startsWith("GetLifeCycleData")){
 		//GetLifeCycleData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = true;//sdCardManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
+		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetLifeCycleData");
 		}else {
@@ -1174,7 +1174,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		//GetWPSSensorData#0
 		//GetLifeCycleData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = true;//sdCardManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
+		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorData");
 		}else {
@@ -1191,7 +1191,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		int date = generalFunctions.getValue(command, '#', 1).toInt();
 		int month = generalFunctions.getValue(command, '#', 2).toInt();
 		int year = generalFunctions.getValue(command, '#', 3).toInt();
-		boolean result  = true;//sdCardManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
+		boolean result  =sdCardManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorDataHistory");
 		}else {
@@ -1207,7 +1207,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		int date = generalFunctions.getValue(command, '#', 1).toInt();
 		int month = generalFunctions.getValue(command, '#', 2).toInt();
 		int year = generalFunctions.getValue(command, '#', 3).toInt();
-		boolean result  = true;//sdCardManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
+		boolean result  = sdCardManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalLifeCycleData");
 		}else {
@@ -1222,7 +1222,7 @@ boolean PowerManager::processDefaultCommands(String command, String sensorDataSt
 		int date = generalFunctions.getValue(command, '#', 1).toInt();
 		int month = generalFunctions.getValue(command, '#', 2).toInt();
 		int year = generalFunctions.getValue(command, '#', 3).toInt();
-		boolean result  = true;//sdCardManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
+		boolean result  = sdCardManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalRememberedValueData");
 		}else {
