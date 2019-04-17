@@ -125,7 +125,7 @@ void loop() {
 	groveLCD.setCursor(0, 0);
 	groveLCD.print("counter ") ;
 	groveLCD.print(counter) ;
-	delay(1000)
+	delay(1000);
 	//
 	// Generate the SensorData String
 
