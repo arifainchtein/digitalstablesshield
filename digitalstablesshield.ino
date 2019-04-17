@@ -83,9 +83,9 @@ void setup() {
 	groveLCD.print("Init Time Manager") ;
 	timeManager.start();
 
-	groveLCD.clear();
-	groveLCD.print("Init SDCard Manager") ;
-	sdCardManager.start();
+//	groveLCD.clear();
+//	groveLCD.print("Init SDCard Manager") ;
+//	sdCardManager.start();
 
 	groveLCD.clear();
 	groveLCD.print("Init Power Manager") ;
