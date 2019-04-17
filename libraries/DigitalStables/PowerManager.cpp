@@ -1337,13 +1337,13 @@ String PowerManager::getBaseSensorString(){
 
 	float currentValue = getCurrentValue();
 	lcd.print(" S2:");
-	long dur = millis()-now;
+	 dur = millis()-now;
 		lcd.print(dur);
 	lcd.setCursor(0,1);
 	now = millis();
 	float capacitorVoltage= getLockCapacitorVoltage();
 	lcd.print("S3:");
-	long dur = millis()-now;
+	 dur = millis()-now;
 		lcd.print(dur);
 
 	//boolean piIsOn = digitalRead(PI_POWER_PIN);
@@ -1358,7 +1358,7 @@ String PowerManager::getBaseSensorString(){
 	sensorDataString.concat(batteryVoltageStr) ;
 	sensorDataString.concat("#") ;
 	lcd.print("S4:");
-	long dur = millis()-now;
+	 dur = millis()-now;
 		lcd.print(dur);
 	//
 	// Sensor Request Queue Position 2
