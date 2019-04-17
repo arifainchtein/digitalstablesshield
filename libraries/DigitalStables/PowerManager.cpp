@@ -1321,20 +1321,46 @@ void PowerManager::toggleWDT(){
 }
 
 String PowerManager::getBaseSensorString(){
+	lcd.clear();
+	lcd.setCursor(0,0);
+	long now = millis();
 	float batteryVoltage = getBatteryVoltage();
+	lcd.print("S1:");
+	int dur = (int)(millis()-now);
+	lcd.print(dur);
+
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+
+	lcd.clear();
+		lcd.setCursor(0,0);
+		 now = millis();
+
+
 	float currentValue = getCurrentValue();
+	lcd.print("S2:");
+			int dur = (int)(millis()-now);
+			lcd.print(dur);
+
+			now = millis();
 	float capacitorVoltage= getLockCapacitorVoltage();
+	lcd.print("S3:");
+				int dur = (int)(millis()-now);
+				lcd.print(dur);
+
 	//boolean piIsOn = digitalRead(PI_POWER_PIN);
 	// Generate the SensorData String
 	String sensorDataString="";
 	//
 	// Sensor Request Queue Position 1
 	//
+	now = millis();
 	char batteryVoltageStr[15];
 	dtostrf(batteryVoltage,4, 1, batteryVoltageStr);
 	sensorDataString.concat(batteryVoltageStr) ;
 	sensorDataString.concat("#") ;
+	lcd.print("S4:");
+					int dur = (int)(millis()-now);
+					lcd.print(dur);
 
 	//
 	// Sensor Request Queue Position 2
