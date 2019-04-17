@@ -15,14 +15,9 @@ GroveLCD::GroveLCD() {
 
 }
 
-void GroveLCD::begin(long totalDiskUse){
+void GroveLCD::begin(){
 	lcd.begin(16,2);
-	lcd.setCursor(0, 0);
-	lcd.print("Finish Init") ;
-	lcd.setCursor(0, 1);
-	lcd.print("SD use ") ;
-	lcd.print(totalDiskUse) ;
-	lcd.print("Kb") ;
+
 }
 
 void GroveLCD::clear(){

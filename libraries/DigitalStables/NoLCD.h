@@ -13,7 +13,7 @@
 class NoLCD {
 public:
 	NoLCD();
-	void begin(long);
+	void begin();
 	void display();
 	void clear();
 	void setRGB(int, int, int);

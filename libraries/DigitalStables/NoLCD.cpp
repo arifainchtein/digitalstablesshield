@@ -15,7 +15,7 @@ NoLCD::NoLCD() {
 
 }
 
-void NoLCD::begin(long totalDiskUse){
+void NoLCD::begin(){
 
 }
 

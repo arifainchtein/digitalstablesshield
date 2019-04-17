@@ -12,7 +12,7 @@ LCDDisplay::LCDDisplay() {
 
 }
 
-void LCDDisplay::begin(long totalDiskUse){
+void LCDDisplay::begin(){
 
 }
 

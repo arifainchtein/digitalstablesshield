@@ -3,7 +3,7 @@
 
 
 #include <avr/wdt.h>
-//#include <PowerManager.h>
+#include <PowerManager.h>
 
 
 /**
@@ -24,11 +24,11 @@ static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
 
 
-//GeneralFunctions generalFunctions;
-//TimeManager timeManager(generalFunctions, Serial);
-//SecretManager secretManager(timeManager);
-//SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
-//PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
+GeneralFunctions generalFunctions;
+TimeManager timeManager(generalFunctions, Serial);
+SecretManager secretManager(timeManager);
+SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
+PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
 
 
 int counter;
@@ -56,7 +56,7 @@ ISR(WDT_vect){
 	//wdt_reset();
 
 	// uncomment
-	//	aPowerManager.toggleWDT();
+		aPowerManager.toggleWDT();
 
 
 
@@ -78,24 +78,24 @@ void setup() {
 	Serial1.begin(9600);
 	Serial2.begin(9600);
 	Serial3.begin(9600);
-
+	groveLCD.begin();
 	//	//
 	//	// Start The Managers
 	//	//
-	//	groveLCD.setCursor(0, 0);
-	//	groveLCD.clear();
-	//	groveLCD.print("Init Time Manager") ;
-	//	timeManager.start();
+		groveLCD.setCursor(0, 0);
+		groveLCD.clear();
+		groveLCD.print("Init Time Manager") ;
+		timeManager.start();
 	//
-	//	groveLCD.clear();
-	//	groveLCD.print("Init SDCard Manager") ;
-	//	sdCardManager.start();
+		groveLCD.clear();
+		groveLCD.print("Init SDCard Manager") ;
+		sdCardManager.start();
 	//
-	//	groveLCD.clear();
-	//	groveLCD.print("Init Power Manager") ;
-	//	aPowerManager.start();
+		groveLCD.clear();
+		groveLCD.print("Init Power Manager") ;
+		aPowerManager.start();
 	//
-	//	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
+		long totalDiskUse=sdCardManager.getDiskUsage()/1024;
 
 	/*
 	 * Initialize the LCD Screen
@@ -104,14 +104,19 @@ void setup() {
 	groveLCD.setCursor(0, 0);
 	groveLCD.print("Init Finished") ;
 	groveLCD.setCursor(0, 1);
-	//groveLCD.begin(totalDiskUse);
+
+	groveLCD.setCursor(0, 1);
+	groveLCD.print("SD use ") ;
+	groveLCD.print(totalDiskUse) ;
+	groveLCD.print("Kb") ;
+
 	//
 	// end of initializing lcd
 	//
-	//delay(1000);
-	//long now = timeManager.getCurrentTimeInSeconds();
+	delay(1000);
+	long now = timeManager.getCurrentTimeInSeconds();
 
-	//sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
+	sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
 }
 
 

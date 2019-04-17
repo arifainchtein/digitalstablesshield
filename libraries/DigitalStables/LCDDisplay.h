@@ -13,7 +13,7 @@ class LCDDisplay {
 public:
 	LCDDisplay();
 	virtual ~LCDDisplay();
-	virtual void begin(long)=0;
+	virtual void begin()=0;
 	virtual void clear()=0;
 	virtual void setRGB(int, int, int)=0;
 	virtual void setCursor(uint8_t, uint8_t)=0;
