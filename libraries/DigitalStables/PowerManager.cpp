@@ -85,7 +85,7 @@ int delayTime=1;
 volatile int f_wdt=1;
 
 
-extern int SHARED_SECRET_LENGTH;
+ int SHARED_SECRET_LENGTH;
 float dailyMinBatteryVoltage=0;
 float dailyMaxBatteryVoltage=0;
 
