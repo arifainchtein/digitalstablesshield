@@ -1464,9 +1464,12 @@ String PowerManager::getBaseSensorString(){
 	// Sensor Request Queue Position 14
 	//
 	now = millis();
+	lcd.clear();
+	lcd.setCursor(0,0);
+	lcd.print("S5:");
 	long totalDiskUse=sdCardManager.getDiskUsage();
 	dur = millis()-now;
-	lcd.print("S5:");
+
 	lcd.print(dur);
 	sensorDataString.concat(totalDiskUse/1024);
 	sensorDataString.concat("#");
