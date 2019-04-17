@@ -1340,7 +1340,7 @@ String PowerManager::getBaseSensorString(){
 	lcd.print("S2:");
 	dur = (int)(millis()-now);
 	lcd.print(dur);
-
+	lcd.setCursor(0,1);
 	now = millis();
 	float capacitorVoltage= getLockCapacitorVoltage();
 	lcd.print("S3:");
