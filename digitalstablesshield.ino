@@ -55,7 +55,11 @@ ISR(WDT_vect){
 	//lcd.print("Waking Up") ;
 	//wdt_reset();
 
-	aPowerManager.toggleWDT();
+	// uncomment
+//	aPowerManager.toggleWDT();
+
+
+
 	//	if(f_wdt == 0)
 	//	{
 	//		f_wdt=1;
@@ -139,7 +143,7 @@ void loop() {
 
 
 
-		boolean commandProcessed = aPowerManager.processDefaultCommands( command);
+		boolean commandProcessed = true;// aPowerManager.processDefaultCommands( command);
 
 		/*
 		 * teleonome specific sensors
@@ -159,7 +163,7 @@ void loop() {
 				groveLCD.print("b:");
 				long b = millis();
 				groveLCD.print(b);
-				String sensorDataString=aPowerManager.getBaseSensorString();
+				String sensorDataString= "";//aPowerManager.getBaseSensorString();
 				int now = (int)(millis() - b);
 				//
 				// now add the teleonome specific sensors
