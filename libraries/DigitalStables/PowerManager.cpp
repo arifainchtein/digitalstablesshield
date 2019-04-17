@@ -426,7 +426,7 @@ void PowerManager::turnPiOn(long time){
 
 
 
-void PowerManager::defineState(){
+void PowerManager::defineState(int counter){
 	poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();
 
@@ -489,8 +489,12 @@ void PowerManager::defineState(){
 			case 0:
 				lcd.clear();
 				lcd.setCursor(0, 0);
-				lcd.print((int)currentValue);
-				lcd.print("mA ") ;
+
+				//lcd.print((int)currentValue);
+				//lcd.print("mA ") ;
+
+				lcd.print(counter);
+				lcd.print(" ") ;
 				lcd.print(batteryVoltage) ;
 				lcd.print("V ") ;
 				lcd.print(internalBatteryStateOfCharge);

@@ -31,7 +31,7 @@ SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
 PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
 
 
-
+int counter;
 
 
 
@@ -91,7 +91,7 @@ void setup() {
 	//
 	// end of initializing lcd
 	//
-	delay(2000);
+	delay(1000);
 	long now = timeManager.getCurrentTimeInSeconds();
 
 	sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_SETUP_COMPLETED, LIFE_CYCLE_EVENT_COMMA_VALUE);
@@ -103,7 +103,7 @@ void loop() {
 	wdt_reset();
 
 
-
+counter++;
 
 	//
 	// Generate the SensorData String
@@ -121,7 +121,7 @@ void loop() {
 	//
 	// now define the state its in
 	//
-	aPowerManager.defineState();
+	aPowerManager.defineState(counter);
 	//
 	// the commands
 	//
@@ -160,7 +160,7 @@ void loop() {
 		// and also substract the seconds spent in powerdownMode
 		// finally add the poweredDownInLoopSeconds to the daily total
 
-		//aPowerManager.endOfLoopProcessing();
+		aPowerManager.endOfLoopProcessing();
 
 	}
 }
