@@ -134,9 +134,28 @@ void loop() {
 	//
 	if( Serial.available() != 0) {
 		//lcd.clear();
+		groveLCD.clear();
 		String command = Serial.readString();
 		groveLCD.setCursor(0, 0);
-		groveLCD.print(command);
+		groveLCD.print("b:");
+		long b = millis();
+		groveLCD.print(b);
+		String sensorDataString=aPowerManager.getBaseSensorString();
+		int now = (int)(millis() - b);
+		//
+		// now add the teleonome specific sensors
+		//
+
+		groveLCD.setCursor(0, 1);
+		groveLCD.print("e:");
+		groveLCD.print(now);
+
+		//
+		// end of teleonome specific sensors
+		//
+
+
+
 		boolean commandProcessed = aPowerManager.processDefaultCommands( command, sensorDataString);
 		String sensorDataString = aPowerManager.getBaseSensorString();
 		/*
@@ -150,24 +169,6 @@ void loop() {
 			//
 			// add device specific
 			if(command.startsWith("GetSensorData")){
-				groveLCD.clear();
-				groveLCD.setCursor(0, 0);
-				groveLCD.print("b:");
-				long b = millis();
-				groveLCD.print(b);
-				String sensorDataString=aPowerManager.getBaseSensorString();
-				int now = (int)(millis() - b);
-				//
-				// now add the teleonome specific sensors
-				//
-
-				groveLCD.setCursor(0, 1);
-				groveLCD.print("e:");
-				groveLCD.print(now);
-
-				//
-				// end of teleonome specific sensors
-				//
 
 
 				Serial.println(sensorDataString);
