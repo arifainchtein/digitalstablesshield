@@ -31,7 +31,6 @@ SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
 PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
 
 
-int counter;
 
 
 
@@ -125,7 +124,6 @@ void loop() {
 	wdt_reset();
 
 
-	counter++;
 
 	//
 	// Generate the SensorData String
@@ -134,7 +132,7 @@ void loop() {
 	//
 	// now define the state its in
 	//
-	aPowerManager.defineState(counter);
+	aPowerManager.defineState();
 	//
 	// the commands
 	//
@@ -148,7 +146,7 @@ void loop() {
 
 
 
-		boolean commandProcessed = true;// aPowerManager.processDefaultCommands( command);
+		boolean commandProcessed =  aPowerManager.processDefaultCommands( command);
 
 		/*
 		 * teleonome specific sensors
@@ -168,7 +166,7 @@ void loop() {
 				groveLCD.print("b:");
 				long b = millis();
 				groveLCD.print(b);
-				String sensorDataString= "";//aPowerManager.getBaseSensorString();
+				String sensorDataString= aPowerManager.getBaseSensorString();
 				int now = (int)(millis() - b);
 				//
 				// now add the teleonome specific sensors
