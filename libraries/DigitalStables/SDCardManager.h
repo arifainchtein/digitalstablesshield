@@ -12,6 +12,7 @@
 #include <GeneralFunctions.h>
 #include <LCDDisplay.h>
 #include <TimeManager.h>
+#include <DiscreteRecord.h>
 
 class SDCardManager{
 	TimeManager & timeManager;
@@ -21,6 +22,9 @@ class SDCardManager{
 	const char  *WPSSensorDataDirName="WPSSensr";
 		const char  *LifeCycleDataDirName="LifeCycl";
 		const char  *RememberedValueDataDirName  = "RememVal";
+		const char  *DiscreteRecordDirName  = "Discrete";
+		const char  *EventsDirName  = "Events";
+
 		const char  *unstraferedFileName ="Untransf.txt";
 public:
 
@@ -30,7 +34,8 @@ public:
 	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
 	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
 	void storeRememberedValue(long time, const char *name, float value, String unit);
-	void storeDiscreteRecord(long time, discreteRecord &discreteRec);
+	void storeDiscreteRecord( DiscreteRecord &discreteRec);
+	boolean readDiscreteRecord(uint8_t index,DiscreteRecord& rec);
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
 	void storeLifeCycleEvent(long time, const char *eventType, int eventValue);
 	long printDirectory(File dir, int numTabs);

@@ -16,15 +16,16 @@
 #include <WPSSensorRecord.h>
 #include <GravityRtc.h>
 #include <RTCInfoRecord.h>
+#include <DiscreteRecord.h>
 #define SD_PIN 53
 
 extern char sensorDirName[10];
 extern char lifeCycleFileName[10];
 extern char remFileName[10];
 const int chipSelect = 10;
- const char *MAXIMUM_VALUE="Max";
- const char *MINIMUM_VALUE="Min";
- const char *AVERAGE_VALUE="Avg";
+const char *MAXIMUM_VALUE="Max";
+const char *MINIMUM_VALUE="Min";
+const char *AVERAGE_VALUE="Avg";
 
 
 
@@ -43,21 +44,21 @@ boolean SDCardManager::start(){
 	_HardSerial.print("Initializing SD card...");
 
 	if (!SD.begin(SD_PIN)) {
-//		_HardSerial.println("No SD-card.");
-//		_HardSerial.flush();
+		//		_HardSerial.println("No SD-card.");
+		//		_HardSerial.flush();
 		lcdDisplay.setCursor(0, 0);
 		lcdDisplay.print("No SD-card.") ;
 		return false;
 	}else{
 		// Check dir for db files
 		if (!SD.exists(sensorDirName )) {
-//			_HardSerial.println("wpsSensorData Dir does not exist, creating...");
-//			_HardSerial.flush();
+			//			_HardSerial.println("wpsSensorData Dir does not exist, creating...");
+			//			_HardSerial.flush();
 			SD.mkdir(sensorDirName);
 		}
 		if (!SD.exists(lifeCycleFileName)) {
-//			_HardSerial.println("LifeCycle Dir does not exist, creating...");
-//			_HardSerial.flush();
+			//			_HardSerial.println("LifeCycle Dir does not exist, creating...");
+			//			_HardSerial.flush();
 			SD.mkdir(lifeCycleFileName);
 		}
 		if (!SD.exists(remFileName)) {
@@ -78,8 +79,8 @@ boolean SDCardManager::start(){
 
 
 
-//		_HardSerial.println("card initialized.");
-//		_HardSerial.flush();
+		//		_HardSerial.println("card initialized.");
+		//		_HardSerial.flush();
 		return true;
 
 	}
@@ -211,25 +212,72 @@ void SDCardManager::storeRememberedValue(long time, const char *name, float valu
 	}
 }
 
-void SDCardManager::storeDiscreteRecord(long time, discreteRecord &discreteRec){
-	//File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+boolean SDCardManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
+	//GetRememberedValueData#0
 
+	char fileName[25] = "/";
+	snprintf(fileName, sizeof fileName, "/%s/%s", dirName, unstraferedFileName);
+
+	File uf = SD.open(fileName, FILE_WRITE);
+	File tf;
+	boolean result=false;
+	if(moveData==1){
+		char fileNameTF[24];
+		snprintf(fileNameTF, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
+		tf = SD.open(fileNameTF, FILE_WRITE);
+	}
+
+	if (uf) {
+		uf.seek(0);
+		while (uf.available()){
+			//
+			// Read each line, send it to the serial port
+			// and copy it into today's file
+			String line = uf.readStringUntil('\n');
+			if(sendToSerial)_HardSerial.print(line);
+			if(moveData==1)tf.print(line);
+		}
+		uf.close(); // close the file
+		if(moveData==1){
+			tf.close(); // close the file
+			//
+			// since we just transferred the records and copy them
+			// delete the file untransferredFile
+			SD.remove(fileName);
+		}
+		result=true;
+	}
+	return result;
+}
+
+void SDCardManager::storeDiscreteRecord(DiscreteRecord &discreteRec){
 	char untransferredFileName[25];
-	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName,unstraferedFileName);
+	sprintf(untransferredFileName,"/%s/%s",DiscreteRecordDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
-
 	if (untransferredFile) {
 		// Write to file
-		untransferredFile.print(time);
-		untransferredFile.print("#");
-		untransferredFile.print(name);
-		untransferredFile.print("#");
-		untransferredFile.print(value);
-		untransferredFile.print("#");
-		untransferredFile.println(unit);
+		untransferredFile.write((uint8_t *)&discreteRec, sizeof(discreteRec));
 		untransferredFile.close(); // close the file
 	}
 }
+
+boolean SDCardManager::readDiscreteRecord(uint8_t index,DiscreteRecord& rec)
+{
+	char untransferredFileName[25];
+	boolean toReturn=false;
+	sprintf(untransferredFileName,"/%s/%s",DiscreteRecordDirName,unstraferedFileName);
+	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
+
+	if (untransferredFile) {
+		toReturn = untransferredFile.seek(index*sizeof(rec));
+		if(toReturn){
+			untransferredFile.read((uint8_t*)&rec,sizeof(rec));
+			untransferredFile.close();
+		}
+	}
+	return toReturn;
+}
+
 
 float SDCardManager::searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor){
 
