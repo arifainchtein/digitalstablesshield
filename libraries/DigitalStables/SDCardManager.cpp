@@ -211,6 +211,26 @@ void SDCardManager::storeRememberedValue(long time, const char *name, float valu
 	}
 }
 
+void SDCardManager::storeDiscreteRecord(long time, discreteRecord &discreteRec){
+	//File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+
+	char untransferredFileName[25];
+	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName,unstraferedFileName);
+	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
+
+	if (untransferredFile) {
+		// Write to file
+		untransferredFile.print(time);
+		untransferredFile.print("#");
+		untransferredFile.print(name);
+		untransferredFile.print("#");
+		untransferredFile.print(value);
+		untransferredFile.print("#");
+		untransferredFile.println(unit);
+		untransferredFile.close(); // close the file
+	}
+}
+
 float SDCardManager::searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor){
 
 	float result=-9999;

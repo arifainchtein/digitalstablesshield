@@ -45,6 +45,8 @@ public:
 
 
 	const char  *WPSSensorDataDirName="WPSSensr";
+	const char  *EventsDirName="Events";
+	const char  *DiscreteDirName="Discrete";
 	const char  *LifeCycleDataDirName="LifeCycl";
 	const char  *RememberedValueDataDirName  = "RememVal";
 	const char  *unstraferedFileName ="Untransf.txt";

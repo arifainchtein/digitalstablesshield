@@ -1170,6 +1170,32 @@ boolean PowerManager::processDefaultCommands(String command){
 		}
 		_HardSerial.flush();
 		processed=true;
+	}else if(command.startsWith("GetDiscreteData")){
+		//GetDiscreteData#0
+		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
+		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, DiscreteDirName);
+		if(result){
+			_HardSerial.println("Ok-GetDiscreteData");
+		}else {
+			char text[44];
+			snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
+			_HardSerial.println(text);
+		}
+		_HardSerial.flush();
+		processed=true;
+	}else if(command.startsWith("GetEventData")){
+		//GetEventData#0
+		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
+		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, EventsDirName);
+		if(result){
+			_HardSerial.println("Ok-GetDiscreteData");
+		}else {
+			char text[44];
+			snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
+			_HardSerial.println(text);
+		}
+		_HardSerial.flush();
+		processed=true;
 	}else if(command.startsWith("GetLifeCycleData")){
 		//GetLifeCycleData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
