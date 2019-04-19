@@ -2,7 +2,7 @@
  #define DISCRETERECORD_H
 struct DiscreteRecord{
  	long timestamp;
-    float lat
+    float lat;
 	float lon;
     uint16_t panID;
     uint8_t tagId;

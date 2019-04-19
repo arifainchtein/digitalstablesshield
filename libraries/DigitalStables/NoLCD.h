@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 
-class NoLCD {
+class NoLCD: public LCDDisplay {
 public:
 	NoLCD();
 	void begin();
