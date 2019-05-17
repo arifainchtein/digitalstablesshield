@@ -1,4 +1,7 @@
- #ifndef DISCRETERECORD_H
+/*
+ * This file is generated in the spermatogenesis process
+ */
+#ifndef DISCRETERECORD_H
  #define DISCRETERECORD_H
 struct DiscreteRecord{
  	long timestamp;

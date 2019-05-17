@@ -15,15 +15,14 @@ public:
 	GroveLCD();
 
 
-		 void begin();
-		 	void display();
-		 	void clear();
-		 	void setRGB(int, int, int);
-		 	void setCursor(uint8_t, uint8_t);
-		 	void print( String );
-		 	void print(float);
-		 	void noDisplay();
-
+	void begin();
+	void display();
+	void clear();
+	void setRGB(int, int, int);
+	void setCursor(uint8_t, uint8_t);
+	void print( String );
+	void print(float);
+	void noDisplay();
 
 	virtual ~GroveLCD();
 

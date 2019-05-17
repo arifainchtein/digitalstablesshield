@@ -1,9 +1,14 @@
  #ifndef  WPSSENSORRECORD_H
  #define WPSSENSORRECORD_H
+#include "Arduino.h"
+//
+// float 4 bytes
+// long 4 bytes
+//
 struct WPSSensorRecord{
 
 		float current;
-		int stateOfCharge;
+		uint8_t stateOfCharge;
 		long lastWPSRecordSeconds;
 		float  batteryVoltage;
 		float hourlyBatteryOutEnergy;

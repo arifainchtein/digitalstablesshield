@@ -1,5 +1,4 @@
-#include <GroveLCD.h>
-#include <NoLCD.h>
+#include <OLED.h>
 #include <DiscreteRecord.h>
 
 #include <avr/wdt.h>
@@ -10,12 +9,19 @@
  * teleonome speciifc libraries
  */
 
+#include <XBee.h>
+
+XBee xbee = XBee();
+XBeeResponse response = XBeeResponse();
+// create reusable response objects for responses we expect to handle
+ZBRxResponse rx = ZBRxResponse();
+ModemStatusResponse msr = ModemStatusResponse();
+
 
 /**
  * teleonome speciifc variables
  */
-GroveLCD groveLCD;
-NoLCD noLCD;
+OLED oled;
 
 
 
@@ -30,8 +36,8 @@ static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 GeneralFunctions generalFunctions;
 TimeManager timeManager(generalFunctions, Serial);
 SecretManager secretManager(timeManager);
-SDCardManager sdCardManager(timeManager, generalFunctions, Serial, groveLCD );
-PowerManager aPowerManager(groveLCD , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
+SDCardManager sdCardManager(timeManager, generalFunctions, Serial, oled );
+PowerManager aPowerManager(oled , secretManager , sdCardManager , timeManager, generalFunctions, Serial);
 
 
 
@@ -94,46 +100,60 @@ void setup() {
 	// Start the Serial Ports
 	//
 	Serial.begin(9600);
+
+	//
+	// if Hermes is present
+	//
 	Serial1.begin(9600);
-	Serial2.begin(9600);
+
+	//
+	// if there is at least one XBee telepathon
+	//
+	xbee.begin(Serial2);
+
+	//
+	// if there is at least one RS485 telepathon
+	//
 	Serial3.begin(9600);
-	groveLCD.begin();
+
+	//
+	//the lcd screen
+	//
+	oled.begin();
 	//	//
 	//	// Start The Managers
 	//	//
-	groveLCD.setCursor(0, 0);
-	groveLCD.clear();
-	groveLCD.print("Init Time Manager") ;
-	groveLCD.setCursor(0, 1);
-	groveLCD.print("1 of 3") ;
+	oled.setCursor(0, 0);
+	oled.clear();
+	oled.print("Init Time Manager") ;
+	oled.setCursor(0, 1);
+	oled.print("1 of 3") ;
 	timeManager.start();
 	//
-	groveLCD.clear();
-	groveLCD.print("Init SDCard Manager") ;
-	groveLCD.setCursor(0, 1);
-	groveLCD.print("2 of 3") ;
+	oled.clear();
+	oled.print("Init SDCard Manager") ;
+	oled.setCursor(0, 1);
+	oled.print("2 of 3") ;
 	sdCardManager.start();
 	//
-	groveLCD.clear();
-	groveLCD.print("Init Power Manager") ;
-	groveLCD.setCursor(0, 1);
-	groveLCD.print("3 of 3") ;
+	oled.clear();
+	oled.print("Init Power Manager") ;
+	oled.setCursor(0, 1);
+	oled.print("3 of 3") ;
 	aPowerManager.start();
 	//
 	long totalDiskUse=sdCardManager.getDiskUsage()/1024;
 
-	/*
-	 * Initialize the LCD Screen
-	 */
-	groveLCD.clear();
-	groveLCD.setCursor(0, 0);
-	groveLCD.print("Init Finished") ;
-	groveLCD.setCursor(0, 1);
 
-	groveLCD.setCursor(0, 1);
-	groveLCD.print("SD use ") ;
-	groveLCD.print(totalDiskUse) ;
-	groveLCD.print("Kb") ;
+	oled.clear();
+	oled.setCursor(0, 0);
+	oled.print("Init Finished") ;
+	oled.setCursor(0, 1);
+
+	oled.setCursor(0, 1);
+	oled.print("SD use ") ;
+	oled.print(totalDiskUse) ;
+	oled.print("Kb") ;
 
 	//
 	// end of initializing lcd
@@ -160,7 +180,25 @@ void loop() {
 	//
 	aPowerManager.defineState();
 	//
-	// the commands
+	//
+	// process every I2CTelepathon by calling it getSensorData();
+	// firtDaughter is for Valentino only
+	//
+	firstDaughter.getSensorDataString();
+	//
+	//
+	nose.getSensorDataString();
+	//
+	//
+	// the serial ports
+	// the code below depends on the structure of the teleonome. in the biggest case
+	// you have three, Serial which corresponds to the hypothalamus connection which is always present
+	// then Serial2 which represents the XBee and Serial3 which represents RS485
+	if( Serial2.available() != 0) {
+		//
+		// the iTrough has a sensor string
+
+	}
 	//
 	if( Serial.available() != 0) {
 		//lcd.clear();
@@ -186,57 +224,64 @@ void loop() {
 			// add device specific
 			if(command.startsWith("GetSensorData")){
 
-				groveLCD.clear();
+				oled.clear();
 
-				groveLCD.setCursor(0, 0);
-				groveLCD.print("b:");
+				oled.setCursor(0, 0);
+				oled.print("b:");
 				long b = millis();
-				groveLCD.print(b);
+				oled.print(b);
 				String sensorDataString= aPowerManager.getBaseSensorString();
 				int now = (int)(millis() - b);
 				//
 				// now add the teleonome specific sensors
 				//
 
-				groveLCD.setCursor(0, 1);
-				groveLCD.print("e:");
-				groveLCD.print(now);
+				oled.setCursor(0, 1);
+				oled.print("e:");
+					.print(now);
 
 
 				Serial.println(sensorDataString);
 				Serial.flush();
 			}else if(command.startsWith("ReadDiscreteRecords")){
+				boolean fileOk = sdCardManager.openDiscreteRecordFile();
 				boolean keepGoing=true;
-				DiscreteRecord& discreteRecord;
-				uint8_t index=0;
-				while(keepGoing){
-					keepGoing = sdCardManager.readDiscreteRecord(index, discreteRecord);
-					if(keepGoing){
-						//
-						// if we are here is because we do have data
-						// so extract it
-						//
-						// generated code
-						//
-						String discreteRecordString="";
-						discreteRecordString.concat(discreteRecord.timestamp) ;
-						discreteRecordString.concat("#") ;
-						discreteRecordString.concat(discreteRecord.lat) ;
-						discreteRecordString.concat("#") ;
-						discreteRecordString.concat(discreteRecord.lon) ;
-						discreteRecordString.concat("#") ;
-						discreteRecordString.concat(discreteRecord.panID) ;
-						discreteRecordString.concat("#") ;
-						discreteRecordString.concat(discreteRecord.tagId) ;
-						discreteRecordString.concat("#") ;
-						discreteRecordString.concat(discreteRecord.signalStrength) ;
-						discreteRecordString.concat("#") ;
-						Serial.println(discreteRecordString);
+				DiscreteRecord discreteRecord;
 
+				uint16_t index=0;
+				if(fileOk){
+					while(keepGoing){
+						keepGoing = sdCardManager.readDiscreteRecord(index, discreteRecord);
+						index++;
+						if(keepGoing){
+							//
+							// if we are here is because we do have data
+							// so extract it
+							//
+							// generated code
+							//
+							String discreteRecordString="";
+							discreteRecordString.concat(discreteRecord.timestamp) ;
+							discreteRecordString.concat("#") ;
+							discreteRecordString.concat(discreteRecord.lat) ;
+							discreteRecordString.concat("#") ;
+							discreteRecordString.concat(discreteRecord.lon) ;
+							discreteRecordString.concat("#") ;
+							discreteRecordString.concat(discreteRecord.panID) ;
+							discreteRecordString.concat("#") ;
+							discreteRecordString.concat(discreteRecord.tagId) ;
+							discreteRecordString.concat("#") ;
+							discreteRecordString.concat(discreteRecord.signalStrength) ;
+							discreteRecordString.concat("#") ;
+							Serial.println(discreteRecordString);
+
+						}
+						Serial.println("Ok-ReadDiscreteRecords");
+						Serial.flush();
 					}
-					Serial.println("Ok-ReadDiscreteRecords");
-					Serial.flush();
+					sdCardManager.closeDiscreteRecordFile();
 				}
+
 			}else{
 				//
 				// call read to flush the incoming

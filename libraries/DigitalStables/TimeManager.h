@@ -9,9 +9,13 @@
 #define TIMEMANAGER_H_
 #include <Arduino.h>
 
-#include <GravityRtc.h>
-#include <RTCInfoRecord.h>
-#include <GeneralFunctions.h>
+//#include <GravityRtc.h>
+#include "/Users/arifainchtein/Documents/Arduino/libraries/GravityRtc/GravityRtc.h"
+#include "/Users/arifainchtein/Data/Teleonome/digitalstablesshield/libraries/DigitalStables/RTCInfoRecord.h"
+
+//#include <RTCInfoRecord.h>
+//#include <GeneralFunctions.h>
+#include "/Users/arifainchtein/Data/Teleonome/digitalstablesshield/libraries/DigitalStables/GeneralFunctions.h"
 
 class TimeManager{
 	HardwareSerial& _HardSerial;

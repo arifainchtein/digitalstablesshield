@@ -104,41 +104,41 @@ int PI_POWER_PIN=4;
 
 
 static const char *UNIT_VOLT ="Volt";
-static const char *UNIT_SECONDS="seconds";
+static const char *UNIT_SECONDS="sec";
 static const char *UNIT_MILLI_AMPERES ="mA";
 static const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
 static const char *UNIT_PERCENTAGE ="%";
-static const char *FORCED_PI_TURN_OFF ="Forced Pi Turn Off";
-static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="Battery Voltage Before Turning Pi On";
-static const char *BATTERY_VOLTAGE_ATER_PI_ON="Battery Voltage After Turning Pi On";
-static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="Battery Voltage Differential After Turning Pi On";
+static const char *FORCED_PI_TURN_OFF ="FPTO";
+static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="BVBTPO";
+static const char *BATTERY_VOLTAGE_ATER_PI_ON="BVATPO";
+static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="BVDATPO";
 static const char *PI_TURN_OFF ="Pi Turn Off";
 static const char *UNIT_NO_UNIT =" ";
 
 
-static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="Forced Start WPS";
-static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="Manual Shutdown";
-static const char *LIFE_CYCLE_EVENT_START_WPS    ="Start WPS";
-static const char *LIFE_CYCLE_EVENT_END_WPS     ="End WPS";
-static const char *LIFE_CYCLE_EVENT_START_COMMA ="Start Comma";
+static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="FSWPS";
+static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="MS";
+static const char *LIFE_CYCLE_EVENT_START_WPS    ="SW";
+static const char *LIFE_CYCLE_EVENT_END_WPS     ="EWS";
+static const char *LIFE_CYCLE_EVENT_START_COMMA ="SC";
 
-static const char *LIFE_CYCLE_EVENT_END_COMMA ="End Comma";
+static const char *LIFE_CYCLE_EVENT_END_COMMA ="EC";
 
 
 static const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
 static const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
 static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
-static const char *DAILY_STATS_TIMESTAMP="Daily Timestamp";
-static const char *DAILY_MINIMUM_BATTERY_VOLTAGE="Daily Minimum Battery Voltage";
-static const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="Daily Maximum Battery Voltage";
-static const char *DAILY_MINIMUM_BATTERY_CURRENT="Daily Minimum Battery Current";
-static const char *DAILY_MAXIMUM_BATTERY_CURRENT="Daily Maximum Battery Current";
-static const char *DAILY_ENERGY="Daily Energy";
-static const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
-static const char *HOURLY_ENERGY="Hourly Energy";
-static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="Hourly Powered Down In Loop Seconds";
-static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="Hourly Operating In Loop Seconds";
+static const char *DAILY_STATS_TIMESTAMP="DST";
+static const char *DAILY_MINIMUM_BATTERY_VOLTAGE="DMiBV";
+static const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="DMaBV";
+static const char *DAILY_MINIMUM_BATTERY_CURRENT="DMiBC";
+static const char *DAILY_MAXIMUM_BATTERY_CURRENT="DMaBC";
+static const char *DAILY_ENERGY="DE";
+static const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="DPDInLS";
+static const char *HOURLY_ENERGY="HE";
+static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="HPDILS";
+static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="HOILS";
 long previousUpdate;
 
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
@@ -1163,32 +1163,6 @@ boolean PowerManager::processDefaultCommands(String command){
 		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetRememberedValueData");
-		}else {
-			char text[44];
-			snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
-			_HardSerial.println(text);
-		}
-		_HardSerial.flush();
-		processed=true;
-	}else if(command.startsWith("GetDiscreteData")){
-		//GetDiscreteData#0
-		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, DiscreteDirName);
-		if(result){
-			_HardSerial.println("Ok-GetDiscreteData");
-		}else {
-			char text[44];
-			snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
-			_HardSerial.println(text);
-		}
-		_HardSerial.flush();
-		processed=true;
-	}else if(command.startsWith("GetEventData")){
-		//GetEventData#0
-		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, EventsDirName);
-		if(result){
-			_HardSerial.println("Ok-GetDiscreteData");
 		}else {
 			char text[44];
 			snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
