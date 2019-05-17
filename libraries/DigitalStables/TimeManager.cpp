@@ -6,8 +6,6 @@
  */
 #include "Arduino.h"
 #include <TimeManager.h>
-//#include "/home/pi/Teleonome/Arduino/libraries/GravityRtc/GravityRtc.h"
-//#include <GravityRtc/GravityRtc.h>
 
 #include <RTCInfoRecord.h>
 
