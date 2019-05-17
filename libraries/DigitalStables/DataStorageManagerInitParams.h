@@ -9,7 +9,12 @@
 #define LIBRARIES_DATASTORAGEMANAGERINITPARAMS_H_
 
 struct DataStorageManagerInitParams{
-
+	uint8_t  pageSize;
+	uint8_t wpSensorDataFolderSize;
+	uint8_t lifeCycleFolderSize;
+	uint8_t discreteRecordFolderSize;
+	uint8_t eventFolderSize;
+	uint8_t rememberedValueFolderSize;
 };
 
 
