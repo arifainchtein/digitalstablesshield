@@ -42,7 +42,7 @@ public:
 	void closeDiscreteRecordFile();
 
 	void storeEventRecord( byte eventData[]);
-	boolean readEventRecord(uint16_t index,byte &eventData[]);
+	boolean readEventRecord(uint16_t index,byte eventData[]);
 	boolean openEventRecordFile(const char *filename);
 	void closeEventRecordFile();
 
