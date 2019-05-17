@@ -18,8 +18,7 @@
 #include <DiscreteRecord.h>
 #include <Wire.h>
 
-uint8_t pageSize=128;
-uint8_t  pageSize;
+uint8_t  pageSize=128;
 uint8_t wpSensorDataFolderSize;
 uint8_t lifeCycleFolderSize;
 uint8_t discreteRecordFolderSize;

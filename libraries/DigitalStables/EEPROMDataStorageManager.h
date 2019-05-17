@@ -49,7 +49,7 @@ public:
 
 private:
 	void writeEEPROM(int deviceaddress, unsigned int eeaddress, char* data);
-	void readEEPROM(int deviceaddress, unsigned int eeaddress, unsigned char* data, unsigned int num_chars)
+	void readEEPROM(int deviceaddress, unsigned int eeaddress, unsigned char* data, unsigned int num_chars);
 };
 
 #endif /* LIBRARIES_DIGITALSTABLES_EEPROMDATASTORAGEMANAGER_H_ */
