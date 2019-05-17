@@ -32,7 +32,7 @@ public:
 	virtual void closeDiscreteRecordFile()=0;
 
 	virtual void storeEventRecord( byte eventData[])=0;
-	virtual boolean readEventRecord(uint16_t index,byte &eventData[])=0;
+	virtual boolean readEventRecord(uint16_t index,byte eventData[])=0;
 	virtual boolean openEventRecordFile(const char *filename)=0;
 	virtual void closeEventRecordFile()=0;
 
