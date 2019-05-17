@@ -9,7 +9,7 @@
 #define LIBRARIES_DIGITALSTABLES_NOLCD_H_
 
 #include <Arduino.h>
-
+#include <LCDDisplay.h>
 class NoLCD: public LCDDisplay {
 public:
 	NoLCD();
