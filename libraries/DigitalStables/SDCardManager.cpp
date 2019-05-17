@@ -271,7 +271,7 @@ boolean SDCardManager::openEventRecordFile(const char *filename)
 	return currentlyOpenFile;
 }
 
-boolean SDCardManager::readEventRecord(uint16_t index,byte &eventData[])
+boolean SDCardManager::readEventRecord(uint16_t index,byte eventData[])
 {
 	boolean toReturn=false;
 	if (currentlyOpenFile) {
