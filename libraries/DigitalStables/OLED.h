@@ -14,7 +14,7 @@
 class OLED: public LCDDisplay {
 public:
 	OLED();
-	void begin()
+	void begin();
 	void display();
 	void clear();
 	void setRGB(int, int, int);
