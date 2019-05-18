@@ -43,7 +43,6 @@ void OLED::begin(){
   oled.set1X();
   oled.print("\nmicros: ");
   oled.print(micros() - m);
-  oled.
 }
 
 void OLED::clear(){
