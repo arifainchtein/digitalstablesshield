@@ -4,6 +4,7 @@
  *  Created on: 2 May 2019
  *      Author: arifainchtein
  */
+#include "Arduino.h"
 
 #include <OLED.h>
 #include "SSD1306Ascii.h"

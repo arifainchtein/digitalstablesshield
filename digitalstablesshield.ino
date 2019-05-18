@@ -1,4 +1,9 @@
+
+#include "Arduino.h"
+
 #include <OLED.h>
+#include <NoLCD.h>
+
 #include <DiscreteRecord.h>
 
 #include <avr/wdt.h>
