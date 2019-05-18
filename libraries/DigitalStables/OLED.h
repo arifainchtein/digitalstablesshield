@@ -22,6 +22,7 @@ public:
 	void print(float);
 	void noDisplay();
 	virtual ~OLED();
+
 };
 
 #endif /* LIBRARIES_DIGITALSTABLES_OLED_H_ */
