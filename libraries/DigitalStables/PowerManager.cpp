@@ -143,6 +143,10 @@ static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="HPDILS";
 static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="HOILS";
 long previousUpdate;
 
+PowerManager::PowerManager() {
+	// TODO Auto-generated constructor stub
+
+}
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
 

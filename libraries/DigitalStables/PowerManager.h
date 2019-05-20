@@ -46,7 +46,7 @@ public:
 	const char  *LifeCycleDataDirName="LifeCycl";
 	const char  *RememberedValueDataDirName  = "RememVal";
 	const char  *unstraferedFileName ="Untransf.txt";
-
+	PowerManager();
 	PowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
 	void start();
 	void hourlyTasks(long time, int previousHour );
