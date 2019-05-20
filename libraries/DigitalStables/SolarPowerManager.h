@@ -5,6 +5,10 @@
  *      Author: arifainchtein
  */
 
+
+#ifndef LIBRARIES_DIGITALSTABLES_SOLARPOWERMANAGER_H_
+#define LIBRARIES_DIGITALSTABLES_SOLARPOWERMANAGER_H_
+
 #include "Arduino.h"
 #include <PowerManager.h>
 #include <SDCardManager.h>
@@ -15,8 +19,6 @@
 #include <TimeManager.h>
 #include <SecretManager.h>
 
-#ifndef LIBRARIES_DIGITALSTABLES_SOLARPOWERMANAGER_H_
-#define LIBRARIES_DIGITALSTABLES_SOLARPOWERMANAGER_H_
 
 class SolarPowerManager : public PowerManager{
 public:
