@@ -104,7 +104,7 @@ float XBeeTelepathonPowerManager::getCurrentFromBattery(void){
 	effective_value=amplitude_current/1.414;
 	return effective_value;
 }
-void defineState(){
+void XBeeTelepathonPowerManager::defineState(){
 	this->poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();
 
