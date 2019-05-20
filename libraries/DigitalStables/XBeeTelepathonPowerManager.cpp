@@ -128,7 +128,7 @@ void defineState(){
 
 			if(piSleepingRemaining<=0){
 				wpsSleeping=false;
-				if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
+
 				sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 				lcd.print("Pi ON WPS ");
