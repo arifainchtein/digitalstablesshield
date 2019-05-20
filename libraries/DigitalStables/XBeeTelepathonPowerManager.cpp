@@ -37,10 +37,9 @@
 #endif
 
 
-XBeeTelepathonPowerManager::XBeeTelepathonPowerManager() {
-	// TODO Auto-generated constructor stub
 
-}
+XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
+{}
 
 float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
 	int sensorValue;             //value read from the sensor

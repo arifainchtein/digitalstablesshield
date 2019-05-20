@@ -37,7 +37,6 @@ public:
 
 	TimeManager  timeManager;
 	SecretManager  secretManager;
-
 	GeneralFunctions  generalFunctions;
 	SDCardManager  sdCardManager;
 	HardwareSerial _HardSerial;

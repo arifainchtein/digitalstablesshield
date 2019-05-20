@@ -13,6 +13,12 @@
 
 class SolarPowerManager : public PowerManager{
 public:
+	TimeManager  timeManager;
+		SecretManager  secretManager;
+		GeneralFunctions  generalFunctions;
+		SDCardManager  sdCardManager;
+		HardwareSerial _HardSerial;
+		LCDDisplay&  lcd;
 	SolarPowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
