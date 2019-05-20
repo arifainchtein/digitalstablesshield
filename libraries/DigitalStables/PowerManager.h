@@ -8,11 +8,8 @@
 #ifndef PowerManager_h
 #define PowerManager_h
 #include <SDCardManager.h>
-
 #include <LCDDisplay.h>
 #include <WPSSensorRecord.h>
-
-
 #include <SD.h>
 #include <GeneralFunctions.h>
 #include <TimeManager.h>

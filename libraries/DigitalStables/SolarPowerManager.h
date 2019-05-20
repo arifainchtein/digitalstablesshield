@@ -7,6 +7,13 @@
 
 #include "Arduino.h"
 #include <PowerManager.h>
+#include <SDCardManager.h>
+#include <LCDDisplay.h>
+#include <WPSSensorRecord.h>
+#include <SD.h>
+#include <GeneralFunctions.h>
+#include <TimeManager.h>
+#include <SecretManager.h>
 
 #ifndef LIBRARIES_DIGITALSTABLES_SOLARPOWERMANAGER_H_
 #define LIBRARIES_DIGITALSTABLES_SOLARPOWERMANAGER_H_
@@ -19,7 +26,7 @@ public:
 	SDCardManager  sdCardManager;
 	HardwareSerial _HardSerial;
 	LCDDisplay&  lcd;
-	SolarPowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
+	SolarPowerManager:PowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
