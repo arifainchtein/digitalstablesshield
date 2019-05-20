@@ -11,6 +11,13 @@
 
 #include "Arduino.h"
 #include <PowerManager.h>
+#include <SDCardManager.h>
+#include <LCDDisplay.h>
+#include <WPSSensorRecord.h>
+#include <SD.h>
+#include <GeneralFunctions.h>
+#include <TimeManager.h>
+#include <SecretManager.h>
 
 
 class SolarPowerManager : public PowerManager{
