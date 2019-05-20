@@ -17,6 +17,8 @@
 //
 // the wps variables
 #define LOCK_CAPACITOR_PIN A0
+#define BATTERY_VOLTAGE_PIN A1
+
 long secondsToTurnPowerOff = 30;
 long secondsToNextPiOn=90L;
 long currentSecondsToPowerOff=0L;
@@ -51,12 +53,12 @@ boolean shuttingDownPiCountdown=false;
 boolean manualShutdown=false;
 boolean waitingManualPiStart=false;
 
-// the battery voltage
+// the battery voltage always in A1
+// for compatibility with Gloria, Wally and Valentino
 //
-#define batteryVoltagePin A14
-#define CURRENT_SENSOR A12
-float amplitude_current;               //amplitude current
-float effective_value;       //effective current
+
+
+    //effective current
 boolean powerSupplyOn=false;
 
 //
@@ -198,33 +200,47 @@ void PowerManager::yearlyTasks(long time){
 
 
 
-float PowerManager::getCurrentValue(void){
-	int sensorValue;             //value read from the sensor
-	int sensorMax = 0;
-	uint32_t start_time = millis();
-	while((millis()-start_time) < 100)//sample for 1000ms
-	{
-		sensorValue = analogRead(CURRENT_SENSOR);
-		if (sensorValue > sensorMax)
-		{
-			//record the maximum sensor value
-			sensorMax = sensorValue;
-		}
-	}
 
-	//the VCC on the Grove interface of the sensor is 5v
-	amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-	effective_value=amplitude_current/1.414;
-	return effective_value;
+float PowerManager::getCurrentFromBattery(void){
+	return 0.0;
 }
 
+float PowerManager::getCurrentInputFromSolarPanel(void){
+	return 0.0;
+}
+
+float PowerManager::getSolarPanelVoltage(void){
+	return 0.0;
+}
+
+
+//float PowerManager::getCurrentValue(void){
+//	int sensorValue;             //value read from the sensor
+//	int sensorMax = 0;
+//	uint32_t start_time = millis();
+//	while((millis()-start_time) < 100)//sample for 1000ms
+//	{
+//		sensorValue = analogRead(CURRENT_SENSOR);
+//		if (sensorValue > sensorMax)
+//		{
+//			//record the maximum sensor value
+//			sensorMax = sensorValue;
+//		}
+//	}
+//
+//	//the VCC on the Grove interface of the sensor is 5v
+//	amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
+//	effective_value=amplitude_current/1.414;
+//	return effective_value;
+//}
+
 float PowerManager::getBatteryVoltage(){
-	long  sensorValue=analogRead(batteryVoltagePin);
+	long  sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
 	long  sum=0;
 	for(int i=0;i<10;i++)
 	{
 		sum=sensorValue+sum;
-		sensorValue=analogRead(batteryVoltagePin);
+		sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
 		delay(2);
 	}
 	sum=sum/10;
@@ -433,7 +449,10 @@ void PowerManager::defineState(){
 
 	float batteryVoltage = getBatteryVoltage();
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
-	float currentValue = getCurrentValue();
+	float currentFromBattery = getCurrentFromBattery();
+	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
+	float solarPanelVolltage = getSolarPanelVoltage();
+
 
 	boolean piIsOn = digitalRead(PI_POWER_PIN);
 
@@ -497,7 +516,7 @@ void PowerManager::defineState(){
 					lcd.clear();
 					lcd.setCursor(0, 0);
 
-					lcd.print((int)currentValue);
+					lcd.print((int)currentFromBattery);
 					lcd.print("mA ") ;
 
 					lcd.print(batteryVoltage) ;
@@ -614,7 +633,7 @@ void PowerManager::defineState(){
 					lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 					WPSSensorRecord anWPSSensorRecord;
 					anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
-					anWPSSensorRecord.current = getCurrentValue();
+					anWPSSensorRecord.current = getCurrentFromBattery();
 					anWPSSensorRecord.stateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
 					anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
 					anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
@@ -753,7 +772,7 @@ void PowerManager::defineState(){
 						lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 						WPSSensorRecord anWPSSensorRecord;
 						anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
-						anWPSSensorRecord.current = getCurrentValue();
+						anWPSSensorRecord.current = getCurrentFromBattery();
 						anWPSSensorRecord.stateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
 						anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
 						anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
@@ -922,7 +941,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	boolean processed=false;
 	if(command=="TestWPSSensor"){
 		float batteryVoltage = getBatteryVoltage();
-		float current = getCurrentValue();
+		float current = getCurrentFromBattery();
 		int stateOfCharge= generalFunctions.getStateOfCharge(batteryVoltage);
 		boolean result = sdCardManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
 		if(result){
@@ -1298,8 +1317,8 @@ boolean PowerManager::processDefaultCommands(String command){
 void PowerManager::endOfLoopProcessing(){
 	long now = timeManager.getCurrentTimeInSeconds();
 	int loopConsumingPowerSeconds = timeManager.getCurrentTimeInSeconds()-now -poweredDownInLoopSeconds;
-	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentValue()/3600;
-	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentValue()/3600;
+	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
+	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 	hourlyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 }
@@ -1335,7 +1354,7 @@ String PowerManager::getBaseSensorString(){
 	now = millis();
 
 
-	float currentValue = getCurrentValue();
+	float currentValue = getCurrentFromBattery();
 	lcd.print(" S2:");
 	 dur = millis()-now;
 		lcd.print(dur);

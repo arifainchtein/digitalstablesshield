@@ -7,6 +7,7 @@
 
 #ifndef PowerManager_h
 #define PowerManager_h
+#include <SDCardManager.h>
 
 #include <LCDDisplay.h>
 #include <WPSSensorRecord.h>
@@ -17,7 +18,6 @@
 #include <TimeManager.h>
 #include <SecretManager.h>
 
-#include <SDCardManager.h>
 
 
 
@@ -57,7 +57,9 @@ public:
 	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear );
 	void monthlyTasks(long time);
 	void yearlyTasks(long time);
-	float getCurrentValue(void);
+	float getCurrentFromBattery(void);
+	float getCurrentInputFromSolarPanel(void);
+	float getSolarPanelVoltage();
 	float getBatteryVoltage();
 	void initializeWDT();
 	void enterArduinoSleep(void);
