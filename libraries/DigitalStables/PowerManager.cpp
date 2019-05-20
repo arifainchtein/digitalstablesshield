@@ -79,10 +79,7 @@ int SHARED_SECRET_LENGTH;
 
 long previousUpdate;
 
-PowerManager::PowerManager() {
-	// TODO Auto-generated constructor stub
 
-}
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
 
