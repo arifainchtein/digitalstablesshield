@@ -31,6 +31,21 @@ public:
 
 	boolean isHost=true;
 	long poweredDownInLoopSeconds;
+	float dailyMinBatteryVoltage=0;
+	float dailyMaxBatteryVoltage=0;
+
+	float dailyMinBatteryCurrent=0;
+	float dailyMaxBatteryCurrent=0;
+	float dailyBatteryOutEnergy=0;
+	float dailyPoweredDownInLoopSeconds=0;
+
+	float hourlyBatteryOutEnergy=0;
+	float hourlyPoweredDownInLoopSeconds=0;
+	boolean pauseDuringWPS=false;
+	boolean inPulse=false;
+	String pulseStartTime="";
+	String pulseStopTime="";
+	int PI_POWER_PIN=4;
 
 	TimeManager  timeManager;
 	SecretManager  secretManager;
@@ -72,21 +87,7 @@ public:
 	String getBaseSensorString();
 
 protected:
-	float dailyMinBatteryVoltage=0;
-	float dailyMaxBatteryVoltage=0;
 
-	float dailyMinBatteryCurrent=0;
-	float dailyMaxBatteryCurrent=0;
-	float dailyBatteryOutEnergy=0;
-	float dailyPoweredDownInLoopSeconds=0;
-
-	float hourlyBatteryOutEnergy=0;
-	float hourlyPoweredDownInLoopSeconds=0;
-	boolean pauseDuringWPS=false;
-	boolean inPulse=false;
-	String pulseStartTime="";
-	String pulseStopTime="";
-	int PI_POWER_PIN=4;
 
 private:
 

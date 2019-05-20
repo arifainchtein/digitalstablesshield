@@ -105,7 +105,7 @@ float XBeeTelepathonPowerManager::getCurrentFromBattery(void){
 	return effective_value;
 }
 void defineState(){
-	poweredDownInLoopSeconds=0;
+	this->poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();
 
 	float batteryVoltage = getBatteryVoltage();
