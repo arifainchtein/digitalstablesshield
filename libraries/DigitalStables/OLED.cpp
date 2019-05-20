@@ -7,8 +7,8 @@
 #include "Arduino.h"
 
 #include <OLED.h>
-#include "SSD1306Ascii.h"
-#include "SSD1306AsciiAvrI2c.h"
+#include <SSD1306Ascii.h>
+#include <SSD1306AsciiAvrI2c.h>
 
 // 0X3C+SA0 - 0x3C or 0x3D
 #define I2C_ADDRESS 0x3C
