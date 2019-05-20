@@ -16,7 +16,7 @@
 // Define proper RST_PIN if required.
 #define RST_PIN -1
 
-SSD1306AsciiAvrI2c oled;
+SSD1306AsciiAvrI2c anSSD1306AsciiAvrI2c;
 
 
 OLED::OLED() {
@@ -26,24 +26,24 @@ OLED::OLED() {
 
 void OLED::begin(){
 #if RST_PIN >= 0
-  oled.begin(&Adafruit128x64, I2C_ADDRESS, RST_PIN);
+  anSSD1306AsciiAvrI2c.begin(&Adafruit128x64, I2C_ADDRESS, RST_PIN);
 #else // RST_PIN >= 0
-  oled.begin(&Adafruit128x64, I2C_ADDRESS);
+  anSSD1306AsciiAvrI2c.begin(&Adafruit128x64, I2C_ADDRESS);
 #endif // RST_PIN >= 0
-  // Call oled.setI2cClock(frequency) to change from the default frequency.
+  // Call anSSD1306AsciiAvrI2c.setI2cClock(frequency) to change from the default frequency.
 
-  oled.setFont(Arial14);
+  anSSD1306AsciiAvrI2c.setFont(Arial14);
 
   uint32_t m = micros();
-  oled.clear();
-  oled.println("Hello world!");
-  oled.println("A long line may be truncated");
-  oled.println();
-  oled.set2X();
-  oled.println("2X demo");
-  oled.set1X();
-  oled.print("\nmicros: ");
-  oled.print(micros() - m);
+  anSSD1306AsciiAvrI2c.clear();
+  anSSD1306AsciiAvrI2c.println("Hello world!");
+  anSSD1306AsciiAvrI2c.println("A long line may be truncated");
+  anSSD1306AsciiAvrI2c.println();
+  anSSD1306AsciiAvrI2c.set2X();
+  anSSD1306AsciiAvrI2c.println("2X demo");
+  anSSD1306AsciiAvrI2c.set1X();
+  anSSD1306AsciiAvrI2c.print("\nmicros: ");
+  anSSD1306AsciiAvrI2c.print(micros() - m);
 }
 
 void OLED::clear(){
@@ -57,11 +57,11 @@ void OLED::setCursor(uint8_t c, uint8_t r){
 
 }
 void OLED::print(const String s){
-	oled.print(s);
+	anSSD1306AsciiAvrI2c.print(s);
 }
 
 void OLED::print(float s){
-	oled.print(s);
+	anSSD1306AsciiAvrI2c.print(s);
 }
 
 void OLED::noDisplay(){
