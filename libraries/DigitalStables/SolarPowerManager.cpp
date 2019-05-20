@@ -14,11 +14,9 @@
 float amplitude_current;               //amplitude current
 float effective_value;
 
-SolarPowerManager::SolarPowerManager() {
-	// TODO Auto-generated constructor stub
 
-}
-
+SolarPowerManager::SolarPowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
+{}
 
 
 float SolarPowerManager::getCurrentInputFromSolarPanel(void){
