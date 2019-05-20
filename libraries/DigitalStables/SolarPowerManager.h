@@ -19,7 +19,6 @@ public:
 	SDCardManager  sdCardManager;
 	HardwareSerial _HardSerial;
 	LCDDisplay&  lcd;
-	SolarPowerManager();
 	SolarPowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
