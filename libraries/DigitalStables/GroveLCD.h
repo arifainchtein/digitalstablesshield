@@ -22,6 +22,8 @@ public:
 	void setCursor(uint8_t, uint8_t);
 	void print( String );
 	void print(float);
+	void println( String );
+	void println(float);
 	void noDisplay();
 
 	virtual ~GroveLCD();

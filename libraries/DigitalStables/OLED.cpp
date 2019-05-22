@@ -57,6 +57,14 @@ void OLED::print(float s){
 	anSSD1306AsciiAvrI2c.print(s);
 }
 
+void OLED::println(const String s){
+	anSSD1306AsciiAvrI2c.println(s);
+}
+
+void OLED::println(float s){
+	anSSD1306AsciiAvrI2c.println(s);
+}
+
 void OLED::noDisplay(){
 
 }

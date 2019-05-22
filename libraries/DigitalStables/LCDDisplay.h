@@ -18,7 +18,9 @@ public:
 	virtual void setRGB(int, int, int)=0;
 	virtual void setCursor(uint8_t, uint8_t)=0;
 	virtual void print( String)=0;
+	virtual void println( String)=0;
 	virtual void print(float)=0;
+	virtual void println(float)=0;
 	virtual void noDisplay()=0;
 	virtual void display()=0;
 };

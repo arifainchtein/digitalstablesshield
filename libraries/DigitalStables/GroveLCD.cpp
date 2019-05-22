@@ -35,6 +35,15 @@ void GroveLCD::print( String  s){
 
 }
 
+void GroveLCD::println( String  s){
+	lcd.print(s);
+
+}
+
+void GroveLCD::println(float s){
+	lcd.print(s);
+}
+
 void GroveLCD::print(float s){
 	lcd.print(s);
 }

@@ -20,6 +20,8 @@ public:
 	void setRGB(int, int, int);
 	 void print( String);
 	void print(float);
+	void println( String);
+		void println(float);
 	void noDisplay();
 	void setCursor(uint8_t, uint8_t);
 

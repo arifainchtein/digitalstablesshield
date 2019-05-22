@@ -38,6 +38,15 @@ void NoLCD::print(float s){
 
 }
 
+void NoLCD::println(const String){
+
+
+}
+
+void NoLCD::println(float s){
+
+}
+
 void NoLCD::noDisplay(){
 
 }
