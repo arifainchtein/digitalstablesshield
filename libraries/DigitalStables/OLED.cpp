@@ -37,17 +37,10 @@ void OLED::begin(){
   uint32_t m = micros();
   anSSD1306AsciiAvrI2c.clear();
   anSSD1306AsciiAvrI2c.println("Hello world!");
-  anSSD1306AsciiAvrI2c.println("A long line may be truncated");
-  anSSD1306AsciiAvrI2c.println();
-  anSSD1306AsciiAvrI2c.set2X();
-  anSSD1306AsciiAvrI2c.println("2X demo");
-  anSSD1306AsciiAvrI2c.set1X();
-  anSSD1306AsciiAvrI2c.print("\nmicros: ");
-  anSSD1306AsciiAvrI2c.print(micros() - m);
 }
 
 void OLED::clear(){
-
+	 anSSD1306AsciiAvrI2c.clear();
 }
 void OLED::setRGB(int r, int g, int b){
 

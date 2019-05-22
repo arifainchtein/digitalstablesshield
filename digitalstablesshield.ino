@@ -227,7 +227,7 @@ void loop() {
 		if(!commandProcessed){
 			//
 			// add device specific
-			if(command.startsWith("GetSensorData")){
+			Sample
 
 				oled.clear();
 
