@@ -69,6 +69,13 @@ void NoLCD::println(double s){
 
 }
 
+void NoLCD::print(int s){
+}
+
+void NoLCD::println(int s){
+
+}
+
 NoLCD::~NoLCD() {
 	// TODO Auto-generated destructor stub
 }

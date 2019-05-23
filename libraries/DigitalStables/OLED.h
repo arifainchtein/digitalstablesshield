@@ -24,10 +24,12 @@ public:
 	void println(float);
 	void noDisplay();
 	void setCursor(uint8_t, uint8_t);
-	void print(long)=0;
-	void println(long)=0;
-	void print(double)=0;
-	void println(double)=0;
+	void print(long);
+	void println(long);
+	void print(double);
+	void println(double);
+	void print(int);
+	void println(int);
 	virtual ~OLED();
 
 };

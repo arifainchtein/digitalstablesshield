@@ -27,6 +27,9 @@ public:
 	void println(long)=0;
 	void print(double)=0;
 	void println(double)=0;
+	void print(int)=0;
+	void println(int)=0;
+
 	virtual ~NoLCD();
 };
 

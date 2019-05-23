@@ -25,6 +25,8 @@ public:
 	virtual void println(long)=0;
 	virtual void print(double)=0;
 	virtual void println(double)=0;
+	virtual void print(int)=0;
+	virtual void println(int)=0;
 	virtual void noDisplay()=0;
 	virtual void display()=0;
 };
