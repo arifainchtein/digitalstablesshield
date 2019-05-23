@@ -48,6 +48,20 @@ void GroveLCD::print(float s){
 	lcd.print(s);
 }
 
+void GroveLCD::println(long s){
+	lcd.print(s);
+}
+
+void GroveLCD::print(long s){
+	lcd.print(s);
+}
+void GroveLCD::println(double s){
+	lcd.print(s);
+}
+
+void GroveLCD::print(double s){
+	lcd.print(s);
+}
 void GroveLCD::noDisplay(){
 	lcd.noDisplay();
 }

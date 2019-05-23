@@ -25,7 +25,10 @@ public:
 	void println( String );
 	void println(float);
 	void noDisplay();
-
+	void print(long)=0;
+	void println(long)=0;
+	void print(double)=0;
+	void println(double)=0;
 	virtual ~GroveLCD();
 
 };

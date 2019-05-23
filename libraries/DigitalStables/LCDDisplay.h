@@ -21,6 +21,10 @@ public:
 	virtual void println( String)=0;
 	virtual void print(float)=0;
 	virtual void println(float)=0;
+	virtual void print(long)=0;
+	virtual void println(long)=0;
+	virtual void print(double)=0;
+	virtual void println(double)=0;
 	virtual void noDisplay()=0;
 	virtual void display()=0;
 };

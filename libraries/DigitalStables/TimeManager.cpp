@@ -12,6 +12,7 @@
 #include <GravityRtc.h>
 
 #include <GeneralFunctions.h>
+#include <GravityRtc.h>
 
 #define LEAP_YEAR(_year) ((_year%4)==0)
 
@@ -31,6 +32,7 @@ TimeManager::TimeManager(GeneralFunctions& g, HardwareSerial& serial):generalFun
 
 
 
+//SetTime#23#05#2019#4#05#48#20
 
 
 boolean TimeManager::setTime(String command){
@@ -41,6 +43,20 @@ boolean TimeManager::setTime(String command){
 	int hour = generalFunctions.getValue(command, '#', 5).toInt();
 	int min = generalFunctions.getValue(command, '#', 6).toInt();
 	int sec = generalFunctions.getValue(command, '#', 7).toInt();
+
+	_HardSerial.print(rtc.day);
+		_HardSerial.print("/");
+		_HardSerial.print(rtc.month);
+		_HardSerial.print("/");
+		_HardSerial.print(rtc.year);
+		_HardSerial.print(" ");
+		_HardSerial.print(rtc.hour);
+		_HardSerial.print(":");
+		_HardSerial.print(rtc.minute);
+		_HardSerial.print(":");
+		_HardSerial.print(rtc.second);
+
+
 	rtc.adjustRtc(year,month,date,dw,hour,min,sec);
 
 
@@ -81,7 +97,6 @@ void TimeManager::start(){
 	rtc.setup();
 
 }
-
 
 
 long TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second){
@@ -198,7 +213,6 @@ RTCInfoRecord TimeManager::getCurrentDateTime(){
 
 	return aRTCInfoRecord;
 }
-
 
 long TimeManager::getCurrentTimeInSeconds(){
 	rtc.read();
