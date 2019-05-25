@@ -45,12 +45,18 @@ typedef struct FlowMeterEventData{
 		toReturn.concat("#") ;
 		toReturn.concat(eventGroupStartTime) ;
 		toReturn.concat("#") ;
-		toReturn.concat(averageflow) ;
+		char aString[15];
+		dtostrf(averageflow,5, 2, aString);
+		toReturn.concat(aString) ;
 		toReturn.concat("#") ;
 		toReturn.concat(flowMeterId) ;
 		toReturn.concat("#") ;
-		toReturn.concat(totalVolume) ;
+
+		char aString2[15];
+		dtostrf(totalVolume,5, 2, aString2);
+		toReturn.concat(aString2) ;
 		toReturn.concat("#") ;
+
 		toReturn.concat(sampleFrequencySeconds) ;
 		toReturn.concat("#") ;
 		toReturn.concat(numberOfSamples) ;
