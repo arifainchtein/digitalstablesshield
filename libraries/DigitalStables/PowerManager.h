@@ -104,7 +104,7 @@ public:
 	static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="HPDILS";
 	static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="HOILS";
 	const char  *WPSSensorDataDirName="WPSSensr";
-	const char  *EventsDirName="Events";
+
 	const char  *DiscreteDirName="Discrete";
 	const char  *LifeCycleDataDirName="LifeCycl";
 	const char  *RememberedValueDataDirName  = "RememVal";
