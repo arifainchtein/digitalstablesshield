@@ -17,6 +17,7 @@
 #include <DataStorageManagerInitParams.h>
 
 class SDCardManager: public DataStorageManager{
+
 	TimeManager & timeManager;
 	GeneralFunctions & generalFunctions;
 	HardwareSerial& _HardSerial;
