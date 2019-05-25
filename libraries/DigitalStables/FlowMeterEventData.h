@@ -80,7 +80,7 @@ typedef struct FlowMeterEventData{
 
 
 typedef union FlowMeterEventDataUnion{
-	FlowMeterEventData flowMeterEventData;
+	FlowMeterEventData aFlowMeterEventData;
 	byte flowMeterEventDataBytes[sizeof(FlowMeterEventData)];
 };
 
