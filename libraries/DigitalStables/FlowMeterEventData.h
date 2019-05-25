@@ -62,11 +62,14 @@ typedef struct FlowMeterEventData{
 		toReturn.concat(numberOfSamples) ;
 		toReturn.concat("#") ;
 		FlowMeterSample sample;
+
+		char aString3[15];
 		for(int i=0;i<numberOfSamples;i++){
 			sample = samples[i];
 			toReturn.concat(sample.sampleTime) ;
 			toReturn.concat("#") ;
-			toReturn.concat(sample.flow) ;
+			dtostrf(sample.flow,5, 2, aString3);
+			toReturn.concat(aString3) ;
 			toReturn.concat("#") ;
 		}
 		return toReturn;
