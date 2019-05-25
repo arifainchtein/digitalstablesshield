@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include <LCDDisplay.h>
 #include <PowerManager.h>
-#include <dataStorageManager.h>
+#include <DataStorageManager.h>
 #include <GeneralFunctions.h>
 #include <TimeManager.h>
 
