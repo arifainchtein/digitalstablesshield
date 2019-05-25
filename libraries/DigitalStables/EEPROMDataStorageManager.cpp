@@ -66,6 +66,19 @@ boolean EEPROMDataStorageManager::openDiscreteRecordFile(){
 void EEPROMDataStorageManager::closeDiscreteRecordFile(){
 
 }
+void storeEventRecord( byte eventData[]){
+
+}
+boolean readEventRecord(uint16_t index, byte *eventData,int eventSize){
+
+}
+boolean openEventRecordFile(const char *filename){
+
+}
+void closeEventRecordFile(){
+
+}
+
 float EEPROMDataStorageManager::searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor){
 
 }

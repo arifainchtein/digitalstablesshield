@@ -14,36 +14,42 @@
 class EEPROMDataStorageManager: public DataStorageManager {
 
 	TimeManager & timeManager;
-		GeneralFunctions & generalFunctions;
-		HardwareSerial& _HardSerial;
-		LCDDisplay&  lcdDisplay;
-		DataStorageManagerInitParams& dataStorageManagerInitParams;
+	GeneralFunctions & generalFunctions;
+	HardwareSerial& _HardSerial;
+	LCDDisplay&  lcdDisplay;
+	DataStorageManagerInitParams& dataStorageManagerInitParams;
 public:
 	EEPROMDataStorageManager();
 
 	EEPROMDataStorageManager(DataStorageManagerInitParams& d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
-		boolean start();
-		boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
-		boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
-		void storeRememberedValue(long time, const char *name, float value, String unit);
-		void storeDiscreteRecord( DiscreteRecord &discreteRec);
-		boolean readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
-		boolean openDiscreteRecordFile();
-		void closeDiscreteRecordFile();
-		float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
-		void storeLifeCycleEvent(long time, const char *eventType, int eventValue);
-		long printDirectory(File dir, int numTabs);
-		long getDiskUsage();
-		long getSDCardDiskUse(File dir );
-		boolean getHistoricalData(const char *dirName, int date, int month, int year);
-		void saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord);
+	boolean start();
+	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
+	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
+	void storeRememberedValue(long time, const char *name, float value, String unit);
+	void storeDiscreteRecord( DiscreteRecord &discreteRec);
+	boolean readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
+	boolean openDiscreteRecordFile();
+	void closeDiscreteRecordFile();
 
-		//
-		// Functions that represent Serial commands
-		//
-		boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
-		float listFiles();
-		boolean setTime(String);
+	void storeEventRecord( byte eventData[]);
+	boolean readEventRecord(uint16_t index, byte *eventData,int eventSize);
+	boolean openEventRecordFile(const char *filename);
+	void closeEventRecordFile();
+
+	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
+	void storeLifeCycleEvent(long time, const char *eventType, int eventValue);
+	long printDirectory(File dir, int numTabs);
+	long getDiskUsage();
+	long getSDCardDiskUse(File dir );
+	boolean getHistoricalData(const char *dirName, int date, int month, int year);
+	void saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord);
+
+	//
+	// Functions that represent Serial commands
+	//
+	boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
+	float listFiles();
+	boolean setTime(String);
 
 	virtual ~EEPROMDataStorageManager();
 

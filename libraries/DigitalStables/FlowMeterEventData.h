@@ -22,7 +22,7 @@ typedef struct FlowMeterEventData{
 	// flow meter 0, ie the input flow meter
 	// and is a way to associate all the events that
 	// happened from the moment the input flowmeter
-	// starts detecting flow to the moment flowmeter 100 stops
+	// starts detecting flow to the moment flowmeter stops
 	// detecting flow.
 	// obviously, for the event that represents flowmeter 0
 	// the eventGroupTime will be equal to the startTime
@@ -32,8 +32,40 @@ typedef struct FlowMeterEventData{
 	uint8_t numberOfSamples;
 	double totalVolume;
 	uint8_t flowMeterId;
-	uint16_t sampleFrequencyMilliseconds;
-	FlowMeterSample samples[500];
+	uint16_t sampleFrequencySeconds;
+	FlowMeterSample samples[10];
+
+	String toTokenizedString(char separator){
+		String toReturn;
+		toReturn.reserve(200);
+
+		toReturn.concat(startTime) ;
+		toReturn.concat("#") ;
+		toReturn.concat(endTime) ;
+		toReturn.concat("#") ;
+		toReturn.concat(eventGroupStartTime) ;
+		toReturn.concat("#") ;
+		toReturn.concat(averageflow) ;
+		toReturn.concat("#") ;
+		toReturn.concat(flowMeterId) ;
+		toReturn.concat("#") ;
+		toReturn.concat(totalVolume) ;
+		toReturn.concat("#") ;
+		toReturn.concat(sampleFrequencySeconds) ;
+		toReturn.concat("#") ;
+		toReturn.concat(numberOfSamples) ;
+		toReturn.concat("#") ;
+		FlowMeterSample sample;
+		for(int i=0;i<numberOfSamples;i++){
+			sample = samples[i];
+			toReturn.concat(sample.sampleTime) ;
+			toReturn.concat("#") ;
+			toReturn.concat(sample.flow) ;
+			toReturn.concat("#") ;
+		}
+		return toReturn;
+
+	}
 };
 
 
@@ -56,10 +88,10 @@ typedef struct FlowMeterEventFaultData{
 
 };
 
-typedef union FlowMeterEventFaultUnion{
-	FlowMeterEventFaultData aFlowMeterEventFaultData;
-	byte flowMeterEventFaultBytes[sizeof(FlowMeterEventFaultData)];
-};
+//typedef union FlowMeterEventFaultUnion{
+//	FlowMeterEventFaultData aFlowMeterEventFaultData;
+//	byte flowMeterEventFaultBytes[sizeof(FlowMeterEventFaultData)];
+//};
 
 
 

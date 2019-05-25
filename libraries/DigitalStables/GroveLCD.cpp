@@ -70,6 +70,12 @@ void GroveLCD::display(){
 	lcd.display();
 }
 
+void GroveLCD::print(int s){
+}
+
+void GroveLCD::println(int s){
+
+}
 
 GroveLCD::~GroveLCD() {
 	// TODO Auto-generated destructor stub

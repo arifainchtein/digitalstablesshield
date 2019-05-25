@@ -250,17 +250,16 @@ boolean SDCardManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec)
 	return toReturn;
 }
 
-void SDCardManager::storeEventRecord(byte eventData[]){
+void SDCardManager::storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize ){
 	char untransferredFileName[25];
-	sprintf(untransferredFileName,"/%s/%s",DiscreteRecordDirName,unstraferedFileName);
+	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
-		untransferredFile.write((uint8_t *)eventData, sizeof(eventData));
+		untransferredFile.write(eventData, eventSize);
 		untransferredFile.close(); // close the file
 	}
 }
-
 
 boolean SDCardManager::openEventRecordFile(const char *filename)
 {
@@ -271,24 +270,41 @@ boolean SDCardManager::openEventRecordFile(const char *filename)
 	return currentlyOpenFile;
 }
 
-boolean SDCardManager::readEventRecord(uint16_t index,byte eventData[])
+boolean SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData)
 {
 	boolean toReturn=false;
 	if (currentlyOpenFile) {
-		toReturn = currentlyOpenFile.seek(index*sizeof(eventData));
+		File tf;
+		if(moveData==1){
+			char fileNameTF[24];
+			snprintf(fileNameTF, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
+			tf = SD.open(fileNameTF, FILE_WRITE);
+		}
+
+		toReturn = currentlyOpenFile.seek(index*eventSize);
 		if(toReturn){
-			currentlyOpenFile.read((uint8_t*)&eventData,sizeof(eventData));
+			currentlyOpenFile.read(eventData,eventSize);
+
+			if(moveData==1){
+				tf.write(eventData, eventSize);
+			}
+
+		}
+		if(moveData==1){
+			tf.close();
 		}
 	}
 	return toReturn;
 }
 
 
-
-void SDCardManager::closeEventRecordFile()
+void SDCardManager::closeEventRecordFile(boolean clearEventFile)
 {
 	if(currentlyOpenFile){
 		currentlyOpenFile.close();
+		if(clearEventFile){
+			SD.remove(fileName);
+		}
 	}
 }
 

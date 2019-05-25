@@ -42,7 +42,7 @@
 #define SOLAR_PANEL_INPUT_CURRENT_SENSOR 2
 #define BATTERY_OUPUT_CURRENT_SENSOR 3
 #define RS485_SOURCE_VOLTAGE_PIN 4
-#define LOCK_CAPACITOR_PIN 5
+//#define LOCK_CAPACITOR_PIN 5
 float amplitude_current;               //amplitude current
 float effective_value;
 

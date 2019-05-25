@@ -16,7 +16,7 @@
 
 //
 // the wps variables
-#define LOCK_CAPACITOR_PIN A0
+#define LOCK_CAPACITOR_PIN A5
 #define BATTERY_VOLTAGE_PIN A1
 
 
@@ -30,9 +30,9 @@ float capacitorVoltage= 0;
 
 
 char remFileName[10];
-
 char sensorDirName[10];
 char lifeCycleFileName[10];
+
 long shutDownRequestedseconds= 0L;
 boolean shuttingDownPiCountdown=false;
 boolean manualShutdown=false;
