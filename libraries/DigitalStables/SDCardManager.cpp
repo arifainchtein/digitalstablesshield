@@ -37,6 +37,7 @@ extern char lifeCycleFileName[10];
 extern char remFileName[10];
 
 File currentlyOpenFile;
+char *currentlyOpenFileName;
 
 SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
 {}
@@ -267,6 +268,7 @@ boolean SDCardManager::openEventRecordFile(const char *filename)
 
 	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,filename);
 	currentlyOpenFile = SD.open(untransferredFileName, FILE_WRITE);
+	currentlyOpenFileName=filename;
 	return currentlyOpenFile;
 }
 
@@ -276,8 +278,19 @@ boolean SDCardManager::readEventRecord(uint16_t index, byte *eventData,int event
 	if (currentlyOpenFile) {
 		File tf;
 		if(moveData==1){
+
+			char fileName[25] = "/";
+			snprintf(fileName, sizeof fileName, "/%s/%s", EventRecordDirName, currentlyOpenFileName);
+
+
+
+
+
 			char fileNameTF[24];
-			snprintf(fileNameTF, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
+			RTCInfoRecord anRTCInfoRecord = timeManager.getCurrentDateTime();
+			int year = anRTCInfoRecord.year-2000;
+			int month = anRTCInfoRecord.month-1;
+			snprintf(fileNameTF, sizeof fileName, "/%s/%s_%i_%i_%i.txt", EventRecordDirName,currentlyOpenFileName, anRTCInfoRecord.date,month, year);
 			tf = SD.open(fileNameTF, FILE_WRITE);
 		}
 
@@ -303,7 +316,7 @@ void SDCardManager::closeEventRecordFile(boolean clearEventFile)
 	if(currentlyOpenFile){
 		currentlyOpenFile.close();
 		if(clearEventFile){
-			SD.remove(fileName);
+			SD.remove(currentlyOpenFileName);
 		}
 	}
 }
