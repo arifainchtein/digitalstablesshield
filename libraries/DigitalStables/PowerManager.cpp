@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include <LCDDisplay.h>
 #include <PowerManager.h>
-#include <SDCardManager.h>
+#include <dataStorageManager.h>
 #include <GeneralFunctions.h>
 #include <TimeManager.h>
 
@@ -80,7 +80,7 @@ int SHARED_SECRET_LENGTH;
 long previousUpdate;
 
 
-PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
+PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
 
 void PowerManager::start(){
@@ -94,9 +94,9 @@ void PowerManager::start(){
 }
 void PowerManager::hourlyTasks(long time, int previousHour ){
 
-	sdCardManager.storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
-	sdCardManager.storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
-	sdCardManager.storeRememberedValue(time,HOURLY_OPERATING_IN_LOOP_SECONDS, 3600-hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
+	dataStorageManager.storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	dataStorageManager.storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
+	dataStorageManager.storeRememberedValue(time,HOURLY_OPERATING_IN_LOOP_SECONDS, 3600-hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
 	hourlyBatteryOutEnergy=0;
 	hourlyPoweredDownInLoopSeconds=0;
 }
@@ -107,17 +107,17 @@ void PowerManager::hourlyTasks(long time, int previousHour ){
 void PowerManager::dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear ){
 	//
 	// move whatever is in untrasferred to the correct date
-	boolean result = sdCardManager.readUntransferredFileFromSDCardByDate( 1,false, RememberedValueDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear );
-	result = sdCardManager.readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
-	result = sdCardManager.readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
+	boolean result = dataStorageManager.readUntransferredFileFromSDCardByDate( 1,false, RememberedValueDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear );
+	result = dataStorageManager.readUntransferredFileFromSDCardByDate( 1,false, WPSSensorDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
+	result = dataStorageManager.readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 	long yesterdayDateSeconds = timeManager.dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
-	sdCardManager.storeRememberedValue(time,DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, UNIT_NO_UNIT);
-	sdCardManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, UNIT_MILLI_AMPERES);
-	sdCardManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, UNIT_MILLI_AMPERES);
-	sdCardManager.storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
-	sdCardManager.storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
+	dataStorageManager.storeRememberedValue(time,DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, UNIT_NO_UNIT);
+	dataStorageManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, UNIT_MILLI_AMPERES);
+	dataStorageManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, UNIT_MILLI_AMPERES);
+	dataStorageManager.storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	dataStorageManager.storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
 	dailyMinBatteryVoltage = 9999.0;
 	dailyMaxBatteryVoltage = -1.0;
 	dailyMinBatteryCurrent = 9999.0;
@@ -243,7 +243,7 @@ void PowerManager::enterArduinoSleep(void)
 	if(batteryVoltage>minWPSVoltage){
 		// STORE a lifecycle comma exit record
 		long now = timeManager.getCurrentTimeInSeconds();
-		sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+		dataStorageManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 		lcd.display();
 		lcd.setRGB(255,255,0);
 		lcd.clear();
@@ -338,7 +338,7 @@ void PowerManager::sendWPSAlert(long time, char *faultData, int batteryVoltage){
 	inWPS=true;
 	operatingStatus="WPS";
 	wpsAlertTime=timeManager.getCurrentTimeInSeconds();
-	sdCardManager.storeRememberedValue(time,faultData, batteryVoltage, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,faultData, batteryVoltage, UNIT_VOLT);
 }
 
 void PowerManager::turnPiOffForced(long time){
@@ -347,10 +347,10 @@ void PowerManager::turnPiOffForced(long time){
 	delay(1000);
 	float batteryVoltageAfter = getBatteryVoltage();
 	float voltageDifferential = 1-(batteryVoltageBefore/batteryVoltageAfter);
-	sdCardManager.storeRememberedValue(time,FORCED_PI_TURN_OFF,0 , operatingStatus);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
+	dataStorageManager.storeRememberedValue(time,FORCED_PI_TURN_OFF,0 , operatingStatus);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 void PowerManager::turnPiOff(long time){
@@ -359,10 +359,10 @@ void PowerManager::turnPiOff(long time){
 	delay(1000);
 	float batteryVoltageAfter = getBatteryVoltage();
 	float voltageDifferential = 1-(batteryVoltageBefore/batteryVoltageAfter);
-	sdCardManager.storeRememberedValue(time,PI_TURN_OFF,0 , operatingStatus);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
+	dataStorageManager.storeRememberedValue(time,PI_TURN_OFF,0 , operatingStatus);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 
@@ -373,9 +373,9 @@ void PowerManager::turnPiOn(long time){
 	float batteryVoltageAfter = getBatteryVoltage();
 	float voltageDifferential = 1-(batteryVoltageAfter/batteryVoltageBefore);
 
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	sdCardManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 
@@ -406,7 +406,7 @@ void PowerManager::defineState(){
 			manualShutdown=true;
 			inPulse=false;
 			turnPiOff(time);
-			sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_MANUAL_SHUTDOWN, LIFE_CYCLE_EVENT_COMMA_VALUE);
+			dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_MANUAL_SHUTDOWN, LIFE_CYCLE_EVENT_COMMA_VALUE);
 			lcd.print("Pi is OFF");
 			currentViewIndex=3;
 		}else{
@@ -535,7 +535,7 @@ void PowerManager::defineState(){
 			if(piSleepingRemaining<=0){
 				wpsSleeping=false;
 				if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-				sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+				dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 				lcd.print("Pi ON WPS ");
 				lcd.setCursor(0,1);
@@ -579,10 +579,10 @@ void PowerManager::defineState(){
 					anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
 					anWPSSensorRecord.operatingStatus=operatingStatus;
-					anWPSSensorRecord.totalDiskUse= 0; sdCardManager.getDiskUsage();
+					anWPSSensorRecord.totalDiskUse= 0; dataStorageManager.getDiskUsage();
 
 
-					sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
+					dataStorageManager.saveWPSSensorRecord( anWPSSensorRecord);
 					lcd.setRGB(255,255,0);
 				}else{
 					//
@@ -631,7 +631,7 @@ void PowerManager::defineState(){
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
 					operatingStatus="WPS";
-					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					lcd.print("pi off");
 					wpsSleeping=true;
 					currentSleepStartTime = time;
@@ -657,7 +657,7 @@ void PowerManager::defineState(){
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
 					turnPiOff(time);
-					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=true;
 					wpsCountdown=false;
 					currentSleepStartTime=time;
@@ -674,7 +674,7 @@ void PowerManager::defineState(){
 				if(piSleepingRemaining<=0){
 					wpsSleeping=false;
 					if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 					lcd.print("Pi ON WPS ");
 					lcd.setCursor(0,1);
@@ -718,9 +718,9 @@ void PowerManager::defineState(){
 						anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 						anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
 						anWPSSensorRecord.operatingStatus=operatingStatus;
-						anWPSSensorRecord.totalDiskUse=989; sdCardManager.getDiskUsage();
+						anWPSSensorRecord.totalDiskUse=989; dataStorageManager.getDiskUsage();
 
-						sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
+						dataStorageManager.saveWPSSensorRecord( anWPSSensorRecord);
 						lcd.setRGB(255,255,0);
 					}else{
 						//
@@ -775,7 +775,7 @@ void PowerManager::defineState(){
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
 					operatingStatus="WPS";
-					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					currentSecondsToPowerOff=0L;
 					if(piIsOn)turnPiOff(time);
@@ -793,7 +793,7 @@ void PowerManager::defineState(){
 						delay(2000);
 						lcd.setRGB(0,0,0);
 						lcd.noDisplay();
-						sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 						enterArduinoSleep();
 					}
 				}else{
@@ -815,7 +815,7 @@ void PowerManager::defineState(){
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
 					if(piIsOn)turnPiOff(time);
-					sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					wpsCountdown=false;
 					if(f_wdt == 1){
@@ -830,7 +830,7 @@ void PowerManager::defineState(){
 						delay(2000);
 						lcd.setRGB(0,0,0);
 						lcd.noDisplay();
-						sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 						enterArduinoSleep();
 					}
 				}
@@ -853,7 +853,7 @@ void PowerManager::defineState(){
 					delay(2000);
 					lcd.setRGB(0,0,0);
 					lcd.noDisplay();
-					sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+					dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 					enterArduinoSleep();
 				}
 			}else if(piIsOn){
@@ -880,7 +880,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		float batteryVoltage = getBatteryVoltage();
 		float current = getCurrentFromBattery();
 		int stateOfCharge= generalFunctions.getStateOfCharge(batteryVoltage);
-		boolean result = sdCardManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
+		boolean result = dataStorageManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
 		if(result){
 			_HardSerial.println("Ok-TestWPSSensor");
 		}else{
@@ -890,7 +890,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		processed=true;
 	}else if(command=="TestLifeCycle"){
 		long now = timeManager.getCurrentTimeInSeconds();
-		sdCardManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+		dataStorageManager.storeLifeCycleEvent(now, LIFE_CYCLE_EVENT_END_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 		_HardSerial.println("Ok-TestLifeCycle");
 		_HardSerial.flush();
 
@@ -898,7 +898,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		_HardSerial.println(" ");
 		_HardSerial.println(" ");
 		_HardSerial.println(sensorDirName);
-		float total = sdCardManager.listFiles();
+		float total = dataStorageManager.listFiles();
 
 
 		_HardSerial.println(" ");
@@ -1116,7 +1116,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("GetRememberedValueData")){
 		//GetRememberedValueData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
+		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetRememberedValueData");
 		}else {
@@ -1129,7 +1129,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("GetLifeCycleData")){
 		//GetLifeCycleData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
+		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetLifeCycleData");
 		}else {
@@ -1143,7 +1143,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		//GetWPSSensorData#0
 		//GetLifeCycleData#0
 		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
-		boolean result = sdCardManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
+		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorData");
 		}else {
@@ -1160,7 +1160,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		int date = generalFunctions.getValue(command, '#', 1).toInt();
 		int month = generalFunctions.getValue(command, '#', 2).toInt();
 		int year = generalFunctions.getValue(command, '#', 3).toInt();
-		boolean result  =sdCardManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
+		boolean result  =dataStorageManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorDataHistory");
 		}else {
@@ -1176,7 +1176,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		int date = generalFunctions.getValue(command, '#', 1).toInt();
 		int month = generalFunctions.getValue(command, '#', 2).toInt();
 		int year = generalFunctions.getValue(command, '#', 3).toInt();
-		boolean result  = sdCardManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
+		boolean result  = dataStorageManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalLifeCycleData");
 		}else {
@@ -1191,7 +1191,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		int date = generalFunctions.getValue(command, '#', 1).toInt();
 		int month = generalFunctions.getValue(command, '#', 2).toInt();
 		int year = generalFunctions.getValue(command, '#', 3).toInt();
-		boolean result  = sdCardManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
+		boolean result  = dataStorageManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalRememberedValueData");
 		}else {
@@ -1423,7 +1423,7 @@ String PowerManager::getBaseSensorString(){
 	lcd.clear();
 	lcd.setCursor(0,0);
 	lcd.print("S5:");
-	long totalDiskUse=sdCardManager.getDiskUsage();
+	long totalDiskUse=dataStorageManager.getDiskUsage();
 	dur = millis()-now;
 
 	lcd.print(dur);

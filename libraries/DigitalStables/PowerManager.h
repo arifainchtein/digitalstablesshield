@@ -7,7 +7,7 @@
 
 #ifndef PowerManager_h
 #define PowerManager_h
-#include <SDCardManager.h>
+#include <DataStorageManager.h>
 #include <LCDDisplay.h>
 #include <WPSSensorRecord.h>
 #include <SD.h>
@@ -66,7 +66,7 @@ public:
 	TimeManager  timeManager;
 	SecretManager  secretManager;
 	GeneralFunctions  generalFunctions;
-	SDCardManager  sdCardManager;
+	DataStorageManager  &dataStorageManager;
 	HardwareSerial _HardSerial;
 	LCDDisplay&  lcd;
 
@@ -110,7 +110,7 @@ public:
 	const char  *RememberedValueDataDirName  = "RememVal";
 	const char  *unstraferedFileName ="Untransf.txt";
 	PowerManager();
-	PowerManager(LCDDisplay & l , SecretManager & s, SDCardManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
+	PowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
 	void start();
 	void hourlyTasks(long time, int previousHour );
 	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear );

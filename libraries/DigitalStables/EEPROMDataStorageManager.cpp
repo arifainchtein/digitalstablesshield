@@ -62,10 +62,27 @@ boolean EEPROMDataStorageManager::readDiscreteRecord(uint16_t index,DiscreteReco
 boolean EEPROMDataStorageManager::openDiscreteRecordFile(){
 
 }
-
 void EEPROMDataStorageManager::closeDiscreteRecordFile(){
 
 }
+
+void EEPROMDataStorageManager::storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize ){
+
+}
+
+boolean EEPROMDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
+
+}
+boolean EEPROMDataStorageManager::openEventRecordFile(const char *filename){
+
+}
+void EEPROMDataStorageManager::closeEventRecordFile(boolean){
+
+}
+
+
+
+
 void storeEventRecord( byte eventData[]){
 
 }

@@ -31,10 +31,11 @@ public:
 	boolean openDiscreteRecordFile();
 	void closeDiscreteRecordFile();
 
-	void storeEventRecord( byte eventData[]);
-	boolean readEventRecord(uint16_t index, byte *eventData,int eventSize);
+	void storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize );
+	boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
 	boolean openEventRecordFile(const char *filename);
-	void closeEventRecordFile();
+	void closeEventRecordFile(boolean);
+
 
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
 	void storeLifeCycleEvent(long time, const char *eventType, int eventValue);
