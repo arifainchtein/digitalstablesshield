@@ -47,7 +47,7 @@ float amplitude_current;               //amplitude current
 float effective_value;
 
 
-XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, SDCardManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), sdCardManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
+XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
 
 float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
@@ -129,7 +129,7 @@ void XBeeTelepathonPowerManager::defineState(){
 			if(piSleepingRemaining<=0){
 				wpsSleeping=false;
 
-				sdCardManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+				dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 				lcd.print("Pi ON WPS ");
 				lcd.setCursor(0,1);
@@ -173,9 +173,9 @@ void XBeeTelepathonPowerManager::defineState(){
 					anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
 					anWPSSensorRecord.operatingStatus=operatingStatus;
-					anWPSSensorRecord.totalDiskUse=989; sdCardManager.getDiskUsage();
+					anWPSSensorRecord.totalDiskUse=989; //dataStorageManager.getDiskUsage();
 
-					sdCardManager.saveWPSSensorRecord( anWPSSensorRecord);
+					dataStorageManager.saveWPSSensorRecord( anWPSSensorRecord);
 					lcd.setRGB(255,255,0);
 				}else{
 					//
@@ -212,7 +212,7 @@ void XBeeTelepathonPowerManager::defineState(){
 				delay(2000);
 				lcd.setRGB(0,0,0);
 				lcd.noDisplay();
-				sdCardManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+				dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 				enterArduinoSleep();
 			}
 		}
