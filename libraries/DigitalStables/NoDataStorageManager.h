@@ -5,31 +5,24 @@
  *      Author: arifainchtein
  */
 
-#ifndef LIBRARIES_DIGITALSTABLES_EEPROMDATASTORAGEMANAGER_H_
-#define LIBRARIES_DIGITALSTABLES_EEPROMDATASTORAGEMANAGER_H_
+#ifndef LIBRARIES_DIGITALSTABLES_NODATASTORAGEMANAGER_H_
+#define LIBRARIES_DIGITALSTABLES_NODATASTORAGEMANAGER_H_
 
 #include <DataStorageManager.h>
-#include <EEPROMDataStorageManagerInitParams.h>
+#include <DataStorageManagerInitParams.h>
 
-class EEPROMDataStorageManager: public DataStorageManager {
+class NoDataStorageManager: public DataStorageManager {
 
 	TimeManager & timeManager;
 	GeneralFunctions & generalFunctions;
 	HardwareSerial& _HardSerial;
 	LCDDisplay&  lcdDisplay;
-	EEPROMDataStorageManagerInitParams& dataStorageManagerInitParams;
-
-	uint8_t  pageSize=128;
-uint8_t wpSensorDataFolderSize;
-uint8_t lifeCycleFolderSize;
-uint8_t discreteRecordFolderSize;
-uint8_t eventFolderSize;
-uint8_t rememberedValueFolderSize;
+	DataStorageManagerInitParams& dataStorageManagerInitParams;
 public:
-	EEPROMDataStorageManager();
-	virtual ~EEPROMDataStorageManager();
-
-	EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
+	NoDataStorageManager();
+	virtual ~NoDataStorageManager();
+	
+	NoDataStorageManager(DataStorageManagerInitParams& d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
 	boolean start();
 	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
 	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
@@ -58,12 +51,10 @@ public:
 	//
 	boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
 	float listFiles();
-	
+	boolean setTime(String);
+
 	
 
-private:
-	void writeEEPROM(int deviceaddress, unsigned int eeaddress, char* data);
-	void readEEPROM(int deviceaddress, unsigned int eeaddress, unsigned char* data, unsigned int num_chars);
 };
 
-#endif /* LIBRARIES_DIGITALSTABLES_EEPROMDATASTORAGEMANAGER_H_ */
+#endif /* LIBRARIES_DIGITALSTABLES_NODATASTORAGEMANAGER_H_ */

@@ -45,7 +45,8 @@ public:
 	boolean inPulse=false;
 	String pulseStartTime="";
 	String pulseStopTime="";
-	int PI_POWER_PIN=4;
+
+	#define PI_POWER_PIN 0
 	long secondsToTurnPowerOff = 30;
 	long secondsToNextPiOn=90L;
 	long currentSecondsToPowerOff=0L;
@@ -63,46 +64,50 @@ public:
 	volatile int f_wdt=1;
 	long wpsCountDownStartSeconds=0L;
 
-	TimeManager  timeManager;
-	SecretManager  secretManager;
-	GeneralFunctions  generalFunctions;
-	DataStorageManager  &dataStorageManager;
-	HardwareSerial _HardSerial;
+	TimeManager&  timeManager;
+	SecretManager&  secretManager;
+	GeneralFunctions&  generalFunctions;
+	DataStorageManager&  dataStorageManager;
+	HardwareSerial& _HardSerial;
 	LCDDisplay&  lcd;
 
-	static const char *UNIT_VOLT ="Volt";
-	static const char *UNIT_SECONDS="sec";
-	static const char *UNIT_MILLI_AMPERES ="mA";
-	static const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
-	static const char *UNIT_PERCENTAGE ="%";
-	static const char *FORCED_PI_TURN_OFF ="FPTO";
-	static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="BVBTPO";
-	static const char *BATTERY_VOLTAGE_ATER_PI_ON="BVATPO";
-	static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="BVDATPO";
-	static const char *PI_TURN_OFF ="Pi Turn Off";
-	static const char *UNIT_NO_UNIT =" ";
+	constexpr static const char *UNIT_VOLT ="Volt";
+	constexpr static const char *UNIT_SECONDS="sec";
+	constexpr static const char *UNIT_MILLI_AMPERES ="mA";
+	constexpr static const char *UNIT_MILLI_AMPERES_HOURS ="mAh";
+	constexpr static const char *UNIT_PERCENTAGE ="%";
+	constexpr static const char *FORCED_PI_TURN_OFF ="FPTO";
+	constexpr static const char *BATTERY_VOLTAGE_BEFORE_PI_ON ="BVBTPO";
+	constexpr static const char *BATTERY_VOLTAGE_ATER_PI_ON="BVATPO";
+	constexpr static const char *BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON ="BVDATPO";
+	constexpr static const char *PI_TURN_OFF ="Pi Turn Off";
+	constexpr static const char *UNIT_NO_UNIT =" ";
 
 
-	static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="FSWPS";
-	static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="MS";
-	static const char *LIFE_CYCLE_EVENT_START_WPS    ="SW";
-	static const char *LIFE_CYCLE_EVENT_END_WPS     ="EWS";
-	static const char *LIFE_CYCLE_EVENT_START_COMMA ="SC";
-	static const char *LIFE_CYCLE_EVENT_END_COMMA ="EC";
-	static const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
-	static const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
-	static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
+	constexpr static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="FSWPS";
+	constexpr static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="MS";
+	constexpr static const char *LIFE_CYCLE_EVENT_START_WPS    ="SW";
+	constexpr static const char *LIFE_CYCLE_EVENT_END_WPS     ="EWS";
+	constexpr static const char *LIFE_CYCLE_EVENT_START_COMMA ="SC";
+	constexpr static const char *LIFE_CYCLE_EVENT_END_COMMA ="EC";
+	constexpr static const int LIFE_CYCLE_EVENT_AWAKE_VALUE=3;
+	constexpr static const int LIFE_CYCLE_EVENT_WPS_VALUE=2;
+	constexpr static const int LIFE_CYCLE_EVENT_COMMA_VALUE=1;
 
-	static const char *DAILY_STATS_TIMESTAMP="DST";
-	static const char *DAILY_MINIMUM_BATTERY_VOLTAGE="DMiBV";
-	static const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="DMaBV";
-	static const char *DAILY_MINIMUM_BATTERY_CURRENT="DMiBC";
-	static const char *DAILY_MAXIMUM_BATTERY_CURRENT="DMaBC";
-	static const char *DAILY_ENERGY="DE";
-	static const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="DPDInLS";
-	static const char *HOURLY_ENERGY="HE";
-	static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="HPDILS";
-	static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="HOILS";
+	constexpr static const char * LIFE_CYCLE_EVENT_START_EXTENDED_OPERON_EXECUTION="SEOE";
+	constexpr static const char * LIFE_CYCLE_EVENT_END_EXTENDED_OPERON_EXECUTION="EEOE";
+	constexpr static const char * LIFE_CYCLE_EVENT_UPDATE_EXTENDED_OPERON_EXECUTION="UEOE";
+
+	constexpr static const char *DAILY_STATS_TIMESTAMP="DST";
+	constexpr static const char *DAILY_MINIMUM_BATTERY_VOLTAGE="DMiBV";
+	constexpr static const char *DAILY_MAXIMUM_BATTERY_VOLTAGE="DMaBV";
+	constexpr static const char *DAILY_MINIMUM_BATTERY_CURRENT="DMiBC";
+	constexpr static const char *DAILY_MAXIMUM_BATTERY_CURRENT="DMaBC";
+	constexpr static const char *DAILY_ENERGY="DE";
+	constexpr static const char *DAILY_POWERED_DOWN_IN_LOOP_SECONDS="DPDInLS";
+	constexpr static const char *HOURLY_ENERGY="HE";
+	constexpr static const char *HOURLY_POWERED_DOWN_IN_LOOP_SECONDS="HPDILS";
+	constexpr static const char *HOURLY_OPERATING_IN_LOOP_SECONDS="HOILS";
 	const char  *WPSSensorDataDirName="WPSSensr";
 
 	const char  *DiscreteDirName="Discrete";
@@ -132,7 +137,7 @@ public:
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
 	void toggleWDT();
-	String getBaseSensorString();
+	void printBaseSensorStringToSerialPort();
 
 protected:
 

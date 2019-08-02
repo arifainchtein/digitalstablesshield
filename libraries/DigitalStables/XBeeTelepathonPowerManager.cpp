@@ -43,8 +43,8 @@
 #define BATTERY_OUPUT_CURRENT_SENSOR 3
 #define RS485_SOURCE_VOLTAGE_PIN 4
 //#define LOCK_CAPACITOR_PIN 5
-float amplitude_current;               //amplitude current
-float effective_value;
+             //amplitude current
+
 
 
 XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
@@ -65,8 +65,8 @@ float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
 	}
 
 	//the VCC on the Grove interface of the sensor is 5v
-	amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-	effective_value=amplitude_current/1.414;
+	float solar_amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
+	float effective_value=solar_amplitude_current/1.414;
 	return effective_value;
 }
 
@@ -100,8 +100,8 @@ float XBeeTelepathonPowerManager::getCurrentFromBattery(void){
 	}
 
 	//the VCC on the Grove interface of the sensor is 5v
-	amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-	effective_value=amplitude_current/1.414;
+	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
+	float effective_value=amplitude_current/1.414;
 	return effective_value;
 }
 void XBeeTelepathonPowerManager::defineState(){

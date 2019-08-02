@@ -18,7 +18,7 @@
 // the wps variables
 #define LOCK_CAPACITOR_PIN A5
 #define BATTERY_VOLTAGE_PIN A1
-
+#define CURRENT_SENSOR A4
 
 
 char *faultData;
@@ -29,9 +29,6 @@ long wpsAlertTime=0L;
 float capacitorVoltage= 0;
 
 
-char remFileName[10];
-char sensorDirName[10];
-char lifeCycleFileName[10];
 
 long shutDownRequestedseconds= 0L;
 boolean shuttingDownPiCountdown=false;
@@ -72,7 +69,7 @@ int delayTime=1;
 
 
 
-int SHARED_SECRET_LENGTH;
+
 
 
 
@@ -138,9 +135,9 @@ void PowerManager::yearlyTasks(long time){
 
 
 
-float PowerManager::getCurrentFromBattery(void){
-	return 0.0;
-}
+//float PowerManager::getCurrentFromBattery(void){
+//	return 0.0;
+//}
 
 float PowerManager::getCurrentInputFromSolarPanel(void){
 	return 0.0;
@@ -151,39 +148,57 @@ float PowerManager::getSolarPanelVoltage(void){
 }
 
 
-//float PowerManager::getCurrentValue(void){
-//	int sensorValue;             //value read from the sensor
-//	int sensorMax = 0;
-//	uint32_t start_time = millis();
-//	while((millis()-start_time) < 100)//sample for 1000ms
-//	{
-//		sensorValue = analogRead(CURRENT_SENSOR);
-//		if (sensorValue > sensorMax)
-//		{
-//			//record the maximum sensor value
-//			sensorMax = sensorValue;
-//		}
-//	}
-//
-//	//the VCC on the Grove interface of the sensor is 5v
-//	amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-//	effective_value=amplitude_current/1.414;
-//	return effective_value;
-//}
+float PowerManager::getCurrentFromBattery(void){
+	int sensorValue;             //value read from the sensor
+	int sensorMax = 0;
+	uint32_t start_time = millis();
+	while((millis()-start_time) < 100)//sample for 1000ms
+	{
+		sensorValue = analogRead(CURRENT_SENSOR);
+		if (sensorValue > sensorMax)
+		{
+			//record the maximum sensor value
+			sensorMax = sensorValue;
+		}
+	}
+
+	//the VCC on the Grove interface of the sensor is 5v
+	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
+	float effective_value=amplitude_current/1.414;
+	return effective_value;
+}
+
 
 float PowerManager::getBatteryVoltage(){
-	long  sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
-	long  sum=0;
-	for(int i=0;i<10;i++)
-	{
-		sum=sensorValue+sum;
-		sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
-		delay(2);
-	}
-	sum=sum/10;
-	float value =(10*sum*4.980/1023.00);
-	return value;
+  int NUM_SAMPLES=10;
+  int sample_count=0;
+  float sum=0;
+  while (sample_count < NUM_SAMPLES) {
+        sum += analogRead(BATTERY_VOLTAGE_PIN);
+        sample_count++;
+        delay(10);
+    }
+   // sum=sum/10;
+    // calculate the voltage
+    // use 5.0 for a 5.0V ADC reference voltage
+    // 5.015V is the calibrated reference voltage
+    float voltage = 11.0*((float)sum / (float)NUM_SAMPLES * 5.16) / 1024.0;
+    return voltage;
 }
+
+// float PowerManager::getBatteryVoltage(){
+// 	long  sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
+// 	long  sum=0;
+// 	for(int i=0;i<10;i++)
+// 	{
+// 		sum=sensorValue+sum;
+// 		sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
+// 		delay(2);
+// 	}
+// 	sum=sum/10;
+// 	float value =(10*sum*4.980/1023.00);
+// 	return value;
+// }
 
 void PowerManager::initializeWDT(){
 	/*** Setup the WDT ***/
@@ -897,7 +912,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command=="ListFiles"){
 		_HardSerial.println(" ");
 		_HardSerial.println(" ");
-		_HardSerial.println(sensorDirName);
+		
 		float total = dataStorageManager.listFiles();
 
 
@@ -960,7 +975,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		_HardSerial.print("secOrig=");
 		_HardSerial.println(secOrig);
 		_HardSerial.flush();
-		char secretCode[SHARED_SECRET_LENGTH];
+		char secretCode[SecretManager::SHARED_SECRET_LENGTH];
 		secretManager.readSecret(secretCode);
 		_HardSerial.print("secretCode=");
 		_HardSerial.println(secretCode);
@@ -1001,7 +1016,7 @@ boolean PowerManager::processDefaultCommands(String command){
 			_HardSerial.println("Failure-GetSecret");
 			_HardSerial.flush();
 		}else{
-			char secretCode[SHARED_SECRET_LENGTH];
+			char secretCode[SecretManager::SHARED_SECRET_LENGTH];
 			secretManager.readSecret(secretCode);
 			_HardSerial.println(secretCode);
 			_HardSerial.println("Ok-GetSecret");
@@ -1121,7 +1136,7 @@ boolean PowerManager::processDefaultCommands(String command){
 			_HardSerial.println("Ok-GetRememberedValueData");
 		}else {
 			char text[44];
-			snprintf(text, sizeof text, "Failure-error opening %s/%s", remFileName, unstraferedFileName);
+			snprintf(text, sizeof text, "Failure-error opening %s/%s", RememberedValueDataDirName, unstraferedFileName);
 			_HardSerial.println(text);
 		}
 		_HardSerial.flush();
@@ -1275,30 +1290,30 @@ void PowerManager::toggleWDT(){
 		//_HardSerial.println("WDT Overrun!!!");
 	}
 }
-
-String PowerManager::getBaseSensorString(){
+void PowerManager::printBaseSensorStringToSerialPort(){
+	
 	lcd.clear();
 	lcd.setCursor(0,0);
 	long now = millis();
 	float batteryVoltage = getBatteryVoltage();
-	lcd.print("S1:");
+	
 	long dur = millis()-now;
 	lcd.print(dur);
 
-	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+	byte internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
 
 
 	now = millis();
 
 
 	float currentValue = getCurrentFromBattery();
-	lcd.print(" S2:");
+	
 	 dur = millis()-now;
 		lcd.print(dur);
 	lcd.setCursor(0,1);
 	now = millis();
 	float capacitorVoltage= getLockCapacitorVoltage();
-	lcd.print("S3:");
+	
 	 dur = millis()-now;
 		lcd.print(dur);
 
@@ -1311,9 +1326,9 @@ String PowerManager::getBaseSensorString(){
 	now = millis();
 	char batteryVoltageStr[15];
 	dtostrf(batteryVoltage,4, 1, batteryVoltageStr);
-	sensorDataString.concat(batteryVoltageStr) ;
-	sensorDataString.concat("#") ;
-	lcd.print("S4:");
+	_HardSerial.print(batteryVoltageStr) ;
+	_HardSerial.print("#") ;
+	
 	 dur = millis()-now;
 		lcd.print(dur);
 	//
@@ -1321,29 +1336,29 @@ String PowerManager::getBaseSensorString(){
 	//
 	char currentValueStr[15];
 	dtostrf(currentValue,4, 0, currentValueStr);
-	sensorDataString.concat(currentValueStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(currentValueStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 3
 	//
 	char capacitorVoltageStr[15];
 	dtostrf(capacitorVoltage,2, 1, capacitorVoltageStr);
-	sensorDataString.concat(capacitorVoltageStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(capacitorVoltageStr) ;
+	_HardSerial.print("#") ;
 
 
 	//
 	// Sensor Request Queue Position 4
 	//
-	sensorDataString.concat( internalBatteryStateOfCharge);
-	sensorDataString.concat("#") ;
+	_HardSerial.print( internalBatteryStateOfCharge);
+	_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 5
 	//
 
-	sensorDataString.concat( operatingStatus);
-	sensorDataString.concat("#") ;
+	_HardSerial.print( operatingStatus);
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 6
@@ -1351,8 +1366,8 @@ String PowerManager::getBaseSensorString(){
 
 	char dailyMinBatteryVoltageStr[15];
 	dtostrf(dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
-	sensorDataString.concat(dailyMinBatteryVoltageStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(dailyMinBatteryVoltageStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 7
@@ -1360,8 +1375,8 @@ String PowerManager::getBaseSensorString(){
 
 	char dailyMaxBatteryVoltageStr[15];
 	dtostrf(dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
-	sensorDataString.concat(dailyMaxBatteryVoltageStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(dailyMaxBatteryVoltageStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 8
@@ -1369,8 +1384,8 @@ String PowerManager::getBaseSensorString(){
 
 	char dailyMinBatteryCurrentStr[15];
 	dtostrf(dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
-	sensorDataString.concat(dailyMinBatteryCurrentStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(dailyMinBatteryCurrentStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 9
@@ -1378,8 +1393,8 @@ String PowerManager::getBaseSensorString(){
 
 	char dailyMaxBatteryCurrentStr[15];
 	dtostrf(dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
-	sensorDataString.concat(dailyMaxBatteryCurrentStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(dailyMaxBatteryCurrentStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 10
@@ -1387,8 +1402,8 @@ String PowerManager::getBaseSensorString(){
 
 	char dailyBatteryOutEnergyStr[15];
 	dtostrf(dailyBatteryOutEnergy,4, 0, dailyBatteryOutEnergyStr);
-	sensorDataString.concat(dailyBatteryOutEnergyStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(dailyBatteryOutEnergyStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 11
@@ -1396,8 +1411,8 @@ String PowerManager::getBaseSensorString(){
 
 	char dailyPoweredDownInLoopSecondsStr[15];
 	dtostrf(dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
-	sensorDataString.concat(dailyPoweredDownInLoopSecondsStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(dailyPoweredDownInLoopSecondsStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 12
@@ -1405,16 +1420,16 @@ String PowerManager::getBaseSensorString(){
 
 	char hourlyBatteryOutEnergyStr[15];
 	dtostrf(hourlyBatteryOutEnergy,4, 0, hourlyBatteryOutEnergyStr);
-	sensorDataString.concat(hourlyBatteryOutEnergyStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(hourlyBatteryOutEnergyStr) ;
+	_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 13
 	//
 
 	char hourlyPoweredDownInLoopSecondsStr[15];
 	dtostrf(hourlyPoweredDownInLoopSeconds,4, 0, hourlyPoweredDownInLoopSecondsStr);
-	sensorDataString.concat(hourlyPoweredDownInLoopSecondsStr) ;
-	sensorDataString.concat("#") ;
+	_HardSerial.print(hourlyPoweredDownInLoopSecondsStr) ;
+	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 14
@@ -1422,19 +1437,18 @@ String PowerManager::getBaseSensorString(){
 	now = millis();
 	lcd.clear();
 	lcd.setCursor(0,0);
-	lcd.print("S5:");
+	
 	long totalDiskUse=dataStorageManager.getDiskUsage();
 	dur = millis()-now;
 
 	lcd.print(dur);
-	sensorDataString.concat(totalDiskUse/1024);
-	sensorDataString.concat("#");
+	_HardSerial.print(totalDiskUse/1024);
+	_HardSerial.print("#");
 	//
 	// Sensor Request Queue Position 15
 	//
 
-	sensorDataString.concat(pauseDuringWPS);
-	sensorDataString.concat("#");
-	return sensorDataString;
-
+	_HardSerial.print(pauseDuringWPS);
+	_HardSerial.print("#");
+	_HardSerial.flush();
 }

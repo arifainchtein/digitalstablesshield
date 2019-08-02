@@ -29,6 +29,8 @@ public:
 	virtual void println(int)=0;
 	virtual void noDisplay()=0;
 	virtual void display()=0;
+	virtual void set2X()=0;
+	virtual void set1X()=0;
 };
 
 #endif /* ARDUINO_LIBRARIES_DIGITALSTABLES_LCDDISPLAY_H_ */

@@ -20,25 +20,27 @@
 #include <SPI.h>
 #include <SD.h>
 
-#define SD_PIN 53
+#define SD_PIN 4
 
-extern char sensorDirName[10];
+extern char sensorDirName[10]="WPSSensr";
 extern char lifeCycleFileName[10];
 extern char remFileName[10];
-const int chipSelect = 10;
+
+
+
+
+
 const char *MAXIMUM_VALUE="Max";
 const char *MINIMUM_VALUE="Min";
 const char *AVERAGE_VALUE="Avg";
 
 
 
-extern char sensorDirName[10];
-extern char lifeCycleFileName[10];
-extern char remFileName[10];
+
 
 File currentlyOpenFile;
-char *currentlyOpenFileName;
-
+const char *currentlyOpenFileName;
+boolean cardOk=false;
 SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
 {}
 
@@ -51,6 +53,8 @@ boolean SDCardManager::start(){
 		//		_HardSerial.flush();
 		lcdDisplay.setCursor(0, 0);
 		lcdDisplay.print("No SD-card.") ;
+		_HardSerial.print("No SD-card.");
+		cardOk=false;
 		return false;
 	}else{
 		// Check dir for db files
@@ -79,11 +83,9 @@ boolean SDCardManager::start(){
 		sensorFile.close();
 		lifeCycleFile.close();
 		rememberedValueFile.close();
-
-
-
-		//		_HardSerial.println("card initialized.");
-		//		_HardSerial.flush();
+		cardOk=true;
+		_HardSerial.println("card initialized.");
+		_HardSerial.flush();
 		return true;
 
 	}
@@ -93,6 +95,7 @@ boolean SDCardManager::start(){
 // Functions that represents commands received via the serial port
 //
 boolean SDCardManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus){
+	if(!cardOk)return false;
 	long lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 	char fileName[25];
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
@@ -124,7 +127,7 @@ boolean SDCardManager::testWPSSensor(float batteryVoltage, float current, int st
 }
 
 float SDCardManager::listFiles(){
-
+if(!cardOk)return -9999.0;
 	File sensorFile = SD.open(sensorDirName );
 	File lifeCycleFile = SD.open(lifeCycleFileName );
 	File rememberedValueFile = SD.open(remFileName );
@@ -150,7 +153,7 @@ float SDCardManager::listFiles(){
 
 boolean SDCardManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
 	//GetRememberedValueData#0
-
+if(!cardOk)return false;
 	char fileName[25] = "/";
 	snprintf(fileName, sizeof fileName, "/%s/%s", dirName, unstraferedFileName);
 
@@ -188,6 +191,7 @@ boolean SDCardManager::readUntransferredFileFromSDCardByDate(int moveData, boole
 
 
 boolean SDCardManager::readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName){
+	if(!cardOk)return false;
 	RTCInfoRecord anRTCInfoRecord = timeManager.getCurrentDateTime();
 	int year = anRTCInfoRecord.year-2000;
 	int month = anRTCInfoRecord.month-1;
@@ -198,7 +202,7 @@ boolean SDCardManager::readUntransferredFileFromSDCard(int moveData, boolean sen
 
 void SDCardManager::storeRememberedValue(long time, const char *name, float value, String unit){
 	//File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
-
+if(!cardOk)return ;
 	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
@@ -219,6 +223,7 @@ void SDCardManager::storeRememberedValue(long time, const char *name, float valu
 
 
 void SDCardManager::storeDiscreteRecord(DiscreteRecord &discreteRec){
+	if(!cardOk)return;
 	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",DiscreteRecordDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
@@ -232,6 +237,7 @@ void SDCardManager::storeDiscreteRecord(DiscreteRecord &discreteRec){
 
 boolean SDCardManager::openDiscreteRecordFile()
 {
+	if(!cardOk)return false;
 	char untransferredFileName[25];
 
 	sprintf(untransferredFileName,"/%s/%s",DiscreteRecordDirName,unstraferedFileName);
@@ -241,6 +247,7 @@ boolean SDCardManager::openDiscreteRecordFile()
 
 boolean SDCardManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec)
 {
+	if(!cardOk)return false;
 	boolean toReturn=false;
 	if (currentlyOpenFile) {
 		toReturn = currentlyOpenFile.seek(index*sizeof(rec));
@@ -252,6 +259,7 @@ boolean SDCardManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec)
 }
 
 void SDCardManager::storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize ){
+	if(!cardOk)return ;
 	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
@@ -264,6 +272,7 @@ void SDCardManager::storeEventRecord(const char *EventRecordDirName, const byte 
 
 boolean SDCardManager::openEventRecordFile(const char *filename)
 {
+	if(!cardOk)return false;
 	char untransferredFileName[25];
 
 	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,filename);
@@ -274,6 +283,7 @@ boolean SDCardManager::openEventRecordFile(const char *filename)
 
 boolean SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData)
 {
+	if(!cardOk)return false;
 	boolean toReturn=false;
 	if (currentlyOpenFile) {
 		File tf;
@@ -310,6 +320,12 @@ boolean SDCardManager::readEventRecord(uint16_t index, byte *eventData,int event
 	return toReturn;
 }
 
+void SDCardManager::closeDiscreteRecordFile()
+{
+	if(currentlyOpenFile){
+		currentlyOpenFile.close();
+	}
+}
 
 void SDCardManager::closeEventRecordFile(boolean clearEventFile)
 {
@@ -322,7 +338,7 @@ void SDCardManager::closeEventRecordFile(boolean clearEventFile)
 }
 
 float SDCardManager::searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor){
-
+if(!cardOk)return -9999.0;
 	float result=-9999;
 	String line="";
 	char anyLabel[50];
@@ -367,7 +383,7 @@ float SDCardManager::searchRememberedValue(const char *label, int date, int mont
 }
 
 void SDCardManager::storeLifeCycleEvent(long time, const char *eventType, int eventValue){
-
+if(!cardOk)return ;
 	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",LifeCycleDataDirName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
@@ -387,8 +403,8 @@ void SDCardManager::storeLifeCycleEvent(long time, const char *eventType, int ev
 
 
 boolean SDCardManager::getHistoricalData(const char *dirName, int date, int month, int year){
+	if(!cardOk)return false;
 	boolean result=false;
-
 	char fileName[24];
 	snprintf(fileName, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
 
@@ -414,7 +430,7 @@ boolean SDCardManager::getHistoricalData(const char *dirName, int date, int mont
 }
 
 long SDCardManager::getSDCardDiskUse(File dir ) {
-
+if(!cardOk)return -9999L;
 	long total=0L;
 	while(true) {
 
@@ -436,6 +452,7 @@ long SDCardManager::getSDCardDiskUse(File dir ) {
 
 
 long SDCardManager::getDiskUsage(){
+	if(!cardOk)return -9999L;
 	File sensorFile = SD.open(sensorDirName );
 	File lifeCycleFile = SD.open(lifeCycleFileName );
 	File rememberedValueFile = SD.open(remFileName );
@@ -452,6 +469,7 @@ long SDCardManager::getDiskUsage(){
 }
 
 long SDCardManager::printDirectory(File dir, int numTabs) {
+	if(!cardOk)return -9999L;
 	long total=0L;
 	while(true) {
 
@@ -480,6 +498,7 @@ long SDCardManager::printDirectory(File dir, int numTabs) {
 
 
 void SDCardManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
+	if(!cardOk)return ;
 	char fileName[30];
 	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
 	File untransferredFile = SD.open(fileName, FILE_WRITE);

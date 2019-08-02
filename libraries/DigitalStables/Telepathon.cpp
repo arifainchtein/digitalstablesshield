@@ -7,7 +7,7 @@
 
 #include <Telepathon.h>
 
-namespace SDLib {
+
 
 Telepathon::Telepathon() {
 	// TODO Auto-generated constructor stub
@@ -18,4 +18,4 @@ Telepathon::~Telepathon() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace SDLib */
+

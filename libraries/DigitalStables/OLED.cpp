@@ -46,8 +46,15 @@ void OLED::setRGB(int r, int g, int b){
 
 
 }
-void OLED::setCursor(uint8_t c, uint8_t r){
 
+void OLED::set1X(){
+	anSSD1306AsciiAvrI2c.set1X();
+}
+void OLED::set2X(){
+	anSSD1306AsciiAvrI2c.set2X();
+}
+void OLED::setCursor(uint8_t c, uint8_t r){
+	
 }
 void OLED::print(const String s){
 	anSSD1306AsciiAvrI2c.print(s);

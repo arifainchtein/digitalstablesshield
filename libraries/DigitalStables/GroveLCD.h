@@ -31,6 +31,8 @@ public:
 	void println(double);
 	void print(int);
 		void println(int);
+		void set2X();
+	void set1X();
 	virtual ~GroveLCD();
 
 };

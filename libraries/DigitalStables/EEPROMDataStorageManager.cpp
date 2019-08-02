@@ -25,12 +25,9 @@ uint8_t discreteRecordFolderSize;
 uint8_t eventFolderSize;
 uint8_t rememberedValueFolderSize;
 
-EEPROMDataStorageManager::EEPROMDataStorageManager() {
-	// TODO Auto-generated constructor stub
 
-}
 
-EEPROMDataStorageManager::EEPROMDataStorageManager(DataStorageManagerInitParams& d, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
+EEPROMDataStorageManager::EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
 {}
 
 boolean EEPROMDataStorageManager::start(){
@@ -127,9 +124,7 @@ boolean EEPROMDataStorageManager::testWPSSensor(float batteryVoltage, float curr
 float EEPROMDataStorageManager::listFiles(){
 
 }
-boolean EEPROMDataStorageManager::setTime(String){
 
-}
 
 void EEPROMDataStorageManager::writeEEPROM(int deviceaddress, unsigned int eeaddress, char* data)
 {

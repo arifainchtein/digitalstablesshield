@@ -23,6 +23,7 @@ class SDCardManager: public DataStorageManager{
 	HardwareSerial& _HardSerial;
 	LCDDisplay&  lcdDisplay;
 	DataStorageManagerInitParams& dataStorageManagerInitParams;
+	
 	const char  *WPSSensorDataDirName="WPSSensr";
 	const char  *LifeCycleDataDirName="LifeCycl";
 	const char  *RememberedValueDataDirName  = "RememVal";
@@ -60,7 +61,7 @@ public:
 	//
 	boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
 	float listFiles();
-	boolean setTime(String);
+	
 
 private:
 	File dataFile;

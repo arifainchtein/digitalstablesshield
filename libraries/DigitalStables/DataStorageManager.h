@@ -50,7 +50,7 @@ public:
 	//
 	virtual boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus)=0;
 	virtual float listFiles()=0;
-	virtual boolean setTime(String)=0;
+	
 
 	virtual ~DataStorageManager();
 };
