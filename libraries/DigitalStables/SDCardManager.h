@@ -24,12 +24,7 @@ class SDCardManager: public DataStorageManager{
 	LCDDisplay&  lcdDisplay;
 	DataStorageManagerInitParams& dataStorageManagerInitParams;
 	
-	const char  *WPSSensorDataDirName="WPSSensr";
-	const char  *LifeCycleDataDirName="LifeCycl";
-	const char  *RememberedValueDataDirName  = "RememVal";
-	const char  *DiscreteRecordDirName  = "Discrete";
-	const char  *EventRecordDirName  = "Events";
-	const char  *unstraferedFileName ="Untransf.txt";
+
 
 public:
 	SDCardManager(DataStorageManagerInitParams& d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);

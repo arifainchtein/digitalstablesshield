@@ -22,12 +22,12 @@
 
 #define SD_PIN 4
 
-extern char sensorDirName[10]="WPSSensr";
-extern char lifeCycleFileName[10];
-extern char remFileName[10];
-
-
-
+const char *sensorDirName="WPSSensr";
+const char *lifeCycleFileName="LifeCycl";
+const char *remFileName="RememVal";
+const char  *DiscreteRecordDirName  = "Discrete";
+const char  *EventRecordDirName  = "Events";
+const char  *unstraferedFileName ="Untransf.txt";
 
 
 const char *MAXIMUM_VALUE="Max";
@@ -98,7 +98,7 @@ boolean SDCardManager::testWPSSensor(float batteryVoltage, float current, int st
 	if(!cardOk)return false;
 	long lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 	char fileName[25];
-	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
+	snprintf(fileName, sizeof fileName, "/%s/%s", sensorDirName, unstraferedFileName);
 
 	File untransferredFile = SD.open(fileName, FILE_WRITE);
 	if (untransferredFile) {
@@ -201,10 +201,10 @@ boolean SDCardManager::readUntransferredFileFromSDCard(int moveData, boolean sen
 
 
 void SDCardManager::storeRememberedValue(long time, const char *name, float value, String unit){
-	//File untransferredFile = SD.open("/" + RememberedValueDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+	//File untransferredFile = SD.open("/" + remFileName + "/" + unstraferedFileName, FILE_WRITE);
 if(!cardOk)return ;
 	char untransferredFileName[25];
-	sprintf(untransferredFileName,"/%s/%s",RememberedValueDataDirName,unstraferedFileName);
+	sprintf(untransferredFileName,"/%s/%s",remFileName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 
 	if (untransferredFile) {
@@ -346,11 +346,11 @@ if(!cardOk)return -9999.0;
 	int sampleCount=0;
 	int sampleSum=0;
 	char fileName[32];
-	sprintf(fileName,"/%s/%i_%i_%i/.txt",RememberedValueDataDirName,date,month,year);
+	sprintf(fileName,"/%s/%i_%i_%i/.txt",remFileName,date,month,year);
 	File todayFile = SD.open(fileName, FILE_WRITE);
 
 
-	//File todayFile = SD.open("/" + RememberedValueDataDirName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
+	//File todayFile = SD.open("/" + remFileName + "/" + date + "_" +  month + "_" + year + ".txt", FILE_WRITE);
 
 	if (todayFile) {
 		todayFile.seek(0);
@@ -385,11 +385,11 @@ if(!cardOk)return -9999.0;
 void SDCardManager::storeLifeCycleEvent(long time, const char *eventType, int eventValue){
 if(!cardOk)return ;
 	char untransferredFileName[25];
-	sprintf(untransferredFileName,"/%s/%s",LifeCycleDataDirName,unstraferedFileName);
+	sprintf(untransferredFileName,"/%s/%s",lifeCycleFileName,unstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 
 
-	//File untransferredFile = SD.open("/" + LifeCycleDataDirName + "/" + unstraferedFileName, FILE_WRITE);
+	//File untransferredFile = SD.open("/" + lifeCycleFileName + "/" + unstraferedFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
 		untransferredFile.print(time);
@@ -500,7 +500,7 @@ long SDCardManager::printDirectory(File dir, int numTabs) {
 void SDCardManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
 	if(!cardOk)return ;
 	char fileName[30];
-	snprintf(fileName, sizeof fileName, "/%s/%s", WPSSensorDataDirName, unstraferedFileName);
+	snprintf(fileName, sizeof fileName, "/%s/%s", sensorDirName, unstraferedFileName);
 	File untransferredFile = SD.open(fileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
