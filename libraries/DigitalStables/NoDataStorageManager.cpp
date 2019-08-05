@@ -22,7 +22,7 @@
 
 
 
-NoDataStorageManager::NoDataStorageManager(DataStorageManagerInitParams& d, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
+NoDataStorageManager::NoDataStorageManager(DataStorageManagerInitParams& d, TimeManager& t, HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t), _HardSerial(serial), lcdDisplay(l)
 {}
 
 boolean NoDataStorageManager::start(){

@@ -14,7 +14,6 @@
 class NoDataStorageManager: public DataStorageManager {
 
 	TimeManager & timeManager;
-	GeneralFunctions & generalFunctions;
 	HardwareSerial& _HardSerial;
 	LCDDisplay&  lcdDisplay;
 	DataStorageManagerInitParams& dataStorageManagerInitParams;
@@ -22,7 +21,7 @@ public:
 	NoDataStorageManager();
 	virtual ~NoDataStorageManager();
 	
-	NoDataStorageManager(DataStorageManagerInitParams& d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
+	NoDataStorageManager(DataStorageManagerInitParams& d, TimeManager & t,  HardwareSerial& serial, LCDDisplay& l);
 	boolean start();
 	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
 	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);

@@ -14,7 +14,7 @@
 class EEPROMDataStorageManager: public DataStorageManager {
 
 	TimeManager & timeManager;
-	GeneralFunctions & generalFunctions;
+	
 	HardwareSerial& _HardSerial;
 	LCDDisplay&  lcdDisplay;
 	EEPROMDataStorageManagerInitParams& dataStorageManagerInitParams;
@@ -29,7 +29,7 @@ public:
 	EEPROMDataStorageManager();
 	virtual ~EEPROMDataStorageManager();
 
-	EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
+	EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager & t, HardwareSerial& serial, LCDDisplay& l);
 	boolean start();
 	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
 	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);

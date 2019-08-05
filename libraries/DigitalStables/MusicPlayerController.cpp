@@ -33,12 +33,12 @@ byte currentFunctionPlay=1;
 byte currentFunctionForward=1;
 byte currentFunctionMark=1;
 
-int previousVolume=0;
-int VOLUME_TOLERANCE=25;
-int numberOfStations=1;
-byte previousStation=0;
-byte volumeLevel=0;
-byte currentStation=0;
+uint8_t previousVolume=0;
+uint8_t VOLUME_TOLERANCE=25;
+uint8_t numberOfStations=1;
+uint8_t previousStation=0;
+uint8_t volumeLevel=0;
+uint8_t currentStation=0;
 unsigned char volumePin=0;
 unsigned char stationSelectorPin=1;
 unsigned char buttonPin=2;
@@ -72,7 +72,8 @@ void MusicPlayerController::start(unsigned char vp, unsigned char sp, unsigned c
 			currentStation=i;
 		}
 	}
-
+_HardSerial.println("finish start usiccntroller");
+			
 	refreshLCD();
 	
 }
@@ -81,24 +82,47 @@ void MusicPlayerController::checkButtonAction( ){
 
 	// TODO Auto-generated destructor stub
 	int value=analogRead(buttonPin);
+	
 	if(value<=REWIND_BUTTON_VALUE_MAX && value>=REWIND_BUTTON_VALUE_MIN){
+		lcd.clear();
+   		lcd.setCursor(0,0);		   
+  		lcd.print("Rewind         ") ;
+        lcd.setCursor(0,1);		   
+  		lcd.print("                 ") ;
 		if(currentFunction!=currentFunctionRewind){
 			currentFunction = currentFunctionRewind;
+			
+			delay(500);
 			_HardSerial.print("Rewind#");
 			_HardSerial.println(value);
 		}
 	}else if(value<=PLAY_BUTTON_VALUE_MAX && value>=PLAY_BUTTON_VALUE_MIN){
+		lcd.clear();
+   		lcd.setCursor(0,0);		   
+  		lcd.print("Play         ") ;
+		    lcd.setCursor(0,1);		   
+  		lcd.print("                ") ;
 		if(currentFunction!=currentFunctionPlay){
 			currentFunction = currentFunctionPlay;
 			_HardSerial.println("Play");
 		}
 	}else if(value<=FORWARD_BUTTON_VALUE_MAX && value>=FORWARD_BUTTON_VALUE_MIN){
+		lcd.clear();
+   		lcd.setCursor(0,0);		   
+  		lcd.print("Forward         ") ;
+		  lcd.setCursor(0,1);		   
+  		lcd.print("               ") ;
 		if(currentFunction!=currentFunctionForward){
 			currentFunction = currentFunctionForward;
 			_HardSerial.print("Forward#");
 			_HardSerial.println(value);
 		}
 	}else if(value<=MARK_BUTTON_VALUE_MAX && value>=MARK_BUTTON_VALUE_MIN){
+		lcd.clear();
+   		lcd.setCursor(0,0);		   
+  		lcd.print("Mark         ") ;
+		    lcd.setCursor(0,1);		   
+  		lcd.print("               ") ;
 		if(currentFunction!=currentFunctionMark){
 			currentFunction = currentFunctionMark;
 			_HardSerial.print("Mark#");
@@ -112,7 +136,7 @@ void MusicPlayerController::checkButtonAction( ){
  * the adc produces a number between 0 and 1023
  * divide by 10 to turn it into a percentage
  */
-byte MusicPlayerController::checkVolumeChange( ){
+uint8_t MusicPlayerController::checkVolumeChange( ){
 
 	// TODO Auto-generated destructor stub
 	int value=analogRead(volumePin);
@@ -132,7 +156,7 @@ byte MusicPlayerController::checkVolumeChange( ){
  * the adc produces a number between 0 and 1023
  * divide by number of stations
  */
-byte MusicPlayerController::checkStationChange( ){
+uint8_t MusicPlayerController::checkStationChange( ){
 
 	int valueBetweenStation = 1023/numberOfStations;
 	//
@@ -154,7 +178,7 @@ byte MusicPlayerController::checkStationChange( ){
 	// now check to see if the user has changed
 	// the station
 	
-	for (byte i = 0; i < numberOfStations-1; i = i + 1) {
+	for (int i = 0; i < numberOfStations-1; i = i + 1) {
 		if(value>=stations[i] && value<stations[i+1]){
 			currentStation=i;
 		}
@@ -177,22 +201,34 @@ byte MusicPlayerController::checkStationChange( ){
 	return currentStation;
 }
 
-void MusicPlayerController::setNumberOfStations(byte n){
+void MusicPlayerController::setNumberOfStations(uint8_t n){
 	numberOfStations=n;
 }
 
-byte MusicPlayerController::getNumberOfStations(){
+uint8_t MusicPlayerController::getNumberOfStations(){
 	return numberOfStations;
 }
 
 void MusicPlayerController::refreshLCD(){
-
+if(currentFunction==0){
 	lcd.clear();
    lcd.setCursor(0,0);
-  lcd.print("V1:") ;
+  lcd.print("Vol:") ;
   lcd.print(volumeLevel) ;
-  lcd.print(" S1:") ;
+  
+  lcd.print(" Sta:") ;
  lcd.print(currentStation) ;
+ lcd.print("          ") ;
+ lcd.setCursor(0,1);
+ lcd.print("Spotify") ;
+ lcd.print("          ") ;
+
+ _HardSerial.print("Vol#");
+_HardSerial.print(volumeLevel);
+
+ _HardSerial.print(" Sta#");
+_HardSerial.println(currentStation);
+}
 }
  
 

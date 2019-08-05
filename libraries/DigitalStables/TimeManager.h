@@ -14,11 +14,16 @@
 
 class TimeManager{
 	HardwareSerial& _HardSerial;
-	GeneralFunctions& generalFunctions;
 	GravityRtc rtc;
+	#define LEAP_YEAR(_year) ((_year%4)==0)
+
+	const int chipSelect = 10; //cs or the save select pin from the sd shield is connected to 10.
+	int timeZoneHours=11;
+	int SECONDOFFSET=10;
+	
 
 	public:
-		TimeManager(GeneralFunctions& g, HardwareSerial& serial);
+		TimeManager( HardwareSerial& serial);
                 void start();
 		long dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second);
 		void hourlyTasks(long time, int previousHour );
@@ -42,9 +47,7 @@ class TimeManager{
 	private:
 
 
-		int chipSelect = 10;
-		int timeZoneHours=11;
-		int SECONDOFFSET=10;
+	
 
 	};
 #endif /* TIMEMANAGER_H_ */

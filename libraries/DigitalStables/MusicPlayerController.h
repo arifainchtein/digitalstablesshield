@@ -24,10 +24,10 @@ public:
 	MusicPlayerController( HardwareSerial& serial, LCDDisplay& lcd);
 	void start(unsigned char vp, unsigned char sp, unsigned char bp, int ns);
 	void checkButtonAction();
-	byte checkVolumeChange();
-	byte checkStationChange();
-	void setNumberOfStations(byte n);
-	byte  getNumberOfStations();
+	uint8_t checkVolumeChange();
+	uint8_t checkStationChange();
+	void setNumberOfStations(uint8_t n);
+	uint8_t  getNumberOfStations();
 	void refreshLCD();
 	virtual ~MusicPlayerController();
 };

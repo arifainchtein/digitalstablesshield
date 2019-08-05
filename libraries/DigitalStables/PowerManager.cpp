@@ -78,7 +78,7 @@ int delayTime=1;
 long previousUpdate;
 
 
-PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
+PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
 
 void PowerManager::start(){
@@ -401,7 +401,7 @@ void PowerManager::defineState(){
 	long time = timeManager.getCurrentTimeInSeconds();
 
 	float batteryVoltage = getBatteryVoltage();
-	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+	int internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 	float currentFromBattery = getCurrentFromBattery();
 	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
 	float solarPanelVolltage = getSolarPanelVoltage();
@@ -467,17 +467,19 @@ void PowerManager::defineState(){
 				if((millis()-previousUpdate) >1000){
 					previousUpdate = millis();
 					lcd.clear();
+					lcd.setCursor(0, 1);
+					lcd.print(timeManager.getCurrentDateTimeForDisplay());
 					lcd.setCursor(0, 2);
-					lcd.print(timeManager.getCurrentTimeForDisplay(true));
-
-					long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
-					lcd.print(" SD:") ;  
+					long freeDiskSpace=dataStorageManager.getFreeDiskSpace()/1024;
+					long totalDiskUse=dataStorageManager.getDiskUsage()/1024; 
 					lcd.print(totalDiskUse) ;
-
+					lcd.print("kb F:") ;  
+					lcd.print(freeDiskSpace) ;
+					lcd.print("kb H:") ;
 					if(hypothalamusStatus){
-						lcd.print(" 1");
+						lcd.print("1");
 					}else{
-						lcd.print(" 0");
+						lcd.print("0");
   					}
 					lcd.setCursor(0,3);
 					lcd.print(batteryVoltage) ;
@@ -602,7 +604,7 @@ void PowerManager::defineState(){
 					WPSSensorRecord anWPSSensorRecord;
 					anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
 					anWPSSensorRecord.current = getCurrentFromBattery();
-					anWPSSensorRecord.stateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+					anWPSSensorRecord.stateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 					anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
 					anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
 					anWPSSensorRecord.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
@@ -741,7 +743,7 @@ void PowerManager::defineState(){
 						WPSSensorRecord anWPSSensorRecord;
 						anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
 						anWPSSensorRecord.current = getCurrentFromBattery();
-						anWPSSensorRecord.stateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+						anWPSSensorRecord.stateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 						anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
 						anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
 						anWPSSensorRecord.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
@@ -910,7 +912,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	if(command=="TestWPSSensor"){
 		float batteryVoltage = getBatteryVoltage();
 		float current = getCurrentFromBattery();
-		int stateOfCharge= generalFunctions.getStateOfCharge(batteryVoltage);
+		int stateOfCharge= GeneralFunctions::getStateOfCharge(batteryVoltage);
 		boolean result = dataStorageManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
 		if(result){
 			_HardSerial.println("Ok-TestWPSSensor");
@@ -975,7 +977,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		_HardSerial.flush();
 		processed=true;
 	}else if(command.startsWith("VerifyUserCode")){
-		String codeInString = generalFunctions.getValue(command, '#', 1);
+		String codeInString = GeneralFunctions::getValue(command, '#', 1);
 		long userCode = codeInString.toInt();
 		boolean validCode = secretManager.checkCode( userCode);
 		String result="Failure-Invalid Code";
@@ -1049,9 +1051,9 @@ boolean PowerManager::processDefaultCommands(String command){
 			_HardSerial.println("Failure-SetSecret");
 			_HardSerial.flush();
 		}else{
-			String secret = generalFunctions.getValue(command, '#', 1);
-			int numberDigits = generalFunctions.getValue(command, '#', 2).toInt();
-			int periodSeconds = generalFunctions.getValue(command, '#', 3).toInt();
+			String secret = GeneralFunctions::getValue(command, '#', 1);
+			int numberDigits = GeneralFunctions::getValue(command, '#', 2).toInt();
+			int periodSeconds = GeneralFunctions::getValue(command, '#', 3).toInt();
 			secretManager.saveSecret(secret, numberDigits, periodSeconds);
 
 			_HardSerial.println("Ok-SetSecret");
@@ -1062,14 +1064,14 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("PulseStart")){
 		inPulse=true;
 		waitingManualPiStart=false;
-		pulseStartTime = generalFunctions.getValue(command, '#', 1);
+		pulseStartTime = GeneralFunctions::getValue(command, '#', 1);
 		_HardSerial.println("Ok-PulseStart");
 		_HardSerial.flush();
 		lcd.clear();
 		lcd.setRGB(255,0,0);
 		processed=true;
 	}else if(command.startsWith("PulseFinished")){
-		pulseStopTime = generalFunctions.getValue(command, '#', 1);
+		pulseStopTime = GeneralFunctions::getValue(command, '#', 1);
 		inPulse=false;
 		_HardSerial.println("Ok-PulseFinished");
 		_HardSerial.flush();
@@ -1079,13 +1081,13 @@ boolean PowerManager::processDefaultCommands(String command){
 
 
 	}else if(command.startsWith("IPAddr")){
-		currentIpAddress = generalFunctions.getValue(command, '#', 1);
+		currentIpAddress = GeneralFunctions::getValue(command, '#', 1);
 		_HardSerial.println("Ok-IPAddr");
 		_HardSerial.flush();
 		delay(delayTime);
 		processed=true;
 	}else if(command.startsWith("SSID")){
-		currentSSID = generalFunctions.getValue(command, '#', 1);
+		currentSSID = GeneralFunctions::getValue(command, '#', 1);
 		_HardSerial.println("Ok-currentSSID");
 		_HardSerial.flush();
 		delay(delayTime);
@@ -1104,10 +1106,10 @@ boolean PowerManager::processDefaultCommands(String command){
 		processed=true;
 	}else if(command.startsWith("EnterWPS")){
 		//EnterWPS#10#45#30#1
-		secondsToTurnPowerOff = (long)generalFunctions.getValue(command, '#', 1).toInt();
-		secondsToNextPiOn = (long)generalFunctions.getValue(command, '#', 2).toInt();
-		wpsPulseFrequencySeconds = generalFunctions.getValue(command, '#', 3).toInt();
-		int pauseDuringWPSi = generalFunctions.getValue(command, '#', 4).toInt();
+		secondsToTurnPowerOff = (long)GeneralFunctions::getValue(command, '#', 1).toInt();
+		secondsToNextPiOn = (long)GeneralFunctions::getValue(command, '#', 2).toInt();
+		wpsPulseFrequencySeconds = GeneralFunctions::getValue(command, '#', 3).toInt();
+		int pauseDuringWPSi = GeneralFunctions::getValue(command, '#', 4).toInt();
 		if(pauseDuringWPSi==1)pauseDuringWPS=true;
 		else pauseDuringWPS=false;
 		waitingForWPSConfirmation=false;
@@ -1129,16 +1131,16 @@ boolean PowerManager::processDefaultCommands(String command){
 		wpsCountdown=false;
 		processed=true;
 	}else if(command.startsWith("UpdateWPSParameters")){
-		String minWPSVoltageS = generalFunctions.getValue(command, '#', 1);
+		String minWPSVoltageS = GeneralFunctions::getValue(command, '#', 1);
 		char buffer[10];
 		minWPSVoltageS.toCharArray(buffer, 10);
 		minWPSVoltage = atof(buffer);
 
-		minWPSVoltage = generalFunctions.stringToFloat(generalFunctions.getValue(command, '#', 1));
-		enterWPSVoltage = generalFunctions.stringToFloat(generalFunctions.getValue(command, '#', 2));
-		exitWPSVoltage = generalFunctions.stringToFloat(generalFunctions.getValue(command, '#', 3));
+		minWPSVoltage = GeneralFunctions::stringToFloat(GeneralFunctions::getValue(command, '#', 1));
+		enterWPSVoltage = GeneralFunctions::stringToFloat(GeneralFunctions::getValue(command, '#', 2));
+		exitWPSVoltage = GeneralFunctions::stringToFloat(GeneralFunctions::getValue(command, '#', 3));
 
-		secondsToForcedWPS = generalFunctions.getValue(command, '#', 4).toInt();
+		secondsToForcedWPS = GeneralFunctions::getValue(command, '#', 4).toInt();
 		_HardSerial.println("Ok-UpdateWPSParameters");
 		_HardSerial.flush();
 
@@ -1146,7 +1148,7 @@ boolean PowerManager::processDefaultCommands(String command){
 
 	}else if(command.startsWith("GetRememberedValueData")){
 		//GetRememberedValueData#0
-		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
+		int transferData = GeneralFunctions::getValue(command, '#', 1).toInt();
 		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetRememberedValueData");
@@ -1159,7 +1161,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		processed=true;
 	}else if(command.startsWith("GetLifeCycleData")){
 		//GetLifeCycleData#0
-		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
+		int transferData = GeneralFunctions::getValue(command, '#', 1).toInt();
 		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetLifeCycleData");
@@ -1173,7 +1175,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("GetWPSSensorData")){
 		//GetWPSSensorData#0
 		//GetLifeCycleData#0
-		int transferData = generalFunctions.getValue(command, '#', 1).toInt();
+		int transferData = GeneralFunctions::getValue(command, '#', 1).toInt();
 		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorData");
@@ -1188,9 +1190,9 @@ boolean PowerManager::processDefaultCommands(String command){
 		processed=true;
 	}else if(command.startsWith("GetHistoricalWPSSensorData")){
 
-		int date = generalFunctions.getValue(command, '#', 1).toInt();
-		int month = generalFunctions.getValue(command, '#', 2).toInt();
-		int year = generalFunctions.getValue(command, '#', 3).toInt();
+		int date = GeneralFunctions::getValue(command, '#', 1).toInt();
+		int month = GeneralFunctions::getValue(command, '#', 2).toInt();
+		int year = GeneralFunctions::getValue(command, '#', 3).toInt();
 		boolean result  =dataStorageManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorDataHistory");
@@ -1204,9 +1206,9 @@ boolean PowerManager::processDefaultCommands(String command){
 		processed=true;
 	}else if(command.startsWith("GetHistoricalLifeCycleData")){
 		//GetHistoricalLifeCycleData#12#1#19
-		int date = generalFunctions.getValue(command, '#', 1).toInt();
-		int month = generalFunctions.getValue(command, '#', 2).toInt();
-		int year = generalFunctions.getValue(command, '#', 3).toInt();
+		int date = GeneralFunctions::getValue(command, '#', 1).toInt();
+		int month = GeneralFunctions::getValue(command, '#', 2).toInt();
+		int year = GeneralFunctions::getValue(command, '#', 3).toInt();
 		boolean result  = dataStorageManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalLifeCycleData");
@@ -1219,9 +1221,9 @@ boolean PowerManager::processDefaultCommands(String command){
 		processed=true;
 	}else if(command.startsWith("GetHistoricalRememberedValueData")){
 		//GetHistoricalLifeCycleData#12#1#19
-		int date = generalFunctions.getValue(command, '#', 1).toInt();
-		int month = generalFunctions.getValue(command, '#', 2).toInt();
-		int year = generalFunctions.getValue(command, '#', 3).toInt();
+		int date = GeneralFunctions::getValue(command, '#', 1).toInt();
+		int month = GeneralFunctions::getValue(command, '#', 2).toInt();
+		int year = GeneralFunctions::getValue(command, '#', 3).toInt();
 		boolean result  = dataStorageManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalRememberedValueData");
@@ -1316,7 +1318,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	long dur = millis()-now;
 	lcd.print(dur);
 
-	byte internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
+	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 
 
 	now = millis();

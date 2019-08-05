@@ -14,15 +14,9 @@
 #include <GeneralFunctions.h>
 #include <GravityRtc.h>
 
-#define LEAP_YEAR(_year) ((_year%4)==0)
+static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
-const int chipSelect = 10; //cs or the save select pin from the sd shield is connected to 10.
-int timeZoneHours=11;
-int SECONDOFFSET=10;
-static  byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
-GravityRtc rtc;
-
-TimeManager::TimeManager(GeneralFunctions& g, HardwareSerial& serial):generalFunctions(g),  _HardSerial(serial){
+TimeManager::TimeManager( HardwareSerial& serial): _HardSerial(serial){
 
 }
 
@@ -36,13 +30,13 @@ TimeManager::TimeManager(GeneralFunctions& g, HardwareSerial& serial):generalFun
 
 
 boolean TimeManager::setTime(String command){
-	int date = generalFunctions.getValue(command, '#', 1).toInt();
-	int month = generalFunctions.getValue(command, '#', 2).toInt();
-	int year = generalFunctions.getValue(command, '#', 3).toInt();
-	int dw = generalFunctions.getValue(command, '#', 4).toInt();
-	int hour = generalFunctions.getValue(command, '#', 5).toInt();
-	int min = generalFunctions.getValue(command, '#', 6).toInt();
-	int sec = generalFunctions.getValue(command, '#', 7).toInt();
+	int date = GeneralFunctions::getValue(command, '#', 1).toInt();
+	int month = GeneralFunctions::getValue(command, '#', 2).toInt();
+	int year = GeneralFunctions::getValue(command, '#', 3).toInt();
+	int dw = GeneralFunctions::getValue(command, '#', 4).toInt();
+	int hour = GeneralFunctions::getValue(command, '#', 5).toInt();
+	int min = GeneralFunctions::getValue(command, '#', 6).toInt();
+	int sec = GeneralFunctions::getValue(command, '#', 7).toInt();
 
 	_HardSerial.print(rtc.day);
 		_HardSerial.print("/");

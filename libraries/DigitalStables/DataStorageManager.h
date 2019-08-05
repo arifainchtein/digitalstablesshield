@@ -21,7 +21,7 @@ class DataStorageManager {
 public:
 	DataStorageManager();
 
-	DataStorageManager(DataStorageManagerInitParams&  d, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial, LCDDisplay& l);
+	DataStorageManager(DataStorageManagerInitParams&  d, TimeManager & t, HardwareSerial& serial, LCDDisplay& l);
 	virtual boolean start()=0;
 	virtual boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year)=0;
 	virtual boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName)=0;
@@ -50,7 +50,7 @@ public:
 	//
 	virtual boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus)=0;
 	virtual float listFiles()=0;
-	
+	virtual uint32_t getFreeDiskSpace()=0;
 
 	virtual ~DataStorageManager();
 };

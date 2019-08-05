@@ -27,7 +27,7 @@ uint8_t rememberedValueFolderSize;
 
 
 
-EEPROMDataStorageManager::EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
+EEPROMDataStorageManager::EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager& t,HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t),  _HardSerial(serial), lcdDisplay(l)
 {}
 
 boolean EEPROMDataStorageManager::start(){

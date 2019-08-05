@@ -41,7 +41,7 @@ const char *AVERAGE_VALUE="Avg";
 File currentlyOpenFile;
 const char *currentlyOpenFileName;
 boolean cardOk=false;
-SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t, GeneralFunctions& f,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t), generalFunctions(f), _HardSerial(serial), lcdDisplay(l)
+SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t),  _HardSerial(serial), lcdDisplay(l)
 {}
 
 boolean SDCardManager::start(){
@@ -89,10 +89,10 @@ boolean SDCardManager::start(){
 		cardOk=true;
 		uint32_t totalSize = SD.get_total_Kb();
 
-		_HardSerial.print("card initialized:");
-		_HardSerial.print(totalSize);
-		_HardSerial.println("b");
-		_HardSerial.flush();
+		// _HardSerial.print("card initialized:");
+		// _HardSerial.print(totalSize);
+		// _HardSerial.println("b");
+		// _HardSerial.flush();
 		lcdDisplay.print("SD Card initialized.");
 		
 		return true;
@@ -369,9 +369,9 @@ if(!cardOk)return -9999.0;
 			// and copy it into today's file
 			line = todayFile.readStringUntil('\n');
 
-			generalFunctions.getValue(line, '#', 1).toCharArray(anyLabel, sizeof anyLabel);
+			GeneralFunctions::getValue(line, '#', 1).toCharArray(anyLabel, sizeof anyLabel);
 			if(strcmp(label, anyLabel) == 0){
-				value = generalFunctions.stringToFloat(generalFunctions.getValue(line, '#', 2));
+				value = GeneralFunctions::stringToFloat(GeneralFunctions::getValue(line, '#', 2));
 				if(whatToSearchFor == MAXIMUM_VALUE){
 					if(value>result)result=value;
 				}else if(whatToSearchFor == MINIMUM_VALUE){
@@ -459,6 +459,11 @@ if(!cardOk)return -9999L;
 	return total;
 }
 
+uint32_t SDCardManager::getFreeDiskSpace(){
+	uint32_t totalSize = SD.get_total_Kb();
+	return totalSize;
+
+}
 
 long SDCardManager::getDiskUsage(){
 	if(!cardOk)return -9999L;
