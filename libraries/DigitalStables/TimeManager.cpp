@@ -137,15 +137,18 @@ long TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint
 	return seconds;
 }
 
-String TimeManager::getCurrentTimeForDisplay(){
+String TimeManager::getCurrentTimeForDisplay(boolean showSecs){
 	rtc.read();
 	String displayTime =  "";
 
 	displayTime.concat(rtc.hour);
 	displayTime.concat(":");
 	displayTime.concat(rtc.minute);
-	displayTime.concat(":");
-	displayTime.concat(rtc.second);
+	if(showSecs){
+		displayTime.concat(":");
+		displayTime.concat(rtc.second);
+	}
+	
 	return displayTime;
 }
 
@@ -157,7 +160,7 @@ String TimeManager::getCurrentDateTimeForDisplay(){
 	displayTime.concat(rtc.month);
 	displayTime.concat("/");
 	int year = rtc.year-2000;
-		displayTime.concat(year);
+	displayTime.concat(year);
 	displayTime.concat(" ");
 	displayTime.concat(rtc.hour);
 	displayTime.concat(":");

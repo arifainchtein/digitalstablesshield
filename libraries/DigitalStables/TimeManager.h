@@ -29,7 +29,7 @@ class TimeManager{
 		String getElapsedTimeHoursMinutesSecondsString(long elapsedTime);
 		RTCInfoRecord getCurrentDateTime();
 		long getTimeForCodeGeneration();
-		String getCurrentTimeForDisplay();
+		String getCurrentTimeForDisplay(boolean showSec);
 		String getCurrentDateTimeForDisplay();
 		String getCurrentDateForDisplay();
 		//

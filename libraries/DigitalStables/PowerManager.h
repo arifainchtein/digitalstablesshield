@@ -121,7 +121,7 @@ public:
 	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear );
 	void monthlyTasks(long time);
 	void yearlyTasks(long time);
-	int getCurrentFromBattery(void);
+	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
 	float getBatteryVoltage();

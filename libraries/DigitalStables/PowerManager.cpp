@@ -147,11 +147,11 @@ float PowerManager::getSolarPanelVoltage(void){
 }
 
 
-int PowerManager::getCurrentFromBattery(void){
-	int sensorValue;             //value read from the sensor
+float PowerManager::getCurrentFromBattery(void){
+	int sensorValue=0;             //value read from the sensor
 	int sensorMax = 0;
 	uint32_t start_time = millis();
-	while((millis()-start_time) < 100)//sample for 1000ms
+	while((millis()-start_time) < 500)//sample for 1000ms
 	{
 		sensorValue = analogRead(CURRENT_SENSOR);
 		if (sensorValue > sensorMax)
@@ -163,7 +163,7 @@ int PowerManager::getCurrentFromBattery(void){
 
 	//the VCC on the Grove interface of the sensor is 5v
 	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-	int effective_value=(int)(amplitude_current/1.414);
+	int effective_value=(amplitude_current/1.414);
 	return effective_value;
 }
 
@@ -402,7 +402,7 @@ void PowerManager::defineState(){
 
 	float batteryVoltage = getBatteryVoltage();
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
-	int currentFromBattery = getCurrentFromBattery();
+	float currentFromBattery = getCurrentFromBattery();
 	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
 	float solarPanelVolltage = getSolarPanelVoltage();
 	float lockCapacitor = getLockCapacitorVoltage();
@@ -468,13 +468,17 @@ void PowerManager::defineState(){
 					previousUpdate = millis();
 					lcd.clear();
 					lcd.setCursor(0, 2);
-					lcd.print(timeManager.getCurrentTimeForDisplay());
+					lcd.print(timeManager.getCurrentTimeForDisplay(true));
 
-					long totalDiskUse=24;//dataStorageManager.getDiskUsage()/1024;
+					long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 					lcd.print(" SD:") ;  
 					lcd.print(totalDiskUse) ;
 
-
+					if(hypothalamusStatus){
+						lcd.print(" 1");
+					}else{
+						lcd.print(" 0");
+  					}
 					lcd.setCursor(0,3);
 					lcd.print(batteryVoltage) ;
 					lcd.print("V ") ;
@@ -487,14 +491,10 @@ void PowerManager::defineState(){
 					}
 					lcd.print(lockCapacitor);
 					lcd.print(" ") ;
-					lcd.print(currentFromBattery);
+					lcd.print((int)currentFromBattery);
 					lcd.print("mA ") ;
 					}
-					if(hypothalamusStatus){
-						lcd.print(" H:1");
-					}else{
-						lcd.print(" H:0");
-  					}
+					
 				break;
 
 			case 1:

@@ -46,7 +46,7 @@ SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t, Gen
 
 boolean SDCardManager::start(){
 	//setup SD card
-	_HardSerial.print("Initializing SD card...");
+	_HardSerial.println("Initializing SD card...");
 
 	if (!SD.begin(SD_PIN)) {
 		//		_HardSerial.println("No SD-card.");
@@ -87,7 +87,11 @@ boolean SDCardManager::start(){
 		lifeCycleFile.close();
 		rememberedValueFile.close();
 		cardOk=true;
-		_HardSerial.println("card initialized.");
+		uint32_t totalSize = SD.get_total_Kb();
+
+		_HardSerial.print("card initialized:");
+		_HardSerial.print(totalSize);
+		_HardSerial.println("b");
 		_HardSerial.flush();
 		lcdDisplay.print("SD Card initialized.");
 		
@@ -462,7 +466,7 @@ long SDCardManager::getDiskUsage(){
 	File lifeCycleFile = SD.open(lifeCycleFileName );
 	File rememberedValueFile = SD.open(remFileName );
 
-	long totalDiskUse=getSDCardDiskUse(sensorFile);
+	long totalDiskUse=getSDCardDiskUse(sensorFile)/1024;
 	totalDiskUse+=getSDCardDiskUse(lifeCycleFile);
 	totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
 

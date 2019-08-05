@@ -95,7 +95,7 @@ public:
   boolean rmdir(const String &filepath) { return rmdir(filepath.c_str()); }
   //byte blocks
   uint32_t get_total_Kb(){return root.isOpen() ? card.cardSize()/2:0;}
- // uint32_t get_free_Kb(){return root.isOpen() ? (volume.freeClusterCount()*volume.blocksPerCluster())/2:0;}
+  //uint32_t get_free_Kb(){return root.isOpen() ? (volume.freeClusterCount()*volume.blocksPerCluster())/2:0;}
 
 private:
 
