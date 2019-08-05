@@ -490,11 +490,11 @@ void PowerManager::defineState(){
 					lcd.print(currentFromBattery);
 					lcd.print("mA ") ;
 					}
-					// if(hypothalamusStatus){
-					// 	lcd.print(" H:1");
-					// }else{
-					// 	lcd.print(" H:0");
-  					// }
+					if(hypothalamusStatus){
+						lcd.print(" H:1");
+					}else{
+						lcd.print(" H:0");
+  					}
 				break;
 
 			case 1:
