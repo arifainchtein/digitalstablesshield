@@ -12,6 +12,11 @@ LCDDisplay::LCDDisplay() {
 
 }
 
+
+void LCDDisplay::backlight(){
+
+}
+
 void LCDDisplay::begin(){
 
 }

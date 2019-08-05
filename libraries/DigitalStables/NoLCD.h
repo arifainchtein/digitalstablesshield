@@ -14,6 +14,7 @@ class NoLCD: public LCDDisplay {
 public:
 	NoLCD();
 	void begin();
+	void backlight();
 	void display();
 	void clear();
 	void setRGB(int, int, int);
@@ -29,7 +30,8 @@ public:
 	void println(double);
 	void print(int);
 	void println(int);
-
+	void set2X();
+	void set1X();
 	virtual ~NoLCD();
 };
 

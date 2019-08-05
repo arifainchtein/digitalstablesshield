@@ -19,6 +19,10 @@ void NoLCD::begin(){
 
 }
 
+void NoLCD::backlight(){
+
+}
+
 void NoLCD::clear(){
 
 }
@@ -73,6 +77,13 @@ void NoLCD::print(int s){
 }
 
 void NoLCD::println(int s){
+
+}
+
+void NoLCD::set2X(){
+
+}
+void NoLCD::set1X(){
 
 }
 

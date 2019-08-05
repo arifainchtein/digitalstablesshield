@@ -26,9 +26,12 @@ OLED::OLED() {
 
 void OLED::begin(){
 #if RST_PIN >= 0
-  anSSD1306AsciiAvrI2c.begin(&Adafruit128x64, I2C_ADDRESS, RST_PIN);
+  anSSD1306AsciiAvrI2c.begin(&Adafruit128x32, I2C_ADDRESS, RST_PIN);
+  //anSSD1306AsciiAvrI2c.begin(&Adafruit128x64, I2C_ADDRESS, RST_PIN);
 #else // RST_PIN >= 0
-  anSSD1306AsciiAvrI2c.begin(&Adafruit128x64, I2C_ADDRESS);
+  //anSSD1306AsciiAvrI2c.begin(&Adafruit128x64, I2C_ADDRESS);
+  anSSD1306AsciiAvrI2c.begin(&Adafruit128x32, I2C_ADDRESS);
+  
 #endif // RST_PIN >= 0
   // Call anSSD1306AsciiAvrI2c.setI2cClock(frequency) to change from the default frequency.
 
@@ -37,6 +40,10 @@ void OLED::begin(){
   uint32_t m = micros();
   anSSD1306AsciiAvrI2c.clear();
   anSSD1306AsciiAvrI2c.println("Hello world!");
+}
+
+void OLED::backlight(){
+
 }
 
 void OLED::clear(){

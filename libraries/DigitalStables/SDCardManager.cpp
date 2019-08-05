@@ -57,6 +57,9 @@ boolean SDCardManager::start(){
 		cardOk=false;
 		return false;
 	}else{
+		lcdDisplay.clear();
+		lcdDisplay.setCursor(0, 0);
+		lcdDisplay.print("SD-card found") ;
 		// Check dir for db files
 		if (!SD.exists(sensorDirName )) {
 			//			_HardSerial.println("wpsSensorData Dir does not exist, creating...");
@@ -86,6 +89,8 @@ boolean SDCardManager::start(){
 		cardOk=true;
 		_HardSerial.println("card initialized.");
 		_HardSerial.flush();
+		lcdDisplay.print("SD Card initialized.");
+		
 		return true;
 
 	}

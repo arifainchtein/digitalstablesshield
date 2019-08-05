@@ -16,6 +16,7 @@ public:
 
 
 	void begin();
+	void backlight();
 	void display();
 	void clear();
 	void setRGB(int, int, int);

@@ -56,6 +56,7 @@ int currentDay=0;
 int currentMonth=0;
 int currentYear=0;
 
+boolean hypothalamusStatus=false;
 
 
 
@@ -81,13 +82,17 @@ PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& 
 {}
 
 void PowerManager::start(){
-	pinMode(52, OUTPUT);
-	digitalWrite(52, LOW);
-	SPI.begin();
+	// pinMode(52, OUTPUT);
+	// digitalWrite(52, LOW);
+	// SPI.begin();
 	pinMode(PI_POWER_PIN, OUTPUT);
+	pinMode(CURRENT_SENSOR, INPUT);
+	pinMode(BATTERY_VOLTAGE_PIN, INPUT);
+	lcd.print("init power manager");
 	long now = timeManager.getCurrentTimeInSeconds();
 	turnPiOff(now);
 	initializeWDT();
+	lcd.print("finish init power manager");
 }
 void PowerManager::hourlyTasks(long time, int previousHour ){
 
@@ -133,12 +138,6 @@ void PowerManager::yearlyTasks(long time){
 }
 
 
-
-
-//float PowerManager::getCurrentFromBattery(void){
-//	return 0.0;
-//}
-
 float PowerManager::getCurrentInputFromSolarPanel(void){
 	return 0.0;
 }
@@ -148,7 +147,7 @@ float PowerManager::getSolarPanelVoltage(void){
 }
 
 
-float PowerManager::getCurrentFromBattery(void){
+int PowerManager::getCurrentFromBattery(void){
 	int sensorValue;             //value read from the sensor
 	int sensorMax = 0;
 	uint32_t start_time = millis();
@@ -164,7 +163,7 @@ float PowerManager::getCurrentFromBattery(void){
 
 	//the VCC on the Grove interface of the sensor is 5v
 	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-	float effective_value=amplitude_current/1.414;
+	int effective_value=(int)(amplitude_current/1.414);
 	return effective_value;
 }
 
@@ -182,7 +181,7 @@ float PowerManager::getBatteryVoltage(){
     // calculate the voltage
     // use 5.0 for a 5.0V ADC reference voltage
     // 5.015V is the calibrated reference voltage
-    float voltage = 11.0*((float)sum / (float)NUM_SAMPLES * 5.16) / 1024.0;
+    float voltage = 10.8*((float)sum / (float)NUM_SAMPLES * 5.015) / 1024.0;
     return voltage;
 }
 
@@ -382,31 +381,33 @@ void PowerManager::turnPiOff(long time){
 
 
 void PowerManager::turnPiOn(long time){
-	float batteryVoltageBefore = getBatteryVoltage();
-	digitalWrite(PI_POWER_PIN, HIGH);
-	delay(1000);
-	float batteryVoltageAfter = getBatteryVoltage();
-	float voltageDifferential = 1-(batteryVoltageAfter/batteryVoltageBefore);
+	// float batteryVoltageBefore = getBatteryVoltage();
+	// digitalWrite(PI_POWER_PIN, HIGH);
+	// delay(1000);
+	// float batteryVoltageAfter = getBatteryVoltage();
+	// float voltageDifferential = 1-(batteryVoltageAfter/batteryVoltageBefore);
 
-	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
+	// dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	// dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	// dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
 
-
+boolean PowerManager::getHypothalamusStatus(){
+	return hypothalamusStatus;
+}
 void PowerManager::defineState(){
 	poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();
 
 	float batteryVoltage = getBatteryVoltage();
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
-	float currentFromBattery = getCurrentFromBattery();
+	int currentFromBattery = getCurrentFromBattery();
 	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
 	float solarPanelVolltage = getSolarPanelVoltage();
+	float lockCapacitor = getLockCapacitorVoltage();
 
-
-	boolean piIsOn = digitalRead(PI_POWER_PIN);
+	 hypothalamusStatus = digitalRead(PI_POWER_PIN);
 
 	if(shuttingDownPiCountdown){
 		currentSecondsToPowerOff = secondsToTurnPowerOff -( time - shutDownRequestedseconds );
@@ -429,7 +430,7 @@ void PowerManager::defineState(){
 			lcd.print(	currentSecondsToPowerOff);
 		}
 	}else if(batteryVoltage>exitWPSVoltage){
-		if(!piIsOn && !manualShutdown)turnPiOn(time);
+		if(!hypothalamusStatus && !manualShutdown)turnPiOn(time);
 		operatingStatus="Normal";
 		lcd.setRGB(0, 225, 0);
 		operatingStatus="Normal";
@@ -466,19 +467,34 @@ void PowerManager::defineState(){
 				if((millis()-previousUpdate) >1000){
 					previousUpdate = millis();
 					lcd.clear();
-					lcd.setCursor(0, 0);
+					lcd.setCursor(0, 2);
+					lcd.print(timeManager.getCurrentTimeForDisplay());
 
-					lcd.print((int)currentFromBattery);
-					lcd.print("mA ") ;
+					long totalDiskUse=24;//dataStorageManager.getDiskUsage()/1024;
+					lcd.print(" SD:") ;  
+					lcd.print(totalDiskUse) ;
 
+
+					lcd.setCursor(0,3);
 					lcd.print(batteryVoltage) ;
 					lcd.print("V ") ;
-					lcd.print(internalBatteryStateOfCharge);
-					lcd.print("%") ;
-					lcd.setCursor(0, 1);
-					lcd.print(timeManager.getCurrentDateTimeForDisplay());
-				}
 
+
+					if(lockCapacitor>4.85){
+						lcd.print("R");
+					}else{
+						lcd.print("P");
+					}
+					lcd.print(lockCapacitor);
+					lcd.print(" ") ;
+					lcd.print(currentFromBattery);
+					lcd.print("mA ") ;
+					}
+					// if(hypothalamusStatus){
+					// 	lcd.print(" H:1");
+					// }else{
+					// 	lcd.print(" H:0");
+  					// }
 				break;
 
 			case 1:
@@ -614,7 +630,7 @@ void PowerManager::defineState(){
 					}
 				}
 			}
-		}else if(piIsOn){
+		}else if(hypothalamusStatus){
 			lcd.clear();
 			lcd.setCursor(0,0);
 			lcd.print("pi ON WPS ");
@@ -752,7 +768,7 @@ void PowerManager::defineState(){
 					}
 				}
 			}else{
-				if(piIsOn){
+				if(hypothalamusStatus){
 					lcd.clear();
 					lcd.setCursor(0,0);
 					lcd.print("pi ON WPS ");
@@ -793,7 +809,7 @@ void PowerManager::defineState(){
 					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					currentSecondsToPowerOff=0L;
-					if(piIsOn)turnPiOff(time);
+					if(hypothalamusStatus)turnPiOff(time);
 					wpsCountdown=false;
 
 					if(f_wdt == 1){
@@ -829,7 +845,7 @@ void PowerManager::defineState(){
 				lcd.print(	currentSecondsToPowerOff);
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
-					if(piIsOn)turnPiOff(time);
+					if(hypothalamusStatus)turnPiOff(time);
 					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					wpsCountdown=false;
@@ -871,7 +887,7 @@ void PowerManager::defineState(){
 					dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 					enterArduinoSleep();
 				}
-			}else if(piIsOn){
+			}else if(hypothalamusStatus){
 				//
 				// i we are here it means the pi is n
 				// and voltage has dropped into
@@ -1306,7 +1322,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	now = millis();
 
 
-	float currentValue = getCurrentFromBattery();
+	int currentValue = getCurrentFromBattery();
 	
 	 dur = millis()-now;
 		lcd.print(dur);
@@ -1317,7 +1333,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	 dur = millis()-now;
 		lcd.print(dur);
 
-	//boolean piIsOn = digitalRead(PI_POWER_PIN);
+	//boolean hypothalamusStatus = digitalRead(PI_POWER_PIN);
 	// Generate the SensorData String
 	String sensorDataString="";
 	//

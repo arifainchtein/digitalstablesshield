@@ -121,7 +121,7 @@ public:
 	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear );
 	void monthlyTasks(long time);
 	void yearlyTasks(long time);
-	float getCurrentFromBattery(void);
+	int getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
 	float getBatteryVoltage();
@@ -138,7 +138,7 @@ public:
 	float getLockCapacitorVoltage();
 	void toggleWDT();
 	void printBaseSensorStringToSerialPort();
-
+	boolean getHypothalamusStatus();
 protected:
 
 

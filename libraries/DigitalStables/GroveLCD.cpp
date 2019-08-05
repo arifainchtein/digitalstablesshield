@@ -20,6 +20,10 @@ void GroveLCD::begin(){
 
 }
 
+void GroveLCD::backlight(){
+    
+}
+
 void GroveLCD::clear(){
 	lcd.clear();
 }
