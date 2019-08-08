@@ -138,11 +138,15 @@ public:
 	void toggleWDT();
 	void printBaseSensorStringToSerialPort();
 	boolean getHypothalamusStatus();
+	float getVoltageRegulatorOutput();
+	void setCurrentViewIndex(int);
+	int getCurrentViewIndex();
+
 protected:
 
 
 private:
-
+	
 
 };
 

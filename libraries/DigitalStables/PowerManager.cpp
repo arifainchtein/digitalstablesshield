@@ -16,10 +16,10 @@
 
 //
 // the wps variables
-#define LOCK_CAPACITOR_PIN A5
 #define BATTERY_VOLTAGE_PIN A1
 #define CURRENT_SENSOR A4
-
+#define LOCK_CAPACITOR_PIN A5
+#define VOLTAGE_REGULATOR_OUTPUT_SENSOR A6
 
 char *faultData;
 long secondsToForcedWPS=60L;
@@ -88,6 +88,8 @@ void PowerManager::start(){
 	pinMode(PI_POWER_PIN, OUTPUT);
 	pinMode(CURRENT_SENSOR, INPUT);
 	pinMode(BATTERY_VOLTAGE_PIN, INPUT);
+	pinMode(VOLTAGE_REGULATOR_OUTPUT_SENSOR, INPUT);
+	
 	lcd.print("init power manager");
 	long now = timeManager.getCurrentTimeInSeconds();
 	turnPiOff(now);
@@ -167,9 +169,9 @@ float PowerManager::getCurrentFromBattery(void){
 	return effective_value;
 }
 
-
 float PowerManager::getBatteryVoltage(){
-  int NUM_SAMPLES=10;
+   
+	int NUM_SAMPLES=10;
   int sample_count=0;
   float sum=0;
   while (sample_count < NUM_SAMPLES) {
@@ -177,27 +179,25 @@ float PowerManager::getBatteryVoltage(){
         sample_count++;
         delay(10);
     }
-   // sum=sum/10;
-    // calculate the voltage
-    // use 5.0 for a 5.0V ADC reference voltage
-    // 5.015V is the calibrated reference voltage
     float voltage = 10.8*((float)sum / (float)NUM_SAMPLES * 5.015) / 1024.0;
     return voltage;
 }
 
-// float PowerManager::getBatteryVoltage(){
-// 	long  sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
-// 	long  sum=0;
-// 	for(int i=0;i<10;i++)
-// 	{
-// 		sum=sensorValue+sum;
-// 		sensorValue=analogRead(BATTERY_VOLTAGE_PIN);
-// 		delay(2);
-// 	}
-// 	sum=sum/10;
-// 	float value =(10*sum*4.980/1023.00);
-// 	return value;
-// }
+float PowerManager::getVoltageRegulatorOutput(){
+  
+  int NUM_SAMPLES=10;
+  int sample_count=0;
+  float sum=0;
+  while (sample_count < NUM_SAMPLES) {
+        sum += analogRead(VOLTAGE_REGULATOR_OUTPUT_SENSOR);
+        sample_count++;
+        delay(10);
+    }
+    float voltage = .986*((float)sum / (float)NUM_SAMPLES * 5.015) / 1024.0;
+    return voltage;
+}
+
+
 
 void PowerManager::initializeWDT(){
 	/*** Setup the WDT ***/
@@ -254,6 +254,7 @@ void PowerManager::enterArduinoSleep(void)
 	long lastSleepSeconds = timeManager.getCurrentTimeInSeconds()-currentSleepSeconds ;
 	poweredDownInLoopSeconds+=lastSleepSeconds;
 	float batteryVoltage = getBatteryVoltage();
+	float regulatorOutput = getVoltageRegulatorOutput();
 	if(batteryVoltage>minWPSVoltage){
 		// STORE a lifecycle comma exit record
 		long now = timeManager.getCurrentTimeInSeconds();
@@ -357,9 +358,11 @@ void PowerManager::sendWPSAlert(long time, char *faultData, int batteryVoltage){
 
 void PowerManager::turnPiOffForced(long time){
 	float batteryVoltageBefore = getBatteryVoltage();
+	
 	digitalWrite(PI_POWER_PIN, LOW);
 	delay(1000);
 	float batteryVoltageAfter = getBatteryVoltage();
+	float regulatorVoltageAfter = getVoltageRegulatorOutput();
 	float voltageDifferential = 1-(batteryVoltageBefore/batteryVoltageAfter);
 	dataStorageManager.storeRememberedValue(time,FORCED_PI_TURN_OFF,0 , operatingStatus);
 	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
@@ -381,18 +384,24 @@ void PowerManager::turnPiOff(long time){
 
 
 void PowerManager::turnPiOn(long time){
-	// float batteryVoltageBefore = getBatteryVoltage();
-	// digitalWrite(PI_POWER_PIN, HIGH);
-	// delay(1000);
-	// float batteryVoltageAfter = getBatteryVoltage();
-	// float voltageDifferential = 1-(batteryVoltageAfter/batteryVoltageBefore);
+	float batteryVoltageBefore = getBatteryVoltage();
+	digitalWrite(PI_POWER_PIN, HIGH);
+	delay(1000);
+	float batteryVoltageAfter = getBatteryVoltage();
+	float voltageDifferential = 1-(batteryVoltageAfter/batteryVoltageBefore);
 
-	// dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	// dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
-	// dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_BEFORE_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_ATER_PI_ON, batteryVoltageBefore, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,BATTERY_VOLTAGE_DIFFERENTIAL_AFTER_PI_ON, voltageDifferential, UNIT_PERCENTAGE);
 }
 
+int PowerManager::getCurrentViewIndex(){
+	return currentViewIndex;
+}
 
+void PowerManager::setCurrentViewIndex(int i){
+	currentViewIndex=i;
+}
 boolean PowerManager::getHypothalamusStatus(){
 	return hypothalamusStatus;
 }
@@ -401,6 +410,7 @@ void PowerManager::defineState(){
 	long time = timeManager.getCurrentTimeInSeconds();
 
 	float batteryVoltage = getBatteryVoltage();
+	float regulatorVoltage = getVoltageRegulatorOutput();
 	int internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 	float currentFromBattery = getCurrentFromBattery();
 	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
@@ -469,6 +479,10 @@ void PowerManager::defineState(){
 					lcd.clear();
 					lcd.setCursor(0, 1);
 					lcd.print(timeManager.getCurrentDateTimeForDisplay());
+					lcd.print(" " );
+					lcd.print(regulatorVoltage );
+					lcd.print("V" );
+					
 					lcd.setCursor(0, 2);
 					long freeDiskSpace=dataStorageManager.getFreeDiskSpace()/1024;
 					long totalDiskUse=dataStorageManager.getDiskUsage()/1024; 
@@ -477,10 +491,11 @@ void PowerManager::defineState(){
 					lcd.print(freeDiskSpace) ;
 					lcd.print("kb H:") ;
 					if(hypothalamusStatus){
-						lcd.print("1");
+						lcd.print("1 ");
 					}else{
-						lcd.print("0");
+						lcd.print("0 ");
   					}
+					
 					lcd.setCursor(0,3);
 					lcd.print(batteryVoltage) ;
 					lcd.print("V ") ;
@@ -911,6 +926,8 @@ boolean PowerManager::processDefaultCommands(String command){
 	boolean processed=false;
 	if(command=="TestWPSSensor"){
 		float batteryVoltage = getBatteryVoltage();
+		float regulatorVoltage = getVoltageRegulatorOutput();
+		
 		float current = getCurrentFromBattery();
 		int stateOfCharge= GeneralFunctions::getStateOfCharge(batteryVoltage);
 		boolean result = dataStorageManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
@@ -1027,7 +1044,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		delay(delayTime);
 		processed=true;
 	}else if(command.startsWith("GetSecret")){
-		if(capacitorVoltage==0){
+		if(capacitorVoltage>4.85){
 			//
 			// we are in normal operation
 			//
@@ -1374,12 +1391,20 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	//
 	// Sensor Request Queue Position 5
 	//
+	float regulatorVoltage = getVoltageRegulatorOutput();
+	char regulatorVoltageStr[15];
+	dtostrf(regulatorVoltage,2, 2, regulatorVoltageStr);
+	_HardSerial.print( regulatorVoltageStr);
+	_HardSerial.print("#") ;
+	//
+	// Sensor Request Queue Position 6
+	//
 
 	_HardSerial.print( operatingStatus);
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 6
+	// Sensor Request Queue Position 7
 	//
 
 	char dailyMinBatteryVoltageStr[15];
@@ -1388,7 +1413,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 7
+	// Sensor Request Queue Position 8
 	//
 
 	char dailyMaxBatteryVoltageStr[15];
@@ -1397,7 +1422,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 8
+	// Sensor Request Queue Position 9
 	//
 
 	char dailyMinBatteryCurrentStr[15];
@@ -1406,7 +1431,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 9
+	// Sensor Request Queue Position 10
 	//
 
 	char dailyMaxBatteryCurrentStr[15];
@@ -1415,7 +1440,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 10
+	// Sensor Request Queue Position 11
 	//
 
 	char dailyBatteryOutEnergyStr[15];
@@ -1424,7 +1449,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 11
+	// Sensor Request Queue Position 12
 	//
 
 	char dailyPoweredDownInLoopSecondsStr[15];
@@ -1433,7 +1458,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 12
+	// Sensor Request Queue Position 13
 	//
 
 	char hourlyBatteryOutEnergyStr[15];
@@ -1441,7 +1466,7 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print(hourlyBatteryOutEnergyStr) ;
 	_HardSerial.print("#") ;
 	//
-	// Sensor Request Queue Position 13
+	// Sensor Request Queue Position 14
 	//
 
 	char hourlyPoweredDownInLoopSecondsStr[15];
@@ -1450,20 +1475,20 @@ void PowerManager::printBaseSensorStringToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 14
+	// Sensor Request Queue Position 15
 	//
 	now = millis();
-	lcd.clear();
-	lcd.setCursor(0,0);
+	//lcd.clear();
+	//lcd.setCursor(0,0);
 	
 	long totalDiskUse=dataStorageManager.getDiskUsage();
-	dur = millis()-now;
+	//dur = millis()-now;
 
-	lcd.print(dur);
+	//lcd.print(dur);
 	_HardSerial.print(totalDiskUse/1024);
 	_HardSerial.print("#");
 	//
-	// Sensor Request Queue Position 15
+	// Sensor Request Queue Position 16
 	//
 
 	_HardSerial.print(pauseDuringWPS);
