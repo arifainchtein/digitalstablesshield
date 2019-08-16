@@ -22,10 +22,21 @@ class MusicPlayerController {
 public:
 
 	MusicPlayerController( HardwareSerial& serial, LCDDisplay& lcd);
-	void start(unsigned char vp, unsigned char sp, unsigned char bp, int ns);
+	void start(int ns);
 	void setNumberOfStations(uint8_t n);
 	uint8_t  getNumberOfStations();
 	void checkStatus();
+	uint8_t getVolumeLevel();
+	uint8_t getCurrentStation();
+	boolean getNextUserCommand();
+
+	uint8_t musicControllerCurrentFunctionRewind=1;
+	uint8_t musicControllerCurrentFunctionPlay=2;
+	uint8_t musicControllerCurrentFunctionForward=3;
+	uint8_t musicControllerCurrentFunctionMark=4;
+	uint8_t musicControllerCurrentFunctionVolumeChange=5;
+	uint8_t musicControllerCurrentFunctionStationChange=6;
+
 	virtual ~MusicPlayerController();
 
 private:

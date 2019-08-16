@@ -46,7 +46,7 @@ SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t,Hard
 
 boolean SDCardManager::start(){
 	//setup SD card
-	_HardSerial.println("Initializing SD card...");
+	//_HardSerial.println("Initializing SD card...");
 
 	if (!SD.begin(SD_PIN)) {
 		//		_HardSerial.println("No SD-card.");

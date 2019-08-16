@@ -1,4 +1,4 @@
-#include "Arduino.h"
+#include <Arduino.h>
 #include <LCDDisplay.h>
 #include <PowerManager.h>
 #include <DataStorageManager.h>
@@ -59,7 +59,9 @@ int currentYear=0;
 boolean hypothalamusStatus=false;
 
 
-
+float Aref = 1.075;
+unsigned int total;
+float voltage;
 
 //
 // the virtual micrcntroller
@@ -84,7 +86,9 @@ PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& 
 void PowerManager::start(){
 	// pinMode(52, OUTPUT);
 	// digitalWrite(52, LOW);
-	// SPI.begin();
+	 SPI.begin();
+
+
 	pinMode(PI_POWER_PIN, OUTPUT);
 	pinMode(CURRENT_SENSOR, INPUT);
 	pinMode(BATTERY_VOLTAGE_PIN, INPUT);
@@ -179,7 +183,15 @@ float PowerManager::getBatteryVoltage(){
         sample_count++;
         delay(10);
     }
-    float voltage = 10.8*((float)sum / (float)NUM_SAMPLES * 5.015) / 1024.0;
+    float avg = (float)sum / (float)NUM_SAMPLES;
+    //
+    // th 4.88is taken from ARef of the 1284 under load
+    float voltage = 11*avg * 5.0 / 1024.0;
+//    _HardSerial.print("avg=");
+//    _HardSerial.print(avg);
+//    _HardSerial.print("v=");
+//    _HardSerial.println(voltage);
+
     return voltage;
 }
 
@@ -477,6 +489,20 @@ void PowerManager::defineState(){
 				if((millis()-previousUpdate) >1000){
 					previousUpdate = millis();
 					lcd.clear();
+					lcd.setCursor(0,0);
+					lcd.print(batteryVoltage) ;
+					lcd.print("V ") ;
+
+
+					if(lockCapacitor>4.85){
+						lcd.print("R");
+					}else{
+						lcd.print("P");
+					}
+					lcd.print(lockCapacitor);
+					lcd.print(" ") ;
+					lcd.print((int)currentFromBattery);
+					lcd.print("mA ") ;
 					lcd.setCursor(0, 1);
 					lcd.print(timeManager.getCurrentDateTimeForDisplay());
 					lcd.print(" " );
@@ -496,22 +522,9 @@ void PowerManager::defineState(){
 						lcd.print("0 ");
   					}
 					
-					lcd.setCursor(0,3);
-					lcd.print(batteryVoltage) ;
-					lcd.print("V ") ;
-
-
-					if(lockCapacitor>4.85){
-						lcd.print("R");
-					}else{
-						lcd.print("P");
-					}
-					lcd.print(lockCapacitor);
-					lcd.print(" ") ;
-					lcd.print((int)currentFromBattery);
-					lcd.print("mA ") ;
-					}
 					
+				}
+
 				break;
 
 			case 1:
@@ -1275,22 +1288,9 @@ boolean PowerManager::processDefaultCommands(String command){
 		faultData="";
 		delay(delayTime);
 		processed=true;
-	}else if (command.startsWith("UserCommand") ){
-		//
-		// this function is not used in Ra2
-		// because Ra2 has no buttons
-		// but in the case that a teleonome does have
-		//human interface buttons connected to the microcontrller
-		// or there is a timer, here is where it will
-		_HardSerial.println("Ok-UserCommand");
-		_HardSerial.flush();
-		delay(delayTime);
-		processed=true;
 	}else if (command.startsWith("TimerStatus") ){
 		//
-		// this function is not used in Ra2
-		// because Ra2 has no btimers
-		// but in the case that a teleonome does have
+		// in the case that a teleonome does have
 		//human interface buttons connected to the microcontrller
 		// or there is a timer, here is where it will be
 		_HardSerial.println("Ok-TimerStatus");
