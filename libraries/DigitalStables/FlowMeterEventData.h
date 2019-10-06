@@ -11,7 +11,7 @@
 #include "Arduino.h"
 struct FlowMeterSample{
 	long sampleTime;
-	double flow;
+	float flow;
 };
 typedef struct FlowMeterEventData{
 	long startTime;
@@ -28,53 +28,18 @@ typedef struct FlowMeterEventData{
 	// the eventGroupTime will be equal to the startTime
 	//
 	long eventGroupStartTime;
-	double averageflow;
+	float averageflow;
 	uint8_t numberOfSamples;
-	double totalVolume;
+	float totalVolume;
 	uint8_t flowMeterId;
 	uint16_t sampleFrequencySeconds;
 	FlowMeterSample samples[10];
 
-//	String toTokenizedString(char separator){
-//		String toReturn;
-//		toReturn.reserve(200);
-//
-//		toReturn.concat(startTime) ;
-//		toReturn.concat("#") ;
-//		toReturn.concat(endTime) ;
-//		toReturn.concat("#") ;
-//		toReturn.concat(eventGroupStartTime) ;
-//		toReturn.concat("#") ;
-//		char aString[15];
-//		dtostrf(averageflow,5, 2, aString);
-//		toReturn.concat(aString) ;
-//		toReturn.concat("#") ;
-//		toReturn.concat(flowMeterId) ;
-//		toReturn.concat("#") ;
-//
-//		char aString2[15];
-//		dtostrf(totalVolume,5, 2, aString2);
-//		toReturn.concat(aString2) ;
-//		toReturn.concat("#") ;
-//
-//		toReturn.concat(sampleFrequencySeconds) ;
-//		toReturn.concat("#") ;
-//		toReturn.concat(numberOfSamples) ;
-//		toReturn.concat("#") ;
-//		FlowMeterSample sample;
-//
-//		char aString3[15];
-//		for(int i=0;i<numberOfSamples;i++){
-//			sample = samples[i];
-//			toReturn.concat(sample.sampleTime) ;
-//			toReturn.concat("#") ;
-//			dtostrf(sample.flow,5, 2, aString3);
-//			toReturn.concat(aString3) ;
-//			toReturn.concat("#") ;
-//		}
-//		return toReturn;
-//
-//	}
+	void reset(){
+		::memset(this,0,sizeof(FlowMeterEventData));
+	}
+
+
 };
 
 
