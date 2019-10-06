@@ -157,7 +157,6 @@ void MusicPlayerController::checkButtonAction( ){
 
 	// TODO Auto-generated destructor stub
 	musicbuttonValue =analogRead(MUSIC_PLAYER_BUTTON_PIN);
-	_HardSerial.println(musicbuttonValue);
 	if(musicbuttonValue<=REWIND_BUTTON_VALUE_MAX && musicbuttonValue>=REWIND_BUTTON_VALUE_MIN){
 
 		if(musicControllerCurrentFunction!=musicControllerCurrentFunctionRewind){

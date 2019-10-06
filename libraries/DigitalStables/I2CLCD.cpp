@@ -17,7 +17,7 @@ I2CLCD::I2CLCD() {
 
 void I2CLCD::begin(){
 
-	i2clcd.begin(20,4);
+	i2clcd.begin(16,2);
   i2clcd.backlight();
 
 }
