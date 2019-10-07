@@ -39,9 +39,9 @@ uint8_t currentSampleIndexMeter10=-1;
 
 FlowMeter Meter0 = FlowMeter(flow_0);
 FlowMeter Meter1 = FlowMeter(flow_1);
-FlowMeter* Meter2 = null;
-FlowMeter* Meter3 = null;
-FlowMeter* Meter4 = null;
+FlowMeter* Meter2 = nullptr;
+FlowMeter* Meter3 = nullptr;
+FlowMeter* Meter4 = nullptr;
 FlowMeter Meter10 = FlowMeter(flow_10);
 
 FlowMeterEventData aFlowMeter0EventData;
@@ -71,20 +71,19 @@ void AquabubblerManager::begin(uint8_t numberOfWaterPoints) {
 	attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, LOW);
 
 	if(numberOfWaterPoints>1){
-		 Meter2 = FlowMeter(flow_2);
+		 Meter2 = new FlowMeter(flow_2);
 		pinMode(flow_2, INPUT);
 		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, LOW);
 
 	}
 	if(numberOfWaterPoints>2){
-		Meter3 = FlowMeter(flow_3);
-
+		Meter3 = new FlowMeter(flow_3);
 		pinMode(flow_3, INPUT);
 		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, LOW);
 
 	}
 	if(numberOfWaterPoints>3){
-		 Meter4 = FlowMeter(flow_4);
+		 Meter4 = new FlowMeter(flow_4);
 		pinMode(flow_4, INPUT);;
 		attachInterrupt(digitalPinToInterrupt(flow_4), sensor_4, LOW);
 
@@ -95,39 +94,39 @@ void AquabubblerManager::begin(uint8_t numberOfWaterPoints) {
 }
 
 void AquabubblerManager::updateValues(){
-	updateMeter(Meter0, meter0InEvent, aFlowMeter0EventData);
-	updateMeter(Meter1, meter1InEvent, aFlowMeter1EventData);
-	updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData);
-	updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData);
-	updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData);
-	updateMeter(Meter10, meter10InEvent, aFlowMeter10EventData);
+	updateMeter(Meter0, meter0InEvent, aFlowMeter0EventData,currentSampleIndexMeter0);
+	updateMeter(Meter1, meter1InEvent, aFlowMeter1EventData,currentSampleIndexMeter1);
+	updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData,currentSampleIndexMeter2);
+	updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData, currentSampleIndexMeter3);
+	updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData, currentSampleIndexMeter4);
+	updateMeter(Meter10, meter10InEvent, aFlowMeter10EventData, currentSampleIndexMeter10);
 
 }
 
-void AquabubblerManager::updateMeter(FlowMeter & f, bool & b, FlowMeterEventData & aFlowMeterEventData){
+void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t currentSampleIndexMeter){
 
 	//
 	// if water is not running in any of the meters
 	// then if the event is going, close the event
-	Meter0.tick(period);
-	if(Meter0.getCurrentFrequency()>0){
+	meter.tick(period);
+	if(meter.getCurrentFrequency()>0){
 		long currentTime = timeManager.getCurrentTimeInSeconds();
-		if(!meter0InEvent){
+		if(!meterInEvent){
 			//
 			// if we are here it means that the flow meter
 			// just detected a new starting event
-			meter0InEvent=true;
-			aFlowMeter0EventData.startTime = currentTime;
+			meterInEvent=true;
+			aFlowMeterEventData.startTime = currentTime;
 		}
-		currentSampleIndexMeter0++;
-		float flowRate = Meter0.getCurrentFlowrate();
+		currentSampleIndexMeter++;
+		float flowRate = meter.getCurrentFlowrate();
 
 
-		aFlowMeter0EventData.flowMeterId=0;
-		aFlowMeter0EventData.eventGroupStartTime=currentTime;
-		aFlowMeter0EventData.totalVolume+=Meter0.getCurrentVolume();
-		aFlowMeter0EventData.samples[currentSampleIndexMeter0].sampleTime=currentTime;
-		aFlowMeter0EventData.samples[currentSampleIndexMeter0].flow=flowRate;
+		aFlowMeterEventData.flowMeterId=0;
+		aFlowMeterEventData.eventGroupStartTime=currentTime;
+		aFlowMeterEventData.totalVolume+=Meter0.getCurrentVolume();
+		aFlowMeterEventData.samples[currentSampleIndexMeter].sampleTime=currentTime;
+		aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
 
 	}else{
 		if(meter0InEvent){
@@ -143,18 +142,18 @@ void AquabubblerManager::updateMeter(FlowMeter & f, bool & b, FlowMeterEventData
 			//
 			aFlowMeter0EventData.endTime=timeManager.getCurrentTimeInSeconds();
 			aFlowMeter0EventData.averageflow
-			aFlowMeter0EventData.numberOfSamples=currentSampleIndexMeter0+1;
+			aFlowMeter0EventData.numberOfSamples=currentSampleIndexMeter+1;
 			aFlowMeter0EventData.sampleFrequencySeconds
 			meter0InEvent=false;
-			sdCardSaveRecord(aFlowMeter0EventData);
+			sdCardSaveRecord(aFlowMeterEventData);
 		}else{
 			//
 			// if we are here it means that the current flow is 0
 			// and we are not in an event, this means that
 			// the flow meter is idle
-			aFlowMeter0EventData.reset();
-			currentSampleIndexMeter0=-1;
-			Meter0.reset();
+			aFlowMeterEventData.reset();
+			currentSampleIndexMeter=-1;
+			meter.reset();
 		}
 	}
 }

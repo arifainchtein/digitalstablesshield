@@ -26,7 +26,8 @@ public:
 	void updateValues();
 
 private:
-	void updateMeter(FlowMeter, boolean, FlowMeterEventData);
+	void updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t currentSampleIndexMeter){
+
 
 
 	virtual ~AquabubblerManager();
