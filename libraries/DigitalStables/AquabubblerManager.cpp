@@ -39,9 +39,9 @@ uint8_t currentSampleIndexMeter10=-1;
 
 FlowMeter Meter0 = FlowMeter(flow_0);
 FlowMeter Meter1 = FlowMeter(flow_1);
-FlowMeter* Meter2 = FlowMeter(flow_2);
-FlowMeter* Meter3 = FlowMeter(flow_3);
-FlowMeter* Meter4 = FlowMeter(flow_4);
+FlowMeter* Meter2 = null;
+FlowMeter* Meter3 = null;
+FlowMeter* Meter4 = null;
 FlowMeter Meter10 = FlowMeter(flow_10);
 
 FlowMeterEventData aFlowMeter0EventData;
@@ -71,16 +71,20 @@ void AquabubblerManager::begin(uint8_t numberOfWaterPoints) {
 	attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, LOW);
 
 	if(numberOfWaterPoints>1){
+		 Meter2 = FlowMeter(flow_2);
 		pinMode(flow_2, INPUT);
 		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, LOW);
 
 	}
 	if(numberOfWaterPoints>2){
+		Meter3 = FlowMeter(flow_3);
+
 		pinMode(flow_3, INPUT);
 		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, LOW);
 
 	}
 	if(numberOfWaterPoints>3){
+		 Meter4 = FlowMeter(flow_4);
 		pinMode(flow_4, INPUT);;
 		attachInterrupt(digitalPinToInterrupt(flow_4), sensor_4, LOW);
 
@@ -91,16 +95,16 @@ void AquabubblerManager::begin(uint8_t numberOfWaterPoints) {
 }
 
 void AquabubblerManager::updateValues(){
-	updateMeter(*Meter0, meter0InEvent, aFlowMeter0EventData);
-	updateMeter(*Meter1, meter1InEvent, aFlowMeter1EventData);
+	updateMeter(Meter0, meter0InEvent, aFlowMeter0EventData);
+	updateMeter(Meter1, meter1InEvent, aFlowMeter1EventData);
 	updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData);
 	updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData);
 	updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData);
-	updateMeter(*Meter10, meter10InEvent, aFlowMeter10EventData);
+	updateMeter(Meter10, meter10InEvent, aFlowMeter10EventData);
 
 }
 
-void AquabubblerManager::updateMeter(FlowMeter & f, boolean meterInEvent & b, aFlowMeterEventData){
+void AquabubblerManager::updateMeter(FlowMeter & f, bool & b, FlowMeterEventData & aFlowMeterEventData){
 
 	//
 	// if water is not running in any of the meters
