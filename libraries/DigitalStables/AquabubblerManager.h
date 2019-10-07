@@ -16,7 +16,7 @@
 class AquabubblerManager {
 public:
 	AquabubblerManager(DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
-	void begin(uint8_t n);
+	void begin(uint8_t n, bool withDistributionPoint);
 	void sensor_0();
 	void sensor_1();
 	void sensor_2();
