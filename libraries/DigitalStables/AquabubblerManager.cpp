@@ -8,12 +8,7 @@
 #include <AquabubblerManager.h>
 
 // connect a flow meter to an interrupt pin (see notes on your Arduino model for pin numbers)
-FlowMeter Meter0 = FlowMeter(2);
-FlowMeter Meter1 = FlowMeter(2);
-FlowMeter* Meter2 = FlowMeter(3);
-FlowMeter* Meter3 = FlowMeter(3);
-FlowMeter* Meter4 = FlowMeter(3);
-FlowMeter Meter10 = FlowMeter(3);
+
 
 #define flow_0 9
 #define flow_1 8
@@ -21,6 +16,13 @@ FlowMeter Meter10 = FlowMeter(3);
 #define flow_3 6
 #define flow_4 46
 #define flow_10 45
+
+FlowMeter Meter0 = FlowMeter(flow_0);
+FlowMeter Meter1 = FlowMeter(flow_1);
+FlowMeter* Meter2 = FlowMeter(flow_2);
+FlowMeter* Meter3 = FlowMeter(flow_3);
+FlowMeter* Meter4 = FlowMeter(flow_4);
+FlowMeter Meter10 = FlowMeter(flow_10);
 
 int stateflow = 0;
 uint32_t counterflow[6] = {0,0,0,0,0,0};
