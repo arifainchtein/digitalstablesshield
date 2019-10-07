@@ -8,6 +8,8 @@
 #ifndef LIBRARIES_DIGITALSTABLES_AQUABUBBLERMANAGER_H_
 #define LIBRARIES_DIGITALSTABLES_AQUABUBBLERMANAGER_H_
 
+#include <FlowMeter.h>
+
 class AquabubblerManager {
 public:
 	AquabubblerManager();

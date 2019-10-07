@@ -9,8 +9,8 @@
 
 // connect a flow meter to an interrupt pin (see notes on your Arduino model for pin numbers)
 FlowMeter Meter0 = FlowMeter(2);
-FlowMeter* Meter1 = FlowMeter(2);
-FlowMeter*& Meter2 = FlowMeter(3);
+FlowMeter Meter1 = FlowMeter(2);
+FlowMeter* Meter2 = FlowMeter(3);
 FlowMeter* Meter3 = FlowMeter(3);
 FlowMeter* Meter4 = FlowMeter(3);
 FlowMeter Meter10 = FlowMeter(3);
@@ -35,18 +35,29 @@ AquabubblerManager::AquabubblerManager() {
 void AquabubblerManager::begin(int numberOfWaterPoints) {
 
 	pinMode(flow_0, INPUT);
-	pinMode(flow_1, INPUT);
-	pinMode(flow_2, INPUT);
-	pinMode(flow_3, INPUT);
-	pinMode(flow_4, INPUT);
-	pinMode(flow_10, INPUT);
+	attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, LOW);
 
-   attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, LOW);
-   attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, LOW);
-   attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, LOW);
-   attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, LOW);
-   attachInterrupt(digitalPinToInterrupt(flow_4), sensor_4, LOW);
-   attachInterrupt(digitalPinToInterrupt(flow_10), sensor_10, LOW);
+
+	pinMode(flow_1, INPUT);
+	attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, LOW);
+
+	if(numberOfWaterPoints>1){
+		pinMode(flow_2, INPUT);
+		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, LOW);
+
+	}
+	if(numberOfWaterPoints>2){
+		pinMode(flow_3, INPUT);
+		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, LOW);
+
+	}
+	if(numberOfWaterPoints>3){
+		pinMode(flow_4, INPUT);;
+		attachInterrupt(digitalPinToInterrupt(flow_4), sensor_4, LOW);
+
+	}
+	pinMode(flow_10, INPUT);
+	attachInterrupt(digitalPinToInterrupt(flow_10), sensor_10, LOW);
 
 }
 
