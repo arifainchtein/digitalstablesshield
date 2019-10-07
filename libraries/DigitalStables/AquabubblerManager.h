@@ -12,7 +12,16 @@ class AquabubblerManager {
 public:
 	AquabubblerManager();
 	void begin();
+	void sensor_0();
+	void sensor_1();
+	void sensor_2();
+	void sensor_3();
+	void sensor_4();
+	void sensor_10();
 	void updateValues();
+
+
+
 	virtual ~AquabubblerManager();
 };
 

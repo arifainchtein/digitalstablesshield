@@ -4,16 +4,19 @@
  *  Created on: 7 Oct 2019
  *      Author: arifainchtein
  */
-
+#include "Arduino.h"
 #include <AquabubblerManager.h>
 
 // connect a flow meter to an interrupt pin (see notes on your Arduino model for pin numbers)
-FlowMeter Meter0 = FlowMeter(2);
-FlowMeter Meter1 = FlowMeter(3);
-FlowMeter Meter2 = FlowMeter(2);
-FlowMeter Meter3 = FlowMeter(3);
-FlowMeter Meter4 = FlowMeter(2);
-FlowMeter Meter10 = FlowMeter(3);
+#define flow_0 9
+#define flow_1 8
+#define flow_2 7
+#define flow_3 6
+#define flow_4 46
+#define flow_10 45
+
+int stateflow = 0;
+uint32_t counterflow[6] = {0,0,0,0,0,0};
 
 AquabubblerManager::AquabubblerManager() {
 	// TODO Auto-generated constructor stub
@@ -22,13 +25,60 @@ AquabubblerManager::AquabubblerManager() {
 
 
 
-AquabubblerManager::begin() {
+void AquabubblerManager::begin() {
+	pinMode(flow_0, INPUT);
+	pinMode(flow_1, INPUT);
+   pinMode(flow_2, INPUT);
+   pinMode(flow_3, INPUT);
+   pinMode(flow_4, INPUT);
+   pinMode(flow_10, INPUT);
+
+   attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, LOW);
+   attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, LOW);
+   attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, LOW);
+   attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, LOW);
+   attachInterrupt(digitalPinToInterrupt(flow_4), sensor_4, LOW);
+   attachInterrupt(digitalPinToInterrupt(flow_10), sensor_10, LOW);
 
 }
 
-AquabubblerManager::updateValues(){
+void AquabubblerManager::updateValues(){
 
 }
+
+
+void AquabubblerManager::sensor_0(){
+  counterflow[0]++;
+  stateflow|=0x20;
+}
+
+void AquabubblerManager::sensor_1(){
+  counterflow[1]++;
+  stateflow|=0x01;
+}
+
+void AquabubblerManager::sensor_2(){
+  counterflow[1]++;
+  stateflow|=0x02;
+}
+
+void AquabubblerManager::sensor_3(){
+  counterflow[2]++;
+  stateflow|=0x04;
+}
+
+void AquabubblerManager::sensor_4(){
+  counterflow[3]++;
+  stateflow|=0x08;
+}
+
+void AquabubblerManager::sensor_10(){
+  counterflow[4]++;
+  stateflow|=0x10;
+}
+
+
+
 AquabubblerManager::~AquabubblerManager() {
 	// TODO Auto-generated destructor stub
 }
