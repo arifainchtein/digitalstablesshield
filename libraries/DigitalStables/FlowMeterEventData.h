@@ -33,7 +33,7 @@ typedef struct FlowMeterEventData{
 	float totalVolume;
 	uint8_t flowMeterId;
 	uint16_t sampleFrequencySeconds;
-	FlowMeterSample samples[60];
+	FlowMeterSample samples[10];
 
 	void reset(){
 		::memset(this,0,sizeof(FlowMeterEventData));

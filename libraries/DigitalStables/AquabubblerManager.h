@@ -9,11 +9,14 @@
 #define LIBRARIES_DIGITALSTABLES_AQUABUBBLERMANAGER_H_
 
 #include <FlowMeter.h>
+#include <FlowMeterEventData.h>
+#include <DataStorageManager.h>
+#include <TimeManager.h>
 
 class AquabubblerManager {
 public:
-	AquabubblerManager();
-	void begin();
+	AquabubblerManager(DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
+	void begin(uint8_t n);
 	void sensor_0();
 	void sensor_1();
 	void sensor_2();

@@ -14,10 +14,9 @@
 
 class TimeManager{
 	HardwareSerial& _HardSerial;
-	GravityRtc rtc;
+
 	#define LEAP_YEAR(_year) ((_year%4)==0)
 
-	const int chipSelect = 10; //cs or the save select pin from the sd shield is connected to 10.
 	int timeZoneHours=11;
 	int SECONDOFFSET=10;
 	

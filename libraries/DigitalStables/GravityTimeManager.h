@@ -9,8 +9,11 @@
 #define LIBRARIES_DIGITALSTABLES_GRAVITYTIMEMANAGER_H_
 
 #include <TimeManager.h>
+#include <GravityRtc.h>
 
 class GravityTimeManager : public TimeManager {
+	GravityRtc rtc;
+
 public:
 	GravityTimeManager();
 	GravityTimeManager( HardwareSerial& serial);

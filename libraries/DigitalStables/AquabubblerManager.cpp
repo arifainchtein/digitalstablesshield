@@ -7,7 +7,21 @@
 #include "Arduino.h"
 #include <AquabubblerManager.h>
 
+
+
 // connect a flow meter to an interrupt pin (see notes on your Arduino model for pin numbers)
+
+TimeManager&  timeManager;
+DataStorageManager&  dataStorageManager;
+HardwareSerial& _HardSerial;
+
+const unsigned long period = 1000;
+boolean meter0InEvent = false;
+boolean meter1InEvent = false;
+boolean meter2InEvent = false;
+boolean meter3InEvent = false;
+boolean meter4InEvent = false;
+boolean meter10InEvent = false;
 
 
 #define flow_0 9
@@ -27,10 +41,9 @@ FlowMeter Meter10 = FlowMeter(flow_10);
 int stateflow = 0;
 uint32_t counterflow[6] = {0,0,0,0,0,0};
 
-AquabubblerManager::AquabubblerManager() {
-	// TODO Auto-generated constructor stub
+AquabubblerManager::AquabubblerManager( DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ):  dataStorageManager(sd),timeManager(t), _HardSerial(serial)
+{}
 
-}
 
 
 
@@ -67,22 +80,33 @@ static void AquabubblerManager::updateValues(){
 	//
 	// if water is not running in any of the meters
 	// then if the event is going, close the event
-	if(Meter0.getFrequency()==0 && inEvent){
-		//
-		// set the flag to end of event
-	}
-	Meter1.tick(period);
-	Meter2.tick(period);
-	if(){
+	Meter0.tick(period);
+	if(Meter0.getCurrentFrequency()>0){
+		meter0InEvent=true;
+		flowRateMeter0.getCurrentFlowrate();
+		gravityRTC.
 
 	}else{
-
+		if(meter0InEvent){
+			//
+			// if we are here it means that there is no
+			// water flowing through the meter now
+			// but since we were in an event
+			// it means that event is finished so
+			// create a aFlowMeterEventData and store it
+			//
+			// since the last time check,
+			// this means that the event is finished
+			//
+			FlowMeterEventData aFlowMeterEventData;
+			aFlowMeterEventData.startTime
+		}
 	}
 }
 
 
 static void AquabubblerManager::sensor_0(){
-	 Meter1.count();
+	 Meter0.count();
 }
 
 static void AquabubblerManager::sensor_1(){
