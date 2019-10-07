@@ -53,10 +53,6 @@ FlowMeterEventData aFlowMeter3EventData;
 FlowMeterEventData aFlowMeter4EventData;
 FlowMeterEventData aFlowMeter10EventData;
 
-
-int stateflow = 0;
-uint32_t counterflow[6] = {0,0,0,0,0,0};
-
 AquabubblerManager::AquabubblerManager( DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ):  dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
 
@@ -170,28 +166,23 @@ static void AquabubblerManager::sensor_0(){
 }
 
 static void AquabubblerManager::sensor_1(){
-  counterflow[1]++;
-  stateflow|=0x01;
+	Meter1.count();
 }
 
 static void AquabubblerManager::sensor_2(){
-  counterflow[1]++;
-  stateflow|=0x02;
+	Meter2.count();
 }
 
 static void AquabubblerManager::sensor_3(){
-  counterflow[2]++;
-  stateflow|=0x04;
+	Meter3.count();
 }
 
 static void AquabubblerManager::sensor_4(){
-  counterflow[3]++;
-  stateflow|=0x08;
+	Meter4.count();
 }
 
 static void AquabubblerManager::sensor_10(){
-  counterflow[4]++;
-  stateflow|=0x10;
+	Meter10.count();
 }
 
 
