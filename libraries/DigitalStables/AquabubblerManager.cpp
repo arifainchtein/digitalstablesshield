@@ -23,6 +23,7 @@ boolean meter3InEvent = false;
 boolean meter4InEvent = false;
 boolean meter10InEvent = false;
 
+uint8_t currentSampleIndexMeter0=-1;
 
 #define flow_0 9
 #define flow_1 8
@@ -38,6 +39,8 @@ FlowMeter* Meter3 = FlowMeter(flow_3);
 FlowMeter* Meter4 = FlowMeter(flow_4);
 FlowMeter Meter10 = FlowMeter(flow_10);
 
+FlowMeterEventData aFlowMeter0EventData;
+
 int stateflow = 0;
 uint32_t counterflow[6] = {0,0,0,0,0,0};
 
@@ -47,7 +50,7 @@ AquabubblerManager::AquabubblerManager( DataStorageManager& sd, TimeManager& t, 
 
 
 
-void AquabubblerManager::begin(int numberOfWaterPoints) {
+void AquabubblerManager::begin(uint8_t numberOfWaterPoints) {
 
 	pinMode(flow_0, INPUT);
 	attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, LOW);
@@ -82,9 +85,23 @@ static void AquabubblerManager::updateValues(){
 	// then if the event is going, close the event
 	Meter0.tick(period);
 	if(Meter0.getCurrentFrequency()>0){
-		meter0InEvent=true;
-		flowRateMeter0.getCurrentFlowrate();
-		gravityRTC.
+		if(!meter0InEvent){
+			//
+			// if we are here it means that the flow meter
+			// just detected a new starting event
+			meter0InEvent=true;
+			aFlowMeter0EventData.startTime = timeManager.getCurrentTimeInSeconds();
+		}
+		currentSampleIndexMeter0++;
+		float flowRate = Meter0.getCurrentFlowrate();
+		long currentTime = timeManager.getCurrentTimeInSeconds();
+
+		aFlowMeter0EventData.flowMeterId=0;
+		aFlowMeter0EventData.startTime=currentTime;
+		aFlowMeter0EventData.eventGroupStartTime=currentTime;
+		aFlowMeter0EventData.totalVolume+=Meter0.getCurrentVolume();
+		aFlowMeter0EventData.samples[currentSampleIndexMeter0].sampleTime=currentTime;
+		aFlowMeter0EventData.samples[currentSampleIndexMeter0].flow=flowRate;
 
 	}else{
 		if(meter0InEvent){
@@ -98,8 +115,19 @@ static void AquabubblerManager::updateValues(){
 			// since the last time check,
 			// this means that the event is finished
 			//
-			FlowMeterEventData aFlowMeterEventData;
-			aFlowMeterEventData.startTime
+			aFlowMeter0EventData.endTime=timeManager.getCurrentTimeInSeconds();
+			aFlowMeter0EventData.averageflow
+			aFlowMeter0EventData.numberOfSamples=currentSampleIndexMeter0+1;
+			aFlowMeter0EventData.sampleFrequencySeconds
+			meter0InEvent=false;
+		}else{
+			//
+			// if we are here it means that the current flow is 0
+			// and we are not in an event, this means that
+			// the flow meter is idle
+			aFlowMeter0EventData.reset();
+			currentSampleIndexMeter0=-1;
+			Meter0.reset();
 		}
 	}
 }
