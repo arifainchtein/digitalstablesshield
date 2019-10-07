@@ -176,7 +176,7 @@ static void AquabubblerManager::sensor_0(){
 }
 
 static void AquabubblerManager::sensor_1(){
-	Meter1.count();
+	if(Meter1 != nullptr)Meter1->count();;
 }
 
 static void AquabubblerManager::sensor_2(){
@@ -192,7 +192,8 @@ static void AquabubblerManager::sensor_4(){
 }
 
 static void AquabubblerManager::sensor_10(){
-	Meter10.count();
+
+	if(Meter10 != nullptr)Meter10->count();
 }
 
 
