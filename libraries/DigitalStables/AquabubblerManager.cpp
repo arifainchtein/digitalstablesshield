@@ -100,7 +100,7 @@ void AquabubblerManager::updateValues(){
 
 }
 
-void AquabubblerManager::updateMeter(){
+void AquabubblerManager::updateMeter(FlowMeter & f, boolean meterInEvent & b, aFlowMeterEventData){
 
 	//
 	// if water is not running in any of the meters

@@ -25,6 +25,8 @@ public:
 	void sensor_10();
 	void updateValues();
 
+private:
+	void updateMeter(FlowMeter, boolean, FlowMeterEventData);
 
 
 	virtual ~AquabubblerManager();
