@@ -1,5 +1,5 @@
 /*
- * AquabubblerManager.h
+ * FlowSensorNetworkManager.h
  *
  *  Created on: 7 Oct 2019
  *      Author: arifainchtein
@@ -13,9 +13,9 @@
 #include <DataStorageManager.h>
 #include <TimeManager.h>
 
-class AquabubblerManager {
+class FlowSensorNetworkManager {
 public:
-	AquabubblerManager(DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
+	FlowSensorNetworkManager(DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
 	void begin(uint8_t n, bool withDistributionPoint);
 	void sensor_0();
 	void sensor_1();
@@ -27,7 +27,7 @@ public:
 
 private:
 	void updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
-	virtual ~AquabubblerManager();
+	virtual ~FlowSensorNetworkManager();
 };
 
 #endif /* LIBRARIES_DIGITALSTABLES_FLOWSENSORNETWORKMANAGER_H_ */
