@@ -140,7 +140,7 @@ void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, Flo
 		aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
 
 	}else{
-		if(meter0InEvent){
+		if(meterInEvent){
 			//
 			// if we are here it means that there is no
 			// water flowing through the meter now
@@ -151,10 +151,10 @@ void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, Flo
 			// since the last time check,
 			// this means that the event is finished
 			//
-			aFlowMeter0EventData.endTime=timeManager.getCurrentTimeInSeconds();
-			aFlowMeter0EventData.averageflow
-			aFlowMeter0EventData.numberOfSamples=currentSampleIndexMeter+1;
-			aFlowMeter0EventData.sampleFrequencySeconds
+			aFlowMeterEventData.endTime=timeManager.getCurrentTimeInSeconds();
+			aFlowMeterEventData.averageflow
+			aFlowMeterEventData.numberOfSamples=currentSampleIndexMeter+1;
+			aFlowMeterEventData.sampleFrequencySeconds
 			meter0InEvent=false;
 			//sdCardSaveRecord(aFlowMeterEventData);
 		}else{
