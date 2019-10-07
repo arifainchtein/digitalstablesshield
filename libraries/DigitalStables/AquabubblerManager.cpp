@@ -16,12 +16,12 @@ DataStorageManager&  dataStorageManager;
 HardwareSerial& _HardSerial;
 
 const unsigned long period = 1000;
-boolean meter0InEvent = false;
-boolean meter1InEvent = false;
-boolean meter2InEvent = false;
-boolean meter3InEvent = false;
-boolean meter4InEvent = false;
-boolean meter10InEvent = false;
+bool meter0InEvent = false;
+bool meter1InEvent = false;
+bool meter2InEvent = false;
+bool meter3InEvent = false;
+bool meter4InEvent = false;
+bool meter10InEvent = false;
 
 uint8_t currentSampleIndexMeter0=-1;
 uint8_t currentSampleIndexMeter1=-1;
@@ -96,14 +96,14 @@ void AquabubblerManager::begin(uint8_t numberOfWaterPoints) {
 void AquabubblerManager::updateValues(){
 	updateMeter(Meter0, meter0InEvent, aFlowMeter0EventData,currentSampleIndexMeter0);
 	updateMeter(Meter1, meter1InEvent, aFlowMeter1EventData,currentSampleIndexMeter1);
-	updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData,currentSampleIndexMeter2);
-	updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData, currentSampleIndexMeter3);
-	updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData, currentSampleIndexMeter4);
+	if(Meter2 != nullptr)updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData,currentSampleIndexMeter2);
+	if(Meter3 != nullptr)updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData, currentSampleIndexMeter3);
+	if(Meter4 != nullptr)updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData, currentSampleIndexMeter4);
 	updateMeter(Meter10, meter10InEvent, aFlowMeter10EventData, currentSampleIndexMeter10);
 
 }
 
-void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t currentSampleIndexMeter){
+void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter){
 
 	//
 	// if water is not running in any of the meters
@@ -124,7 +124,7 @@ void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, Flo
 
 		aFlowMeterEventData.flowMeterId=0;
 		aFlowMeterEventData.eventGroupStartTime=currentTime;
-		aFlowMeterEventData.totalVolume+=Meter0.getCurrentVolume();
+		aFlowMeterEventData.totalVolume+=meter.getCurrentVolume();
 		aFlowMeterEventData.samples[currentSampleIndexMeter].sampleTime=currentTime;
 		aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
 
@@ -145,7 +145,7 @@ void AquabubblerManager::updateMeter(FlowMeter & meter, bool & meterInEvent, Flo
 			aFlowMeter0EventData.numberOfSamples=currentSampleIndexMeter+1;
 			aFlowMeter0EventData.sampleFrequencySeconds
 			meter0InEvent=false;
-			sdCardSaveRecord(aFlowMeterEventData);
+			//sdCardSaveRecord(aFlowMeterEventData);
 		}else{
 			//
 			// if we are here it means that the current flow is 0
