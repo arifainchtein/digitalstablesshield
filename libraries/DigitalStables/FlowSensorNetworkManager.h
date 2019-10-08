@@ -24,6 +24,9 @@ public:
 	void sensor_4();
 	void sensor_10();
 	void updateValues();
+	float getMeterCurrentFlow(uint8_t meterIndex);
+	float getMeterCurrentVolume(uint8_t meterIndex);
+
 
 private:
 	void updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
