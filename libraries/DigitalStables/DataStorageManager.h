@@ -26,7 +26,7 @@ public:
 	virtual boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year)=0;
 	virtual boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName)=0;
 	virtual void storeRememberedValue(long time, const char *name, float value, String unit)=0;
-	virtual void storeDiscreteRecord( DiscreteRecord& discreteRec)=0;
+	virtual void storeDiscreteRecord(const DiscreteRecord& discreteRec)=0;
 	virtual boolean readDiscreteRecord(uint16_t index,DiscreteRecord& rec)=0;
 	virtual boolean openDiscreteRecordFile()=0;
 	virtual void closeDiscreteRecordFile()=0;

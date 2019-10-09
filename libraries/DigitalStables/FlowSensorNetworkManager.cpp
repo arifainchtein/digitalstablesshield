@@ -21,7 +21,7 @@ bool meter1InEvent = false;
 bool meter2InEvent = false;
 bool meter3InEvent = false;
 bool meter4InEvent = false;
-bool meter10InEvent = false;
+bool meter5InEvent = false;
 
 uint8_t currentSampleIndexMeter0=-1;
 uint8_t currentSampleIndexMeter1=-1;
@@ -54,7 +54,7 @@ FlowMeterEventData aFlowMeter4EventData;
 FlowMeterEventData aFlowMeter5EventData;
 bool withDistributionPoint=false;
 
-FlowSensorNetworkManager::FlowSensorNetworkManager( DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ):  dataStorageManager(sd),timeManager(t), _HardSerial(serial)
+FlowSensorNetworkManager::FlowSensorNetworkManager(PowerManager& p ,DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ): powerManager(p), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
 
 
@@ -102,7 +102,7 @@ void FlowSensorNetworkManager::updateValues(){
 	if(Meter2 != nullptr)updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData,currentSampleIndexMeter2, false);
 	if(Meter3 != nullptr)updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData, currentSampleIndexMeter3, false);
 	if(Meter4 != nullptr)updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData, currentSampleIndexMeter4, false);
-	if(Meter5 != nullptr)updateMeter(*Meter5, meter10InEvent, aFlowMeter5EventData, currentSampleIndexMeter5, false);
+	if(Meter5 != nullptr)updateMeter(*Meter5, meter5InEvent, aFlowMeter5EventData, currentSampleIndexMeter5, false);
 
 }
 float FlowSensorNetworkManager::getMeterCurrentFlow(uint8_t meterIndex){
@@ -220,7 +220,16 @@ void FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			aFlowMeterEventData.numberOfSamples=currentSampleIndexMeter+1;
 			aFlowMeterEventData.sampleFrequencySeconds
 			meter0InEvent=false;
-			//sdCardSaveRecord(aFlowMeterEventData);
+			//
+			// now ask the powermanager for permission to transmit
+			//
+			if(aPowerManager.canXBeeTransmit()){
+
+			}else{
+				dataStorageManager.storeDiscreteRecord(aFlowMeterEventData);
+
+			}
+			//
 		}else{
 			//
 			// if we are here it means that the current flow is 0

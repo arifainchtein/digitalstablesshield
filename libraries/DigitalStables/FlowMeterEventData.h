@@ -9,11 +9,12 @@
 #define LIBRARIES_DIGITALSTABLES_FLOWMETEREVENTDATA_H_
 
 #include "Arduino.h"
+#include <DiscreteRecord.h>
 struct FlowMeterSample{
 	long sampleTime;
 	float flow;
 };
-typedef struct FlowMeterEventData{
+typedef struct FlowMeterEventData:public DiscreteRecord{
 	long startTime;
 	long endTime;
 	//

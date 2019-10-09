@@ -12,10 +12,11 @@
 #include <FlowMeterEventData.h>
 #include <DataStorageManager.h>
 #include <TimeManager.h>
+#include <PowerManager.h>
 
 class FlowSensorNetworkManager {
 public:
-	FlowSensorNetworkManager(DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
+	FlowSensorNetworkManager(PowerManager& p,DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
 	void begin(uint8_t n, bool withDistributionPoint);
 	void sensor_0();
 	void sensor_1();
@@ -29,7 +30,7 @@ public:
 
 
 private:
-	void updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
+	void updateMeter( FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
 	virtual ~FlowSensorNetworkManager();
 };
 
