@@ -37,41 +37,41 @@ boolean TimeManager::printTimeToSerial(){
 ////
 //
 //
-void TimeManager::start(){
-}
+//void TimeManager::start(){
+//}
+////
+////
+//long TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second){
 //
+//}
 //
-long TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second){
-
-}
-
-String TimeManager::getCurrentTimeForDisplay(boolean showSecs){
-
-}
+//String TimeManager::getCurrentTimeForDisplay(boolean showSecs){
 //
-String TimeManager::getCurrentDateTimeForDisplay(){
-
-}
+//}
+////
+//String TimeManager::getCurrentDateTimeForDisplay(){
 //
-String TimeManager::getCurrentDateForDisplay(){
-
-}
+//}
+////
+//String TimeManager::getCurrentDateForDisplay(){
 //
+//}
+////
+////
+//long TimeManager::getTimeForCodeGeneration(){
 //
-long TimeManager::getTimeForCodeGeneration(){
-
-}
+//}
+////
+////
+////
+//RTCInfoRecord TimeManager::getCurrentDateTime(){
 //
+//}
+////
+//long TimeManager::getCurrentTimeInSeconds(){
 //
+//}
 //
-RTCInfoRecord TimeManager::getCurrentDateTime(){
-
-}
+//String TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
 //
-long TimeManager::getCurrentTimeInSeconds(){
-
-}
-
-String TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
-
-}
+//}

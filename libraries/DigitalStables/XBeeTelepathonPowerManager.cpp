@@ -50,6 +50,13 @@
 XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
 {}
 
+bool XBeeTelepathonPowerManager::canPublish(){
+	if(getBatteryVoltage()>12.4){
+		return true;
+	}else{
+		return false;
+	}
+}
 float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
 	int sensorValue;             //value read from the sensor
 	int sensorMax = 0;

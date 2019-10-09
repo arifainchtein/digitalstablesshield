@@ -15,8 +15,10 @@
 #include <PowerManager.h>
 
 class FlowSensorNetworkManager {
+	PowerManager powerManager;
+
 public:
-	FlowSensorNetworkManager(PowerManager& p,DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
+	FlowSensorNetworkManager(PowerManager& p,DataStorageManager & sd, TimeManager & t);
 	void begin(uint8_t n, bool withDistributionPoint);
 	void sensor_0();
 	void sensor_1();
@@ -24,13 +26,13 @@ public:
 	void sensor_3();
 	void sensor_4();
 	void sensor_10();
-	void updateValues();
+	bool updateValues();
 	float getMeterCurrentFlow(uint8_t meterIndex);
 	float getMeterCurrentVolume(uint8_t meterIndex);
 
 
 private:
-	void updateMeter( FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
+	boolean updateMeter( FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
 	virtual ~FlowSensorNetworkManager();
 };
 

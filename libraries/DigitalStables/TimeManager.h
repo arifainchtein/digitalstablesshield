@@ -22,27 +22,30 @@ class TimeManager{
 	
 
 	public:
+		TimeManager( );
 		TimeManager( HardwareSerial& serial);
-        void start()=0;
-		long dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second)=0;
-		void hourlyTasks(long time, int previousHour )=0;
-		void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayYear )=0;
-		void monthlyTasks(long time)=0;
-		void yearlyTasks(long time)=0;
-		long getCurrentTimeInSeconds()=0;
-		String getElapsedTimeHoursMinutesSecondsString(long elapsedTime)=0;
-		RTCInfoRecord getCurrentDateTime()=0;
-		long getTimeForCodeGeneration()=0;
-		String getCurrentTimeForDisplay(boolean showSec)=0;
-		String getCurrentDateTimeForDisplay()=0;
-		String getCurrentDateForDisplay()=0;
+
+		virtual void start()=0;
+		virtual long dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second)=0;
+		virtual void hourlyTasks(long time, int previousHour )=0;
+		virtual void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayYear )=0;
+		virtual void monthlyTasks(long time)=0;
+		virtual void yearlyTasks(long time)=0;
+		virtual long getCurrentTimeInSeconds()=0;
+		virtual String getElapsedTimeHoursMinutesSecondsString(long elapsedTime)=0;
+		virtual RTCInfoRecord getCurrentDateTime()=0;
+		virtual long getTimeForCodeGeneration()=0;
+		virtual String getCurrentTimeForDisplay(boolean showSec)=0;
+		virtual String getCurrentDateTimeForDisplay()=0;
+		virtual String getCurrentDateForDisplay()=0;
 		//
 		// Functions that represent Serial commands
 		//
-		boolean printTimeToSerial()=0;
-		boolean setTime(String)=0;
+		virtual boolean printTimeToSerial()=0;
+		virtual boolean setTime(String)=0;
 
 
+        virtual ~TimeManager();
 	private:
 
 

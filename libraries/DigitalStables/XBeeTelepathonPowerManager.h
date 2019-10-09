@@ -23,6 +23,7 @@ public:
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
 	void defineState();
+	bool canPublish();
 	virtual ~XBeeTelepathonPowerManager();
 };
 
