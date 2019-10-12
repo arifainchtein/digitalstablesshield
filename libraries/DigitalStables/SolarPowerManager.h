@@ -11,25 +11,19 @@
 
 #include "Arduino.h"
 #include <PowerManager.h>
-#include <SDCardManager.h>
-#include <LCDDisplay.h>
-#include <WPSSensorRecord.h>
-#include <SD.h>
-#include <GeneralFunctions.h>
 
-#include <SecretManager.h>
 
 
 class SolarPowerManager : public PowerManager{
 public:
-	TimeManager  timeManager;
 	SecretManager  secretManager;
 	GeneralFunctions  generalFunctions;
 	DataStorageManager  &dataStorageManager;
 	HardwareSerial _HardSerial;
 	LCDDisplay&  lcd;
+	TimeManager & timeManager;
 
-	SolarPowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
+	SolarPowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();

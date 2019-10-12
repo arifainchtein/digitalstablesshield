@@ -9,6 +9,8 @@
 #include <LCDDisplay.h>
 #include "Arduino.h"
 #include <SD.h>
+#include <File.cpp>
+
 #include <GeneralFunctions.h>
 #include <DataStorageManager.h>
 #include <LCDDisplay.h>
@@ -28,19 +30,21 @@ class SDCardManager: public DataStorageManager{
 
 public:
 	SDCardManager(DataStorageManagerInitParams& d, TimeManager & t,  HardwareSerial& serial, LCDDisplay& l);
-	boolean start();
-	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
-	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
+	bool start();
+	bool readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
+	bool readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
 	void storeRememberedValue(long time, const char *name, float value, String unit);
 
-	void storeDiscreteRecord( DiscreteRecord &discreteRec);
-	boolean readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
-	boolean openDiscreteRecordFile();
+	void storeDiscreteRecord(const DiscreteRecord &discreteRec);
+	void storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus);
+
+	bool readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
+	bool openDiscreteRecordFile();
 	void closeDiscreteRecordFile();
 
 	void storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize );
-	boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
-	boolean openEventRecordFile(const char *filename);
+	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
+	bool openEventRecordFile(const char *filename);
 	void closeEventRecordFile(boolean);
 
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
@@ -54,7 +58,7 @@ public:
 	//
 	// Functions that represent Serial commands
 	//
-	boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
+	bool testWPSSensor(float batteryVoltage, float current, int stateOfCharge, uint8_t operatingStatus);
 	float listFiles();
 	uint32_t getFreeDiskSpace();
 

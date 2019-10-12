@@ -6,6 +6,8 @@
  */
 
 #include <XBeeTelepathonPowerManager.h>
+#include <PowerManager.h>
+
 
 //#ifdef SOLAR_PANEL_VOLTAGE_PIN
 //#undef SOLAR_PANEL_VOLTAGE_PIN
@@ -47,7 +49,8 @@
 
 
 
-XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, GeneralFunctions& f,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), generalFunctions(f), _HardSerial(serial)
+
+XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t,HardwareSerial& serial ):PowerManager(l,  s,  sd,  t, serial ), lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
 
 bool XBeeTelepathonPowerManager::canPublish(){
@@ -212,7 +215,7 @@ void XBeeTelepathonPowerManager::defineState(){
 				lcd.setRGB(255,0,0);
 				lcd.setCursor(0,0);
 				lcd.print("Enter Comma");
-				operatingStatus="Comma";
+				operatingStatus=1;
 				lcd.setCursor(0,1);
 				lcd.print(batteryVoltage);
 				lcd.print(" V");

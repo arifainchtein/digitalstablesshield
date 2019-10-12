@@ -4,16 +4,14 @@
  *  Created on: 7 Oct 2019
  *      Author: arifainchtein
  */
-#include <FlowSensorNetworkManager.h>
 #include "Arduino.h"
+#include <FlowSensorNetworkManager.h>
 
 
 
 // connect a flow meter to an interrupt pin (see notes on your Arduino model for pin numbers)
 
-TimeManager&  timeManager;
-DataStorageManager&  dataStorageManager;
-HardwareSerial& _HardSerial;
+
 
 const unsigned long period = 1000;
 bool meter0InEvent = false;
@@ -37,7 +35,7 @@ long currentMeter0StartTime=0L;
 #define flow_2 7
 #define flow_3 6
 #define flow_4 46
-#define flow_10 45
+#define flow_5 45
 
 FlowMeter Meter0 = FlowMeter(flow_0);
 FlowMeter* Meter1 = nullptr;
@@ -55,7 +53,7 @@ FlowMeterEventData aFlowMeter5EventData;
 bool withDistributionPoint=false;
 bool canPublishAsync=false;
 
-FlowSensorNetworkManager::FlowSensorNetworkManager(PowerManager& p ,DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ): powerManager(p), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
+FlowSensorNetworkManager::FlowSensorNetworkManager(PowerManager& p ,DataStorageManager& sd, TimeManager& t ): powerManager(p), dataStorageManager(sd),timeManager(t)
 {}
 
 
@@ -64,36 +62,36 @@ FlowSensorNetworkManager::FlowSensorNetworkManager(PowerManager& p ,DataStorageM
 void FlowSensorNetworkManager::begin(uint8_t numberOfWaterPoints, bool distr) {
 	withDistributionPoint=distr;
 	pinMode(flow_0, INPUT);
-	attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, LOW);
+	attachInterrupt(digitalPinToInterrupt(flow_0), FlowSensorNetworkManager::sensor_0, RISING);
 
 	if(numberOfWaterPoints>1){
 		Meter1 = new FlowMeter(flow_1);
 		pinMode(flow_1, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, LOW);
+		attachInterrupt(digitalPinToInterrupt(flow_1), FlowSensorNetworkManager::sensor_1, RISING);
 	}
 
 	if(numberOfWaterPoints>2){
 		 Meter2 = new FlowMeter(flow_2);
 		pinMode(flow_2, INPUT);
-		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, LOW);
+		 attachInterrupt(digitalPinToInterrupt(flow_2), FlowSensorNetworkManager::sensor_2, RISING);
 
 	}
 	if(numberOfWaterPoints>3){
 		Meter3 = new FlowMeter(flow_3);
 		pinMode(flow_3, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, LOW);
+		attachInterrupt(digitalPinToInterrupt(flow_3), FlowSensorNetworkManager::sensor_3, RISING);
 
 	}
 	if(numberOfWaterPoints>4){
 		 Meter4 = new FlowMeter(flow_4);
 		pinMode(flow_4, INPUT);;
-		attachInterrupt(digitalPinToInterrupt(flow_4), sensor_4, LOW);
+		attachInterrupt(digitalPinToInterrupt(flow_4), FlowSensorNetworkManager::sensor_4, RISING);
 
 	}
 	if(numberOfWaterPoints>5){
-		Meter5 = new FlowMeter(flow_10);
-		pinMode(flow_10, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_10), sensor_10, LOW);
+		Meter5 = new FlowMeter(flow_5);
+		pinMode(flow_5, INPUT);
+		attachInterrupt(digitalPinToInterrupt(flow_5), FlowSensorNetworkManager::sensor_10, RISING);
 	}
 }
 
@@ -162,9 +160,9 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			// this means that the event is finished
 			//
 			aFlowMeterEventData.endTime=timeManager.getCurrentTimeInSeconds();
-			aFlowMeterEventData.averageflow
+			aFlowMeterEventData.averageflow=0;
 			aFlowMeterEventData.numberOfSamples=currentSampleIndexMeter+1;
-			aFlowMeterEventData.sampleFrequencySeconds
+			aFlowMeterEventData.sampleFrequencySeconds=0;
 			meter0InEvent=false;
 			//
 			// now ask the powermanager for permission to transmit
@@ -250,27 +248,27 @@ float FlowSensorNetworkManager::getMeterCurrentVolume(uint8_t meterIndex){
 	return currentVolume;
 }
 
-static void FlowSensorNetworkManager::sensor_0(){
+void  FlowSensorNetworkManager::sensor_0(){
 	 Meter0.count();
 }
 
-static void FlowSensorNetworkManager::sensor_1(){
+ void FlowSensorNetworkManager::sensor_1(){
 	if(Meter1 != nullptr)Meter1->count();;
 }
 
-static void FlowSensorNetworkManager::sensor_2(){
+ void FlowSensorNetworkManager::sensor_2(){
 	if(Meter2 != nullptr)Meter2->count();
 }
 
-static void FlowSensorNetworkManager::sensor_3(){
+ void FlowSensorNetworkManager::sensor_3(){
 	if(Meter3 != nullptr)Meter3->count();
 }
 
-static void FlowSensorNetworkManager::sensor_4(){
+ void FlowSensorNetworkManager::sensor_4(){
 	if(Meter4 != nullptr)Meter4->count();
 }
 
-static void FlowSensorNetworkManager::sensor_10(){
+ void FlowSensorNetworkManager::sensor_10(){
 
 	if(Meter5 != nullptr)Meter5->count();
 }

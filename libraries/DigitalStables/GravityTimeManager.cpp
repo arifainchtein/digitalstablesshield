@@ -6,19 +6,19 @@
  */
 #include "Arduino.h"
 #include <GravityTimeManager.h>
-
 #include <RTCInfoRecord.h>
 
 #include <GravityRtc.h>
 
 #include <GeneralFunctions.h>
-#include <GravityRtc.h>
 
 static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
-GravityTimeManager::GravityTimeManager( HardwareSerial& serial): _HardSerial(serial){
+GravityTimeManager::GravityTimeManager( HardwareSerial& serial): TimeManager(serial),_HardSerial(serial){
 
 }
+
+GravityTimeManager::~GravityTimeManager( ){}
 
 //
 // Functions that represents commands received via the serial port
@@ -28,8 +28,20 @@ GravityTimeManager::GravityTimeManager( HardwareSerial& serial): _HardSerial(ser
 
 //SetTime#23#05#2019#4#05#48#20
 
+ void GravityTimeManager::hourlyTasks(long time, int previousHour ){
 
-boolean GravityTimeManager::setTime(String command){
+ }
+ void GravityTimeManager::dailyTasks(long time, int yesterdayDate, int yesterdayMonth, int yesterdayYear ){
+
+ }
+ void GravityTimeManager::monthlyTasks(long time){
+
+ }
+ void GravityTimeManager::yearlyTasks(long time){
+
+ }
+
+bool GravityTimeManager::setTime(String command){
 	int date = GeneralFunctions::getValue(command, '#', 1).toInt();
 	int month = GeneralFunctions::getValue(command, '#', 2).toInt();
 	int year = GeneralFunctions::getValue(command, '#', 3).toInt();
@@ -63,7 +75,7 @@ boolean GravityTimeManager::setTime(String command){
 
 }
 
-boolean GravityTimeManager::printTimeToSerial(){
+bool GravityTimeManager::printTimeToSerial(){
 
 	rtc.read();
 	String displayTime =  "";
@@ -131,7 +143,7 @@ long GravityTimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t dat
 	return seconds;
 }
 
-String GravityTimeManager::getCurrentTimeForDisplay(boolean showSecs){
+String GravityTimeManager::getCurrentTimeForDisplay(bool showSecs){
 	rtc.read();
 	String displayTime =  "";
 

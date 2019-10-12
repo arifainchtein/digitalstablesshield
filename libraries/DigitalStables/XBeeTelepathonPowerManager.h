@@ -9,15 +9,18 @@
 #define LIBRARIES_DIGITALSTABLES_XBEETELEPATHONPOWERMANAGER_H_
 #include <PowerManager.h>
 #include <DataStorageManager.h>
+#include <TimeManager.h>
+
 class XBeeTelepathonPowerManager  : public PowerManager{
 public:
-	TimeManager  timeManager;
+
 	SecretManager  secretManager;
 	GeneralFunctions  generalFunctions;
 	DataStorageManager  &dataStorageManager;
 	HardwareSerial _HardSerial;
+	TimeManager & timeManager;
 	LCDDisplay&  lcd;
-	XBeeTelepathonPowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, GeneralFunctions  & f, HardwareSerial& serial);
+	XBeeTelepathonPowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t,  HardwareSerial& serial);
 
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);

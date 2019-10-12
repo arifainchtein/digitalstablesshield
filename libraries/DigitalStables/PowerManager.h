@@ -14,7 +14,7 @@
 #include <GeneralFunctions.h>
 #include <TimeManager.h>
 #include <SecretManager.h>
-
+#include <BaseSensorStruct.h>
 
 
 
@@ -24,7 +24,16 @@ class PowerManager{
 
 public:
 
-	String operatingStatus ="Normal";
+
+
+	BaseSensorStruct aBaseSensorStruct;
+	//
+	// the operating status can be:
+	//
+	// 3 Normal all systems go
+	// 2 WPS
+	// 1 Comma
+	uint8_t operatingStatus =3;
 
 
 	int currentViewIndex=0;
@@ -82,7 +91,7 @@ public:
 	constexpr static const char *PI_TURN_OFF ="Pi Turn Off";
 	constexpr static const char *UNIT_NO_UNIT =" ";
 
-
+	constexpr static const char *LIFE_CYCLE_EVENT_SETUP_COMPLETED="SMC"; //Setup Method Completed
 	constexpr static const char *LIFE_CYCLE_EVENT_FORCED_START_WPS ="FSWPS";
 	constexpr static const char *LIFE_CYCLE_MANUAL_SHUTDOWN    ="MS";
 	constexpr static const char *LIFE_CYCLE_EVENT_START_WPS    ="SW";
@@ -132,17 +141,18 @@ public:
 	void turnPiOff(long time);
 	void turnPiOn(long time);
 	void defineState();
-	boolean processDefaultCommands(String command);
+	bool processDefaultCommands(String command);
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
 	void toggleWDT();
+	BaseSensorStruct getBaseSensorStruct();
 	void printBaseSensorStringToSerialPort();
-	boolean getHypothalamusStatus();
+	bool getHypothalamusStatus();
 	float getVoltageRegulatorOutput();
 	void setCurrentViewIndex(int);
 	int getCurrentViewIndex();
-
-protected:
+	virtual ~PowerManager();
+	protected:
 
 
 private:

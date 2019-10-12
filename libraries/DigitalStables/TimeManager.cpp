@@ -10,14 +10,14 @@
 #include <GeneralFunctions.h>
 static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
-TimeManager::TimeManager( HardwareSerial& serial): _HardSerial(serial){
 
-}
 
 //
 // Functions that represents commands received via the serial port
 //
-
+//TimeManager::GravityTimeManager( HardwareSerial& serial): TimeManager( serial),_HardSerial(serial){
+//
+//}
 
 
 //SetTime#23#05#2019#4#05#48#20
@@ -37,41 +37,41 @@ boolean TimeManager::printTimeToSerial(){
 ////
 //
 //
-//void TimeManager::start(){
-//}
-////
-////
-//long TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second){
+void TimeManager::start(){
+}
 //
-//}
 //
-//String TimeManager::getCurrentTimeForDisplay(boolean showSecs){
+long TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t date, uint8_t hour, uint8_t minute, uint8_t second){
+
+}
+
+String TimeManager::getCurrentTimeForDisplay(boolean showSecs){
+
+}
 //
-//}
-////
-//String TimeManager::getCurrentDateTimeForDisplay(){
+String TimeManager::getCurrentDateTimeForDisplay(){
+
+}
 //
-//}
-////
-//String TimeManager::getCurrentDateForDisplay(){
+String TimeManager::getCurrentDateForDisplay(){
+
+}
 //
-//}
-////
-////
-//long TimeManager::getTimeForCodeGeneration(){
 //
-//}
-////
-////
-////
-//RTCInfoRecord TimeManager::getCurrentDateTime(){
+long TimeManager::getTimeForCodeGeneration(){
+
+}
 //
-//}
-////
-//long TimeManager::getCurrentTimeInSeconds(){
 //
-//}
 //
-//String TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
+RTCInfoRecord TimeManager::getCurrentDateTime(){
+
+}
 //
-//}
+long TimeManager::getCurrentTimeInSeconds(){
+
+}
+
+String TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
+
+}

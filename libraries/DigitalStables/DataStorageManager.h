@@ -26,6 +26,8 @@ public:
 	virtual boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year)=0;
 	virtual boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName)=0;
 	virtual void storeRememberedValue(long time, const char *name, float value, String unit)=0;
+	virtual void storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus)=0;
+
 	virtual void storeDiscreteRecord(const DiscreteRecord& discreteRec)=0;
 	virtual boolean readDiscreteRecord(uint16_t index,DiscreteRecord& rec)=0;
 	virtual boolean openDiscreteRecordFile()=0;
@@ -48,7 +50,7 @@ public:
 	//
 	// Functions that represent Serial commands
 	//
-	virtual boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus)=0;
+	virtual boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, uint8_t operatingStatus)=0;
 	virtual float listFiles()=0;
 	virtual uint32_t getFreeDiskSpace()=0;
 

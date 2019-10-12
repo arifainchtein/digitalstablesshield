@@ -79,9 +79,12 @@ int delayTime=1;
 
 long previousUpdate;
 
-
 PowerManager::PowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t, HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
+
+PowerManager::~PowerManager() {
+	// TODO Auto-generated destructor stub
+}
 
 void PowerManager::start(){
 	// pinMode(52, OUTPUT);
@@ -282,7 +285,7 @@ void PowerManager::enterArduinoSleep(void)
 		lcd.print(lastSleepSeconds);
 		lcd.print("V ");
 
-		operatingStatus="WPS";
+		operatingStatus=2;
 		currentSleepStartTime = now;
 		wpsSleeping=true;
 		inWPS=true;
@@ -351,7 +354,7 @@ void PowerManager::pauseWPS(void)
 	lcd.print("V ");
 	lcd.print(pauseDuringWPS);
 
-	operatingStatus="WPS";
+	operatingStatus=2;
 	//lcd.setCursor(0, 1);
 	//lcd.print("Awake") ;
 	sleep_disable(); /* First thing to do is disable sleep. */
@@ -363,7 +366,7 @@ void PowerManager::sendWPSAlert(long time, char *faultData, int batteryVoltage){
 	waitingForWPSConfirmation=true;
 	wpsCountdown=false;
 	inWPS=true;
-	operatingStatus="WPS";
+	operatingStatus=2;
 	wpsAlertTime=timeManager.getCurrentTimeInSeconds();
 	dataStorageManager.storeRememberedValue(time,faultData, batteryVoltage, UNIT_VOLT);
 }
@@ -453,9 +456,9 @@ void PowerManager::defineState(){
 		}
 	}else if(batteryVoltage>exitWPSVoltage){
 		if(!hypothalamusStatus && !manualShutdown)turnPiOn(time);
-		operatingStatus="Normal";
+		operatingStatus=3;
 		lcd.setRGB(0, 225, 0);
-		operatingStatus="Normal";
+		operatingStatus=3;
 		wpsCountdown=false;
 		wpsSleeping=false;
 		inWPS=false;
@@ -691,7 +694,7 @@ void PowerManager::defineState(){
 
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
-					operatingStatus="WPS";
+					operatingStatus=2;
 					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					lcd.print("pi off");
 					wpsSleeping=true;
@@ -835,7 +838,7 @@ void PowerManager::defineState(){
 				lcd.setCursor(0,0);
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
-					operatingStatus="WPS";
+					operatingStatus=2;
 					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					currentSecondsToPowerOff=0L;
@@ -847,7 +850,7 @@ void PowerManager::defineState(){
 						f_wdt = 0;
 						/* Re-enter sleep mode. */
 						lcd.print("Enter Comma");
-						operatingStatus="Comma";
+						operatingStatus=1;
 						lcd.setCursor(0,1);
 						lcd.print(batteryVoltage);
 						lcd.print(" V");
@@ -884,7 +887,7 @@ void PowerManager::defineState(){
 						f_wdt = 0;
 						/* Re-enter sleep mode. */
 						lcd.print("Enter Comma");
-						operatingStatus="Comma";
+						operatingStatus=1;
 						lcd.setCursor(0,1);
 						lcd.print(batteryVoltage);
 						lcd.print(" V");
@@ -907,7 +910,7 @@ void PowerManager::defineState(){
 					lcd.setRGB(255,0,0);
 					lcd.setCursor(0,0);
 					lcd.print("Enter Comma");
-					operatingStatus="Comma";
+					operatingStatus=1;
 					lcd.setCursor(0,1);
 					lcd.print(batteryVoltage);
 					lcd.print(" V");
@@ -1144,7 +1147,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		else pauseDuringWPS=false;
 		waitingForWPSConfirmation=false;
 		wpsCountdown=true;
-		operatingStatus="WPS";
+		operatingStatus=2;
 		wpsCountDownStartSeconds= timeManager.getCurrentTimeInSeconds();
 		currentSecondsToPowerOff=0L;
 
@@ -1156,7 +1159,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		_HardSerial.println("Ok-ExitWPS");
 		_HardSerial.flush();
 		inWPS=false;
-		operatingStatus="Normal";
+		operatingStatus=3;
 		currentSecondsToPowerOff=0L;
 		wpsCountdown=false;
 		processed=true;
@@ -1325,6 +1328,33 @@ void PowerManager::toggleWDT(){
 		//_HardSerial.println("WDT Overrun!!!");
 	}
 }
+
+BaseSensorStruct PowerManager::getBaseSensorStruct(){
+	float batteryVoltage = getBatteryVoltage();
+	int currentValue = getCurrentFromBattery();
+	float capacitorVoltage= getLockCapacitorVoltage();
+	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+	float regulatorVoltage = getVoltageRegulatorOutput();
+	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
+
+	aBaseSensorStruct.batteryVoltage= batteryVoltage;
+	aBaseSensorStruct.currentValue=currentValue;
+	aBaseSensorStruct.capacitorVoltage=capacitorVoltage;
+	aBaseSensorStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
+	aBaseSensorStruct.regulatorVoltage=regulatorVoltage;
+	aBaseSensorStruct.operatingStatus=operatingStatus;
+	aBaseSensorStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
+	aBaseSensorStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
+	aBaseSensorStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
+	aBaseSensorStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
+	aBaseSensorStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+	aBaseSensorStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
+	aBaseSensorStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
+	aBaseSensorStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
+	aBaseSensorStruct.totalDiskUse=totalDiskUse;
+	aBaseSensorStruct.pauseDuringWPS=pauseDuringWPS;
+}
+
 void PowerManager::printBaseSensorStringToSerialPort(){
 	
 	lcd.clear();

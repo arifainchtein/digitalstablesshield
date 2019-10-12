@@ -8,21 +8,22 @@
 #ifndef TIMEMANAGER_H_
 #define TIMEMANAGER_H_
 #include <Arduino.h>
-#include <GravityRtc.h>
 #include <RTCInfoRecord.h>
 #include <GeneralFunctions.h>
 
 class TimeManager{
-	HardwareSerial& _HardSerial;
 
-	#define LEAP_YEAR(_year) ((_year%4)==0)
 
-	int timeZoneHours=11;
-	int SECONDOFFSET=10;
-	
+
+
 
 	public:
-		TimeManager( );
+	
+		#define LEAP_YEAR(_year) ((_year%4)==0)
+
+		int timeZoneHours=11;
+		int SECONDOFFSET=10;
+
 		TimeManager( HardwareSerial& serial);
 
 		virtual void start()=0;
@@ -43,13 +44,9 @@ class TimeManager{
 		//
 		virtual boolean printTimeToSerial()=0;
 		virtual boolean setTime(String)=0;
-
-
         virtual ~TimeManager();
-	private:
 
 
-	
 
 	};
 #endif /* TIMEMANAGER_H_ */

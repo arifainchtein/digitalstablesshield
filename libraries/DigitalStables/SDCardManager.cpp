@@ -40,11 +40,11 @@ const char *AVERAGE_VALUE="Avg";
 
 File currentlyOpenFile;
 const char *currentlyOpenFileName;
-boolean cardOk=false;
+bool cardOk=false;
 SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t),  _HardSerial(serial), lcdDisplay(l)
 {}
 
-boolean SDCardManager::start(){
+bool SDCardManager::start(){
 	//setup SD card
 	//_HardSerial.println("Initializing SD card...");
 
@@ -103,7 +103,7 @@ boolean SDCardManager::start(){
 //
 // Functions that represents commands received via the serial port
 //
-boolean SDCardManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus){
+bool SDCardManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, uint8_t operatingStatus){
 	if(!cardOk)return false;
 	long lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 	char fileName[25];
@@ -160,7 +160,7 @@ if(!cardOk)return -9999.0;
 // End of Functions that represents commands received via the serial port
 //
 
-boolean SDCardManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
+bool SDCardManager::readUntransferredFileFromSDCardByDate(int moveData, bool sendToSerial,const char *dirName, int date, int month, int year){
 	//GetRememberedValueData#0
 if(!cardOk)return false;
 	char fileName[25] = "/";
@@ -168,7 +168,7 @@ if(!cardOk)return false;
 
 	File uf = SD.open(fileName, FILE_WRITE);
 	File tf;
-	boolean result=false;
+	bool result=false;
 	if(moveData==1){
 		char fileNameTF[24];
 		snprintf(fileNameTF, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
@@ -199,7 +199,7 @@ if(!cardOk)return false;
 }
 
 
-boolean SDCardManager::readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName){
+bool SDCardManager::readUntransferredFileFromSDCard(int moveData, bool sendToSerial, const char *dirName){
 	if(!cardOk)return false;
 	RTCInfoRecord anRTCInfoRecord = timeManager.getCurrentDateTime();
 	int year = anRTCInfoRecord.year-2000;
@@ -209,7 +209,7 @@ boolean SDCardManager::readUntransferredFileFromSDCard(int moveData, boolean sen
 
 
 
-void SDCardManager::storeRememberedValue(long time, const char *name, float value, String unit){
+void SDCardManager::storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus){
 	//File untransferredFile = SD.open("/" + remFileName + "/" + unstraferedFileName, FILE_WRITE);
 if(!cardOk)return ;
 	char untransferredFileName[25];
@@ -224,14 +224,14 @@ if(!cardOk)return ;
 		untransferredFile.print("#");
 		untransferredFile.print(value);
 		untransferredFile.print("#");
-		untransferredFile.println(unit);
+		untransferredFile.println(operatingStatus);
 		untransferredFile.close(); // close the file
 	}
 }
 
 
 
-void SDCardManager::storeDiscreteRecord(DiscreteRecord &discreteRec){
+void SDCardManager::storeDiscreteRecord(const DiscreteRecord &discreteRec){
 	if(!cardOk)return;
 	char untransferredFileName[25];
 	sprintf(untransferredFileName,"/%s/%s",DiscreteRecordDirName,unstraferedFileName);
@@ -244,7 +244,7 @@ void SDCardManager::storeDiscreteRecord(DiscreteRecord &discreteRec){
 }
 
 
-boolean SDCardManager::openDiscreteRecordFile()
+bool SDCardManager::openDiscreteRecordFile()
 {
 	if(!cardOk)return false;
 	char untransferredFileName[25];
@@ -254,10 +254,10 @@ boolean SDCardManager::openDiscreteRecordFile()
 	return currentlyOpenFile;
 }
 
-boolean SDCardManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec)
+bool SDCardManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec)
 {
 	if(!cardOk)return false;
-	boolean toReturn=false;
+	bool toReturn=false;
 	if (currentlyOpenFile) {
 		toReturn = currentlyOpenFile.seek(index*sizeof(rec));
 		if(toReturn){
@@ -279,7 +279,7 @@ void SDCardManager::storeEventRecord(const char *EventRecordDirName, const byte 
 	}
 }
 
-boolean SDCardManager::openEventRecordFile(const char *filename)
+bool SDCardManager::openEventRecordFile(const char *filename)
 {
 	if(!cardOk)return false;
 	char untransferredFileName[25];
@@ -290,10 +290,10 @@ boolean SDCardManager::openEventRecordFile(const char *filename)
 	return currentlyOpenFile;
 }
 
-boolean SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData)
+bool SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, bool moveData)
 {
 	if(!cardOk)return false;
-	boolean toReturn=false;
+	bool toReturn=false;
 	if (currentlyOpenFile) {
 		File tf;
 		if(moveData==1){
@@ -336,7 +336,7 @@ void SDCardManager::closeDiscreteRecordFile()
 	}
 }
 
-void SDCardManager::closeEventRecordFile(boolean clearEventFile)
+void SDCardManager::closeEventRecordFile(bool clearEventFile)
 {
 	if(currentlyOpenFile){
 		currentlyOpenFile.close();
@@ -411,9 +411,9 @@ if(!cardOk)return ;
 }
 
 
-boolean SDCardManager::getHistoricalData(const char *dirName, int date, int month, int year){
+bool SDCardManager::getHistoricalData(const char *dirName, int date, int month, int year){
 	if(!cardOk)return false;
-	boolean result=false;
+	bool result=false;
 	char fileName[24];
 	snprintf(fileName, sizeof fileName, "/%s/%i_%i_%i.txt", dirName, date,month, year);
 
