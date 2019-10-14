@@ -167,7 +167,7 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			//
 			// now ask the powermanager for permission to transmit
 			//
-			dataStorageManager.storeDiscreteRecord(aFlowMeterEventData);
+			//dataStorageManager.storeEventRecord(aFlowMeterEventData);
 
 						//
 		}else{

@@ -9,14 +9,13 @@
 #define LIBRARIES_DIGITALSTABLES_FLOWMETEREVENTDATA_H_
 
 #include "Arduino.h"
-#include <DiscreteRecord.h>
+#include <EventRecord.h>
 struct FlowMeterSample{
 	long sampleTime;
 	float flow;
 };
-typedef struct FlowMeterEventData:public DiscreteRecord{
-	long startTime;
-	long endTime;
+typedef struct FlowMeterEventData:public EventRecord{
+
 	//
 	// the eventGroupStartTime is a form of an id
 	// it represents the  start time of the event of
@@ -28,7 +27,7 @@ typedef struct FlowMeterEventData:public DiscreteRecord{
 	// obviously, for the event that represents flowmeter 0
 	// the eventGroupTime will be equal to the startTime
 	//
-	long eventGroupStartTime;
+
 	float averageflow;
 	uint8_t numberOfSamples;
 	float totalVolume;
@@ -36,9 +35,6 @@ typedef struct FlowMeterEventData:public DiscreteRecord{
 	uint16_t sampleFrequencySeconds;
 	FlowMeterSample samples[10];
 
-	void reset(){
-		::memset(this,0,sizeof(FlowMeterEventData));
-	}
 
 
 };

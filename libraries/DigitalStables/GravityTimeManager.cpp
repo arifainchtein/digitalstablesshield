@@ -14,7 +14,7 @@
 
 static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
-GravityTimeManager::GravityTimeManager( HardwareSerial& serial): TimeManager(serial),_HardSerial(serial){
+GravityTimeManager::GravityTimeManager( HardwareSerial& serial): _HardSerial(serial){
 
 }
 

@@ -12,12 +12,7 @@ static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
 
 
-//
-// Functions that represents commands received via the serial port
-//
-//TimeManager::GravityTimeManager( HardwareSerial& serial): TimeManager( serial),_HardSerial(serial){
-//
-//}
+
 
 
 //SetTime#23#05#2019#4#05#48#20

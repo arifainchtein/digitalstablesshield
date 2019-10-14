@@ -4,6 +4,6 @@
 #ifndef DISCRETERECORD_H
  #define DISCRETERECORD_H
 struct DiscreteRecord{
-
+	long startTime;
 };
 #endif
