@@ -8,9 +8,7 @@ struct EventRecord{
 	long endTime;
 	long eventGroupStartTime;
 
-	void reset(){
-			::memset(this,0,sizeof(this));
-		}
+
 
 };
 #endif

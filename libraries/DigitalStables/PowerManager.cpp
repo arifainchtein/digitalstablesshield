@@ -1329,7 +1329,7 @@ void PowerManager::toggleWDT(){
 	}
 }
 
-BaseSensorStruct PowerManager::getBaseSensorStruct(){
+PowerStatusStruct PowerManager::getPowerStatusStruct(){
 	float batteryVoltage = getBatteryVoltage();
 	int currentValue = getCurrentFromBattery();
 	float capacitorVoltage= getLockCapacitorVoltage();
@@ -1337,22 +1337,23 @@ BaseSensorStruct PowerManager::getBaseSensorStruct(){
 	float regulatorVoltage = getVoltageRegulatorOutput();
 	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 
-	aBaseSensorStruct.batteryVoltage= batteryVoltage;
-	aBaseSensorStruct.currentValue=currentValue;
-	aBaseSensorStruct.capacitorVoltage=capacitorVoltage;
-	aBaseSensorStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
-	aBaseSensorStruct.regulatorVoltage=regulatorVoltage;
-	aBaseSensorStruct.operatingStatus=operatingStatus;
-	aBaseSensorStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
-	aBaseSensorStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
-	aBaseSensorStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
-	aBaseSensorStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
-	aBaseSensorStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
-	aBaseSensorStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
-	aBaseSensorStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
-	aBaseSensorStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
-	aBaseSensorStruct.totalDiskUse=totalDiskUse;
-	aBaseSensorStruct.pauseDuringWPS=pauseDuringWPS;
+	aPowerStatusStruct.batteryVoltage= batteryVoltage;
+	aPowerStatusStruct.currentValue=currentValue;
+	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
+	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
+	aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
+	aPowerStatusStruct.operatingStatus=operatingStatus;
+	aPowerStatusStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
+	aPowerStatusStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
+	aPowerStatusStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
+	aPowerStatusStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
+	aPowerStatusStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+	aPowerStatusStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
+	aPowerStatusStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
+	aPowerStatusStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
+	aPowerStatusStruct.totalDiskUse=totalDiskUse;
+	aPowerStatusStruct.pauseDuringWPS=pauseDuringWPS;
+	return aPowerStatusStruct;
 }
 
 void PowerManager::printBaseSensorStringToSerialPort(){

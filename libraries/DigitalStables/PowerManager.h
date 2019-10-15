@@ -14,7 +14,7 @@
 #include <GeneralFunctions.h>
 #include <TimeManager.h>
 #include <SecretManager.h>
-#include <BaseSensorStruct.h>
+#include <PowerStatusStruct.h>
 
 
 
@@ -26,7 +26,7 @@ public:
 
 
 
-	BaseSensorStruct aBaseSensorStruct;
+	PowerStatusStruct aPowerStatusStruct;
 	//
 	// the operating status can be:
 	//
@@ -145,7 +145,7 @@ public:
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
 	void toggleWDT();
-	BaseSensorStruct getBaseSensorStruct();
+	PowerStatusStruct getPowerStatusStruct();
 	void printBaseSensorStringToSerialPort();
 	bool getHypothalamusStatus();
 	float getVoltageRegulatorOutput();

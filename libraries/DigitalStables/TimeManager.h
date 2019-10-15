@@ -23,7 +23,7 @@ class TimeManager{
 
 		int timeZoneHours=11;
 		int SECONDOFFSET=10;
-		TimeManager( );
+
 		TimeManager( HardwareSerial& serial);
 
 		virtual void start()=0;

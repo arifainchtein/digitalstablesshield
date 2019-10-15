@@ -10,6 +10,7 @@
 
 #include <TimeManager.h>
 #include <GravityRtc.h>
+#include <RTCInfoRecord.h>
 
 class GravityTimeManager : public TimeManager {
 	GravityRtc rtc;

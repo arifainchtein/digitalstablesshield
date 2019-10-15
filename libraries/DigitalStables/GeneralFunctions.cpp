@@ -81,4 +81,23 @@ int GeneralFunctions::getStateOfCharge(double batteryVoltage){
 	return 0;
 }
 
-
+void GeneralFunctions::printPowerStatusStructToSerial(HardwareSerial serial, const PowerStatusStruct powerStatusStruct){
+	serial.print(powerStatusStruct.sampleTime );
+	serial.print(powerStatusStruct.batteryVoltage );
+	serial.print(powerStatusStruct.currentValue);
+	serial.print(powerStatusStruct.capacitorVoltage);
+	serial.print(powerStatusStruct.internalBatteryStateOfCharge);
+	serial.print(powerStatusStruct.regulatorVoltage);
+	serial.print(powerStatusStruct.operatingStatus);
+	serial.print(powerStatusStruct.dailyMinBatteryVoltage);
+	serial.print(powerStatusStruct.dailyMaxBatteryVoltage);
+	serial.print(powerStatusStruct.dailyMinBatteryCurrent);
+	serial.print(powerStatusStruct.dailyMaxBatteryCurrent);
+	serial.print(powerStatusStruct.dailyBatteryOutEnergy);
+	serial.print(powerStatusStruct.dailyPoweredDownInLoopSeconds);
+	serial.print(powerStatusStruct.hourlyBatteryOutEnergy);
+	serial.print(powerStatusStruct.hourlyPoweredDownInLoopSeconds);
+	serial.print(powerStatusStruct.totalDiskUse);
+	serial.print(powerStatusStruct.totalDiskAvailable);
+	serial.print(powerStatusStruct.pauseDuringWPS);
+}

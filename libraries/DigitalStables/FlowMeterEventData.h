@@ -36,6 +36,10 @@ typedef struct FlowMeterEventData:public EventRecord{
 	FlowMeterSample samples[10];
 
 
+	void reset(){
+		::memset(this,0,sizeof(FlowMeterEventData));
+	}
+
 
 };
 

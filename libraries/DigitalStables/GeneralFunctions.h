@@ -8,7 +8,7 @@
 #ifndef GENERALFUNCTIONS_H_
 #define GENERALFUNCTIONS_H_
 #include "Arduino.h"
-
+#include <PowerStatusStruct.h>
 class GeneralFunctions{
 public:
 	GeneralFunctions();
@@ -16,6 +16,7 @@ public:
 	static int getStateOfCharge(double batteryVoltage);
 	static float stringToFloat(String s);
 	static char * generatePassword();
+	static void printPowerStatusStructToSerial(HardwareSerial serial, const PowerStatusStruct powerManagerStruct);
 };
 #endif /* GENERALFUNCTIONS_H_ */
 
