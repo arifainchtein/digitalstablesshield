@@ -21,7 +21,7 @@ class DataStorageManager {
 public:
 	DataStorageManager();
 
-	DataStorageManager(DataStorageManagerInitParams&  d, TimeManager & t, HardwareSerial& serial, LCDDisplay& l);
+	DataStorageManager(DataStorageManagerInitParams&  d, TimeManager& t, HardwareSerial& serial, LCDDisplay& l);
 	virtual boolean start()=0;
 	virtual boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year)=0;
 	virtual boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName)=0;
@@ -33,7 +33,7 @@ public:
 	virtual boolean openDiscreteRecordFile()=0;
 	virtual void closeDiscreteRecordFile()=0;
 
-	virtual void storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize )=0;
+
 	virtual boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData)=0;
 	virtual boolean openEventRecordFile(const char *filename)=0;
 	virtual void closeEventRecordFile(boolean)=0;

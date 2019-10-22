@@ -81,23 +81,49 @@ int GeneralFunctions::getStateOfCharge(double batteryVoltage){
 	return 0;
 }
 
-void GeneralFunctions::printPowerStatusStructToSerial(HardwareSerial serial, const PowerStatusStruct powerStatusStruct){
+void GeneralFunctions::printPowerStatusStructToSerial(HardwareSerial& serial, const PowerStatusStruct powerStatusStruct){
 	serial.print(powerStatusStruct.sampleTime );
+	serial.print("#" );
+
 	serial.print(powerStatusStruct.batteryVoltage );
-	serial.print(powerStatusStruct.currentValue);
+	serial.print("#" );
+	serial.print(powerStatusStruct.currentFromBattery);
+	serial.print("#" );
 	serial.print(powerStatusStruct.capacitorVoltage);
+	serial.print("#" );
 	serial.print(powerStatusStruct.internalBatteryStateOfCharge);
+	serial.print("#" );
 	serial.print(powerStatusStruct.regulatorVoltage);
+	serial.print("#" );
 	serial.print(powerStatusStruct.operatingStatus);
-	serial.print(powerStatusStruct.dailyMinBatteryVoltage);
-	serial.print(powerStatusStruct.dailyMaxBatteryVoltage);
-	serial.print(powerStatusStruct.dailyMinBatteryCurrent);
-	serial.print(powerStatusStruct.dailyMaxBatteryCurrent);
-	serial.print(powerStatusStruct.dailyBatteryOutEnergy);
-	serial.print(powerStatusStruct.dailyPoweredDownInLoopSeconds);
-	serial.print(powerStatusStruct.hourlyBatteryOutEnergy);
-	serial.print(powerStatusStruct.hourlyPoweredDownInLoopSeconds);
-	serial.print(powerStatusStruct.totalDiskUse);
-	serial.print(powerStatusStruct.totalDiskAvailable);
-	serial.print(powerStatusStruct.pauseDuringWPS);
+	serial.print("#" );
+//
+//	serial.print(powerStatusStruct.totalDiskUse);
+//	serial.print(powerStatusStruct.totalDiskAvailable);
+
+}
+
+void GeneralFunctions::printPowerStatisticsStructToSerial(HardwareSerial& serial, const PowerStatisticsStruct powerStatisticsStruct){
+	serial.print(powerStatisticsStruct.sampleTime );
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.dailyMinBatteryVoltage);
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.dailyMaxBatteryVoltage);
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.dailyMinBatteryCurrent);
+	serial.print("#" );
+
+	serial.print(powerStatisticsStruct.dailyMaxBatteryCurrent);
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.dailyBatteryOutEnergy);
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.dailyPoweredDownInLoopSeconds);
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.hourlyBatteryOutEnergy);
+	serial.print("#" );
+	serial.print(powerStatisticsStruct.hourlyPoweredDownInLoopSeconds);
+	serial.print("#" );
+//	serial.print(powerStatusStruct.totalDiskUse);
+//	serial.print(powerStatusStruct.totalDiskAvailable);
+
 }

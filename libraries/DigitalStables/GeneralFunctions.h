@@ -16,7 +16,9 @@ public:
 	static int getStateOfCharge(double batteryVoltage);
 	static float stringToFloat(String s);
 	static char * generatePassword();
-	static void printPowerStatusStructToSerial(HardwareSerial serial, const PowerStatusStruct powerManagerStruct);
+	static void printPowerStatusStructToSerial(HardwareSerial& serial, const PowerStatusStruct powerManagerStruct);
+	static void printPowerStatisticsStructToSerial(HardwareSerial& serial, const PowerStatisticsStruct powerStatisticsStruct);
+
 };
 #endif /* GENERALFUNCTIONS_H_ */
 

@@ -7,6 +7,8 @@
 
 #include <XBeeTelepathonPowerManager.h>
 #include <PowerManager.h>
+#include <SPI.h>
+
 
 
 //#ifdef SOLAR_PANEL_VOLTAGE_PIN
@@ -39,6 +41,14 @@
 //#define LOCK_CAPACITOR_PIN 5
 //#endif
 
+
+//#define  Vin_solar   0//ADC_0
+//#define  Vin_battery 1//ADC_1
+//#define  Cin_solar   2//ADC_2
+//#define  Cin_battery 3//ADC_3
+//#define  Vin_485     4//ADC_4
+//#define  Vin_temp    5//ADC_5
+
 #define SOLAR_PANEL_VOLTAGE_PIN 0
 #define BATTERY_VOLTAGE_PIN 1
 #define SOLAR_PANEL_INPUT_CURRENT_SENSOR 2
@@ -52,6 +62,24 @@
 
 XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t,HardwareSerial& serial ):PowerManager(l,  s,  sd,  t, serial ), lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
+
+
+
+
+void XBeeTelepathonPowerManager::start(){
+	// pinMode(52, OUTPUT);
+	// digitalWrite(52, LOW);
+//	 SPI.begin();
+
+	pinMode(SOLAR_PANEL_VOLTAGE_PIN, INPUT);
+	pinMode(BATTERY_VOLTAGE_PIN, INPUT);
+	pinMode(SOLAR_PANEL_INPUT_CURRENT_SENSOR, INPUT);
+	pinMode(BATTERY_OUPUT_CURRENT_SENSOR, INPUT);
+	//pinMode(RS485_SOURCE_VOLTAGE_PIN, INPUT);
+
+//	initializeWDT();
+}
+
 
 bool XBeeTelepathonPowerManager::canPublish(){
 	if(getBatteryVoltage()>12.4){
@@ -81,19 +109,49 @@ float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
 }
 
 
+
 float XBeeTelepathonPowerManager::getSolarPanelVoltage(){
-	long  sensorValue=analogRead(SOLAR_PANEL_VOLTAGE_PIN);
-	long  sum=0;
-	for(int i=0;i<10;i++)
-	{
-		sum=sensorValue+sum;
-		sensorValue=analogRead(SOLAR_PANEL_VOLTAGE_PIN);
-		delay(2);
-	}
-	sum=sum/10;
-	float value =(10*sum*4.980/1023.00);
-	return value;
+
+//#define volt_ref= 500
+//#define volt_mult=   57
+//#define adc_res  = 1024
+//#define curr_ref_min 24900
+//#define curr_ref_tip = 25000
+//#define curr_ref_max 25100
+//#define curr_mul_max  82
+//#define curr_mul_tip  80
+//#define curr_mul_min  78
+
+		int volt_ref= 500;
+		int volt_mult=   57;
+		int adc_res  = 1024;
+		int curr_ref_min =24900;
+		int curr_ref_tip = 25000;
+		int32_t prosc;
+		int  curr_mul_tip = 80;
+		prosc = analogRead(A2);
+	   prosc *= volt_ref;
+	  prosc *= 100;
+	  prosc /= adc_res;
+	  prosc -= curr_ref_tip;
+	  prosc *= 100;
+	  prosc /= curr_mul_tip;
+	  return prosc;
 }
+
+//float XBeeTelepathonPowerManager::getSolarPanelVoltage(){
+//	long  sensorValue=analogRead(SOLAR_PANEL_VOLTAGE_PIN);
+//	long  sum=0;
+//	for(int i=0;i<10;i++)
+//	{
+//		sum=sensorValue+sum;
+//		sensorValue=analogRead(SOLAR_PANEL_VOLTAGE_PIN);
+//		delay(2);
+//	}
+//	sum=sum/10;
+//	float value =(10*sum*4.980/1023.00);
+//	return value;
+//}
 
 float XBeeTelepathonPowerManager::getCurrentFromBattery(void){
 	int sensorValue;             //value read from the sensor
@@ -114,6 +172,8 @@ float XBeeTelepathonPowerManager::getCurrentFromBattery(void){
 	float effective_value=amplitude_current/1.414;
 	return effective_value;
 }
+
+
 void XBeeTelepathonPowerManager::defineState(){
 	this->poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();

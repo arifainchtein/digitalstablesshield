@@ -25,6 +25,7 @@ public:
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
+	void start();
 	void defineState();
 	bool canPublish();
 	virtual ~XBeeTelepathonPowerManager();

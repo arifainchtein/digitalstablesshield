@@ -1,8 +1,9 @@
 /*
  * This file is generated in the spermatogenesis process
  */
-#ifndef FAULTRECORD_H
- #define FAULTRECORD_H
+#ifndef LIBRARIES_DIGITALSTABLES_FAULTRECORD_H
+#define LIBRARIES_DIGITALSTABLES_FAULTRECORD_H
+
 struct FaultRecord{
 	long startTime;
 };

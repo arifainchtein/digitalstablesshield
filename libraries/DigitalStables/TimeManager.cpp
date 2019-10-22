@@ -12,7 +12,7 @@ static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
 
 
-TimeManager::TimeManager( HardwareSerial& serial){
+TimeManager::TimeManager( HardwareSerial& serial): _HardSerial(serial){
 
 }
 

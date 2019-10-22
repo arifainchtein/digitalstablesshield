@@ -13,8 +13,8 @@
 
 class TimeManager{
 
-
-
+	protected:
+		HardwareSerial& _HardSerial;
 
 
 	public:

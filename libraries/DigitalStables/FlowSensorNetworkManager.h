@@ -19,10 +19,11 @@ class FlowSensorNetworkManager {
 	PowerManager & powerManager;
 	TimeManager & timeManager;
 	DataStorageManager & dataStorageManager;
+	HardwareSerial& serial;
 
 public:
 	FlowSensorNetworkManager();
-	FlowSensorNetworkManager(PowerManager& p,DataStorageManager & sd, TimeManager & t);
+	FlowSensorNetworkManager(HardwareSerial& s, PowerManager& p,DataStorageManager & sd, TimeManager & t);
 	void begin(uint8_t n, bool withDistributionPoint);
 	static void sensor_0();
 	static void sensor_1();

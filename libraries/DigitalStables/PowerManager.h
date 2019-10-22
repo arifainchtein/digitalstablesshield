@@ -27,6 +27,8 @@ public:
 
 
 	PowerStatusStruct aPowerStatusStruct;
+	PowerStatisticsStruct aPowerStatisticsStruct;
+
 	//
 	// the operating status can be:
 	//
@@ -146,7 +148,9 @@ public:
 	float getLockCapacitorVoltage();
 	void toggleWDT();
 	PowerStatusStruct getPowerStatusStruct();
-	void printBaseSensorStringToSerialPort();
+	PowerStatisticsStruct getPowerStatisticsStruct();
+
+	void printPowerStatusStructToSerialPort();
 	bool getHypothalamusStatus();
 	float getVoltageRegulatorOutput();
 	void setCurrentViewIndex(int);

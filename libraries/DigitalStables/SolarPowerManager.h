@@ -27,6 +27,7 @@ public:
 	float getCurrentFromBattery(void);
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
+	void printBaseSensorStringToSerialPort();
 	virtual ~SolarPowerManager();
 
 

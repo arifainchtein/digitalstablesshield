@@ -9,11 +9,9 @@
 #include <LCDDisplay.h>
 #include "Arduino.h"
 #include <SD.h>
-#include <File.cpp>
 
 #include <GeneralFunctions.h>
 #include <DataStorageManager.h>
-#include <LCDDisplay.h>
 #include <TimeManager.h>
 #include <DiscreteRecord.h>
 #include <DataStorageManagerInitParams.h>
@@ -34,9 +32,10 @@ public:
 	bool readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
 	bool readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
 	void storeRememberedValue(long time, const char *name, float value, String unit);
+	void storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus);
 
 	void storeDiscreteRecord(const DiscreteRecord &discreteRec);
-	void storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus);
+
 
 	bool readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
 	bool openDiscreteRecordFile();

@@ -152,7 +152,32 @@ float PowerManager::getCurrentInputFromSolarPanel(void){
 }
 
 float PowerManager::getSolarPanelVoltage(void){
-	return 0.0;
+
+//#define volt_ref= 500
+//#define volt_mult=   57
+//#define adc_res  = 1024
+//#define curr_ref_min 24900
+//#define curr_ref_tip = 25000
+//#define curr_ref_max 25100
+//#define curr_mul_max  82
+//#define curr_mul_tip  80
+//#define curr_mul_min  78
+
+		int volt_ref= 500;
+		int volt_mult=   57;
+		int adc_res  = 1024;
+		int curr_ref_min =24900;
+		int curr_ref_tip = 25000;
+		int32_t prosc;
+		int  curr_mul_tip = 80;
+		prosc = analogRead(A2);
+	   prosc *= volt_ref;
+	  prosc *= 100;
+	  prosc /= adc_res;
+	  prosc -= curr_ref_tip;
+	  prosc *= 100;
+	  prosc /= curr_mul_tip;
+	  return prosc;
 }
 
 
@@ -187,13 +212,8 @@ float PowerManager::getBatteryVoltage(){
         delay(10);
     }
     float avg = (float)sum / (float)NUM_SAMPLES;
-    //
-    // th 4.88is taken from ARef of the 1284 under load
     float voltage = 11*avg * 5.0 / 1024.0;
-//    _HardSerial.print("avg=");
-//    _HardSerial.print(avg);
-//    _HardSerial.print("v=");
-//    _HardSerial.println(voltage);
+
 
     return voltage;
 }
@@ -1311,6 +1331,9 @@ void PowerManager::endOfLoopProcessing(){
 	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 	hourlyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
+	_HardSerial.print("dailyBatteryOutEnergy=");
+	_HardSerial.print(dailyBatteryOutEnergy);
+
 }
 
 float PowerManager::getLockCapacitorVoltage(){
@@ -1337,26 +1360,37 @@ PowerStatusStruct PowerManager::getPowerStatusStruct(){
 	float regulatorVoltage = getVoltageRegulatorOutput();
 	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 
+	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
 	aPowerStatusStruct.batteryVoltage= batteryVoltage;
-	aPowerStatusStruct.currentValue=currentValue;
+	aPowerStatusStruct.solarPanelVoltage= getSolarPanelVoltage();
+	aPowerStatusStruct.currentFromBattery=currentValue;
 	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
 	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
 	aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
 	aPowerStatusStruct.operatingStatus=operatingStatus;
-	aPowerStatusStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
-	aPowerStatusStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
-	aPowerStatusStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
-	aPowerStatusStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
-	aPowerStatusStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
-	aPowerStatusStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
-	aPowerStatusStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
-	aPowerStatusStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
-	aPowerStatusStruct.totalDiskUse=totalDiskUse;
-	aPowerStatusStruct.pauseDuringWPS=pauseDuringWPS;
+
 	return aPowerStatusStruct;
 }
 
-void PowerManager::printBaseSensorStringToSerialPort(){
+PowerStatisticsStruct PowerManager::getPowerStatisticsStruct(){
+//	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
+
+	aPowerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
+	aPowerStatisticsStruct.dailyMinBatteryVoltage=1;//dailyMinBatteryVoltage;
+	aPowerStatisticsStruct.dailyMaxBatteryVoltage=2;//dailyMaxBatteryVoltage;
+	aPowerStatisticsStruct.dailyMinBatteryCurrent=3;//dailyMinBatteryCurrent;
+	aPowerStatisticsStruct.dailyMaxBatteryCurrent=4;//dailyMaxBatteryCurrent;
+	aPowerStatisticsStruct.dailyBatteryOutEnergy=5;//dailyBatteryOutEnergy;
+	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=6;//dailyPoweredDownInLoopSeconds;
+	aPowerStatisticsStruct.hourlyBatteryOutEnergy=7;//hourlyBatteryOutEnergy;
+	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=8;//hourlyPoweredDownInLoopSeconds;
+
+	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
+
+	return aPowerStatisticsStruct;
+}
+
+void PowerManager::printPowerStatusStructToSerialPort(){
 	
 	lcd.clear();
 	lcd.setCursor(0,0);

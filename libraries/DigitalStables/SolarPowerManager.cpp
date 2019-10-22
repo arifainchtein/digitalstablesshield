@@ -47,7 +47,7 @@ float amplitude_current;               //amplitude current
 float effective_value;
 
 
-SolarPowerManager::SolarPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t,HardwareSerial& serial ): lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
+SolarPowerManager::SolarPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t,HardwareSerial& serial ):PowerManager(l,  s,  sd,  t, serial ), lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
 
 

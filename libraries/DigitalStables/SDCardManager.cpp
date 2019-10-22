@@ -18,7 +18,7 @@
 #include <DataStorageManagerInitParams.h>
 
 #include <SPI.h>
-#include <SD.h>
+
 
 #define SD_PIN 4
 
@@ -209,6 +209,26 @@ bool SDCardManager::readUntransferredFileFromSDCard(int moveData, bool sendToSer
 
 
 
+void SDCardManager::storeRememberedValue(long time, const char *name, float value, String unit){
+	//File untransferredFile = SD.open("/" + remFileName + "/" + unstraferedFileName, FILE_WRITE);
+if(!cardOk)return ;
+	char untransferredFileName[25];
+	sprintf(untransferredFileName,"/%s/%s",remFileName,unstraferedFileName);
+	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
+
+	if (untransferredFile) {
+		// Write to file
+		untransferredFile.print(time);
+		untransferredFile.print("#");
+		untransferredFile.print(name);
+		untransferredFile.print("#");
+		untransferredFile.print(value);
+		untransferredFile.print("#");
+		untransferredFile.println(unit);
+		untransferredFile.close(); // close the file
+	}
+}
+
 void SDCardManager::storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus){
 	//File untransferredFile = SD.open("/" + remFileName + "/" + unstraferedFileName, FILE_WRITE);
 if(!cardOk)return ;
@@ -228,7 +248,6 @@ if(!cardOk)return ;
 		untransferredFile.close(); // close the file
 	}
 }
-
 
 
 void SDCardManager::storeDiscreteRecord(const DiscreteRecord &discreteRec){

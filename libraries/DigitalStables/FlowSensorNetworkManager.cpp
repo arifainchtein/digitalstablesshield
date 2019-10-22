@@ -53,7 +53,7 @@ FlowMeterEventData aFlowMeter5EventData;
 bool withDistributionPoint=false;
 bool canPublishAsync=false;
 
-FlowSensorNetworkManager::FlowSensorNetworkManager(PowerManager& p ,DataStorageManager& sd, TimeManager& t ): powerManager(p), dataStorageManager(sd),timeManager(t)
+FlowSensorNetworkManager::FlowSensorNetworkManager(HardwareSerial& s, PowerManager& p ,DataStorageManager& sd, TimeManager& t ): serial(s), powerManager(p), dataStorageManager(sd),timeManager(t)
 {}
 
 
@@ -102,14 +102,18 @@ bool FlowSensorNetworkManager::updateValues(){
 	boolean meter3Status=false;
 	boolean meter4Status=false;
 	boolean meter5Status=false;
-
+	//serial.println("in updatevalues flowsensor");
 	meter0Status = updateMeter(Meter0, meter0InEvent, aFlowMeter0EventData,currentSampleIndexMeter0, withDistributionPoint);
 	if(Meter1 != nullptr)meter1Status=updateMeter(*Meter1, meter1InEvent, aFlowMeter1EventData,currentSampleIndexMeter1, false);
 	if(Meter2 != nullptr)meter2Status=updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData,currentSampleIndexMeter2, false);
 	if(Meter3 != nullptr)meter3Status=updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData, currentSampleIndexMeter3, false);
 	if(Meter4 != nullptr)meter4Status=updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData, currentSampleIndexMeter4, false);
 	if(Meter5 != nullptr)meter5Status=updateMeter(*Meter5, meter5InEvent, aFlowMeter5EventData, currentSampleIndexMeter5, false);
-	return ( meter0Status || meter1Status || meter2Status|| meter3Status || meter4Status || meter5Status);
+
+	bool ret =  meter0Status || meter1Status || meter2Status|| meter3Status || meter4Status || meter5Status;
+	//serial.print("in  flowsensor, ret=");
+//	serial.println(ret);
+	return ret;
 }
 
 
@@ -120,6 +124,9 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 	// then if the event is going, close the event
 	boolean toReturn=false;
 	meter.tick(period);
+	serial.print("meter freq=");
+    serial.println(meter.getCurrentFrequency());
+
 	if(meter.getCurrentFrequency()>0){
 		long currentTime = timeManager.getCurrentTimeInSeconds();
 		toReturn=true;
@@ -132,6 +139,8 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 		}
 		currentSampleIndexMeter++;
 		float flowRate = meter.getCurrentFlowrate();
+		serial.print("flow rate=");
+		    serial.println(flowRate);
 
 
 		aFlowMeterEventData.flowMeterId=0;
@@ -181,6 +190,7 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			meter.reset();
 		}
 	}
+	return toReturn;
 }
 
 float FlowSensorNetworkManager::getMeterCurrentFlow(uint8_t meterIndex){

@@ -14,7 +14,6 @@
 
 class GravityTimeManager : public TimeManager {
 	GravityRtc rtc;
-	HardwareSerial& _HardSerial;
 
 public:
 
