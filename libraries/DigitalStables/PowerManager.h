@@ -41,7 +41,7 @@ public:
 	int currentViewIndex=0;
 
 	boolean isHost=true;
-	long poweredDownInLoopSeconds;
+	long poweredDownInLoopSeconds=0L;
 	float dailyMinBatteryVoltage=0;
 	float dailyMaxBatteryVoltage=0;
 
@@ -74,6 +74,7 @@ public:
 	long currentSleepStartTime=0L;
 	volatile int f_wdt=1;
 	long wpsCountDownStartSeconds=0L;
+	long loopStartingSeconds=0L;
 
 	TimeManager&  timeManager;
 	SecretManager&  secretManager;
@@ -151,6 +152,7 @@ public:
 	PowerStatisticsStruct getPowerStatisticsStruct();
 
 	void printPowerStatusStructToSerialPort();
+	void printPowerStatisticsStructToSerialPort();
 	bool getHypothalamusStatus();
 	float getVoltageRegulatorOutput();
 	void setCurrentViewIndex(int);

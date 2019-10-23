@@ -442,7 +442,7 @@ boolean PowerManager::getHypothalamusStatus(){
 }
 void PowerManager::defineState(){
 	poweredDownInLoopSeconds=0;
-	long time = timeManager.getCurrentTimeInSeconds();
+	loopStartingSeconds = timeManager.getCurrentTimeInSeconds();
 
 	float batteryVoltage = getBatteryVoltage();
 	float regulatorVoltage = getVoltageRegulatorOutput();
@@ -455,7 +455,7 @@ void PowerManager::defineState(){
 	 hypothalamusStatus = digitalRead(PI_POWER_PIN);
 
 	if(shuttingDownPiCountdown){
-		currentSecondsToPowerOff = secondsToTurnPowerOff -( time - shutDownRequestedseconds );
+		currentSecondsToPowerOff = secondsToTurnPowerOff -( loopStartingSeconds - shutDownRequestedseconds );
 		lcd.clear();
 		lcd.setCursor(0,0);
 		String s = "Shutting down";
@@ -466,8 +466,8 @@ void PowerManager::defineState(){
 			shuttingDownPiCountdown=false;
 			manualShutdown=true;
 			inPulse=false;
-			turnPiOff(time);
-			dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_MANUAL_SHUTDOWN, LIFE_CYCLE_EVENT_COMMA_VALUE);
+			turnPiOff(loopStartingSeconds);
+			dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_MANUAL_SHUTDOWN, LIFE_CYCLE_EVENT_COMMA_VALUE);
 			lcd.print("Pi is OFF");
 			currentViewIndex=3;
 		}else{
@@ -475,7 +475,7 @@ void PowerManager::defineState(){
 			lcd.print(	currentSecondsToPowerOff);
 		}
 	}else if(batteryVoltage>exitWPSVoltage){
-		if(!hypothalamusStatus && !manualShutdown)turnPiOn(time);
+		if(!hypothalamusStatus && !manualShutdown)turnPiOn(loopStartingSeconds);
 		operatingStatus=3;
 		lcd.setRGB(0, 225, 0);
 		operatingStatus=3;
@@ -610,7 +610,7 @@ void PowerManager::defineState(){
 		if(wpsSleeping){
 			//delay(1000);
 			//lcd.noDisplay();
-			long piSleepingRemaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+			long piSleepingRemaining = secondsToNextPiOn-(loopStartingSeconds - currentSleepStartTime) ;
 			lcd.clear();
 			lcd.display();
 			lcd.setCursor(0,0);
@@ -618,8 +618,8 @@ void PowerManager::defineState(){
 
 			if(piSleepingRemaining<=0){
 				wpsSleeping=false;
-				if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-				dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+				if(!digitalRead(PI_POWER_PIN))turnPiOn(loopStartingSeconds);
+				dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 				lcd.print("Pi ON WPS ");
 				lcd.setCursor(0,1);
@@ -627,21 +627,21 @@ void PowerManager::defineState(){
 				lcd.print("V ");
 				lcd.print(internalBatteryStateOfCharge);
 				lcd.print("%") ;
-				lastWPSStartUp = time;
+				lastWPSStartUp = loopStartingSeconds;
 			}else{
 				//
 				// if we are here is because we are in the
 				// sleep period of the wps cycle.
 				// check to see if we need to store a record in the sd card
 				//
-				long z =time-lastWPSRecordSeconds;
+				long z =loopStartingSeconds-lastWPSRecordSeconds;
 				lcd.print("wps rec in ");
 				long netWPSRecordIn = (long)wpsPulseFrequencySeconds-z;
 
 				lcd.print(netWPSRecordIn);
 				lcd.setCursor(0,1);
 				lcd.print("pi on in ");
-				long piremaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+				long piremaining = secondsToNextPiOn-(loopStartingSeconds - currentSleepStartTime) ;
 				lcd.print(piremaining);
 
 
@@ -691,13 +691,13 @@ void PowerManager::defineState(){
 			lcd.print(" V");
 			lcd.setCursor(0,1);
 			lcd.print("Runtime ");
-			long secsRunning = time-lastWPSStartUp;
+			long secsRunning = loopStartingSeconds-lastWPSStartUp;
 			lcd.print(secsRunning);
 		}
 	}else if(batteryVoltage>minWPSVoltage && batteryVoltage<=enterWPSVoltage){
 		if(!inWPS){
 			faultData="Enter WPS";
-			sendWPSAlert(time, faultData, batteryVoltage);
+			sendWPSAlert(loopStartingSeconds, faultData, batteryVoltage);
 			lcd.clear();
 			lcd.setRGB(225, 225, 0);
 			lcd.setCursor(0, 0);
@@ -706,7 +706,7 @@ void PowerManager::defineState(){
 		}else{
 			if(waitingForWPSConfirmation){
 				delay(1000);
-				long z = time-wpsAlertTime;
+				long z = loopStartingSeconds-wpsAlertTime;
 				long remaining = secondsToForcedWPS-z;
 				lcd.clear();
 				lcd.setRGB(225,225,0);
@@ -715,12 +715,12 @@ void PowerManager::defineState(){
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
 					operatingStatus=2;
-					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					lcd.print("pi off");
 					wpsSleeping=true;
-					currentSleepStartTime = time;
+					currentSleepStartTime = loopStartingSeconds;
 					currentSecondsToPowerOff=0L;
-					turnPiOff(time);
+					turnPiOff(loopStartingSeconds);
 					wpsCountdown=false;
 				}else{
 					lcd.print("Waiting EnterWPS");
@@ -732,7 +732,7 @@ void PowerManager::defineState(){
 					lcd.print("V ");
 				}
 			}else if(wpsCountdown){
-				currentSecondsToPowerOff = secondsToTurnPowerOff -( time - wpsCountDownStartSeconds);
+				currentSecondsToPowerOff = secondsToTurnPowerOff -( loopStartingSeconds - wpsCountDownStartSeconds);
 				lcd.clear();
 				lcd.setCursor(0,0);
 				lcd.print("wps countdown ");
@@ -740,16 +740,16 @@ void PowerManager::defineState(){
 				lcd.print(	currentSecondsToPowerOff);
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
-					turnPiOff(time);
-					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					turnPiOff(loopStartingSeconds);
+					dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=true;
 					wpsCountdown=false;
-					currentSleepStartTime=time;
+					currentSleepStartTime=loopStartingSeconds;
 				}
 			}else if(wpsSleeping){
 				//delay(1000);
 				//lcd.noDisplay();
-				long piSleepingRemaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+				long piSleepingRemaining = secondsToNextPiOn-(loopStartingSeconds - currentSleepStartTime) ;
 				lcd.clear();
 				lcd.display();
 				lcd.setCursor(0,0);
@@ -757,8 +757,8 @@ void PowerManager::defineState(){
 
 				if(piSleepingRemaining<=0){
 					wpsSleeping=false;
-					if(!digitalRead(PI_POWER_PIN))turnPiOn(time);
-					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					if(!digitalRead(PI_POWER_PIN))turnPiOn(loopStartingSeconds);
+					dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_EVENT_END_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 
 					lcd.print("Pi ON WPS ");
 					lcd.setCursor(0,1);
@@ -766,21 +766,21 @@ void PowerManager::defineState(){
 					lcd.print("V ");
 					lcd.print(internalBatteryStateOfCharge);
 					lcd.print("%") ;
-					lastWPSStartUp = time;
+					lastWPSStartUp = loopStartingSeconds;
 				}else{
 					//
 					// if we are here is because we are in the
 					// sleep period of the wps cycle.
 					// check to see if we need to store a record in the sd card
 					//
-					long z =time-lastWPSRecordSeconds;
+					long z =loopStartingSeconds-lastWPSRecordSeconds;
 					lcd.print("WPS rec in ");
 					long netWPSRecordIn = (long)wpsPulseFrequencySeconds-z;
 
 					lcd.print(netWPSRecordIn);
 					lcd.setCursor(0,1);
 					lcd.print("pi on in ");
-					long piremaining = secondsToNextPiOn-(time - currentSleepStartTime) ;
+					long piremaining = secondsToNextPiOn-(loopStartingSeconds - currentSleepStartTime) ;
 					lcd.print(piremaining);
 
 
@@ -829,7 +829,7 @@ void PowerManager::defineState(){
 					lcd.print(" V");
 					lcd.setCursor(0,1);
 					lcd.print("Runtime ");
-					long secsRunning = time-lastWPSStartUp;
+					long secsRunning = loopStartingSeconds-lastWPSStartUp;
 					lcd.print(secsRunning);
 				}else{
 
@@ -841,7 +841,7 @@ void PowerManager::defineState(){
 	}else if(batteryVoltage<minWPSVoltage ){
 		if(!inWPS ){
 			faultData="Enter WPS";
-			sendWPSAlert(time, faultData, batteryVoltage);
+			sendWPSAlert(loopStartingSeconds, faultData, batteryVoltage);
 			lcd.clear();
 			lcd.setRGB(225, 0, 0);
 			lcd.setCursor(0, 0);
@@ -850,7 +850,7 @@ void PowerManager::defineState(){
 		}else{
 			if(waitingForWPSConfirmation){
 				delay(1000);
-				long z = time-wpsAlertTime;
+				long z = loopStartingSeconds-wpsAlertTime;
 				long remaining = secondsToForcedWPS-z;
 				lcd.clear();
 				lcd.setCursor(0,0);
@@ -859,10 +859,10 @@ void PowerManager::defineState(){
 				if( remaining <= 0  ){
 					waitingForWPSConfirmation=false;
 					operatingStatus=2;
-					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_EVENT_FORCED_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					currentSecondsToPowerOff=0L;
-					if(hypothalamusStatus)turnPiOff(time);
+					if(hypothalamusStatus)turnPiOff(loopStartingSeconds);
 					wpsCountdown=false;
 
 					if(f_wdt == 1){
@@ -877,7 +877,7 @@ void PowerManager::defineState(){
 						delay(2000);
 						lcd.setRGB(0,0,0);
 						lcd.noDisplay();
-						dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						dataStorageManager.storeLifeCycleEvent(loopStartingSeconds,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 						enterArduinoSleep();
 					}
 				}else{
@@ -890,7 +890,7 @@ void PowerManager::defineState(){
 					lcd.print("V ");
 				}
 			}else if(wpsCountdown){
-				currentSecondsToPowerOff = secondsToTurnPowerOff -( time - wpsCountDownStartSeconds);
+				currentSecondsToPowerOff = secondsToTurnPowerOff -( loopStartingSeconds - wpsCountDownStartSeconds);
 				lcd.clear();
 				lcd.setCursor(0,0);
 				lcd.print("wps countdown ");
@@ -898,8 +898,8 @@ void PowerManager::defineState(){
 				lcd.print(	currentSecondsToPowerOff);
 				if(currentSecondsToPowerOff<=0){
 					currentSecondsToPowerOff=0;
-					if(hypothalamusStatus)turnPiOff(time);
-					dataStorageManager.storeLifeCycleEvent(time, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
+					if(hypothalamusStatus)turnPiOff(loopStartingSeconds);
+					dataStorageManager.storeLifeCycleEvent(loopStartingSeconds, LIFE_CYCLE_EVENT_START_WPS, LIFE_CYCLE_EVENT_WPS_VALUE);
 					wpsSleeping=false;
 					wpsCountdown=false;
 					if(f_wdt == 1){
@@ -914,7 +914,7 @@ void PowerManager::defineState(){
 						delay(2000);
 						lcd.setRGB(0,0,0);
 						lcd.noDisplay();
-						dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+						dataStorageManager.storeLifeCycleEvent(loopStartingSeconds,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 						enterArduinoSleep();
 					}
 				}
@@ -937,7 +937,7 @@ void PowerManager::defineState(){
 					delay(2000);
 					lcd.setRGB(0,0,0);
 					lcd.noDisplay();
-					dataStorageManager.storeLifeCycleEvent(time,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
+					dataStorageManager.storeLifeCycleEvent(loopStartingSeconds,LIFE_CYCLE_EVENT_START_COMMA, LIFE_CYCLE_EVENT_COMMA_VALUE);
 					enterArduinoSleep();
 				}
 			}else if(hypothalamusStatus){
@@ -946,7 +946,7 @@ void PowerManager::defineState(){
 				// and voltage has dropped into
 				// comma range so
 				faultData="Enter WPS";
-				sendWPSAlert(time, faultData, batteryVoltage);
+				sendWPSAlert(loopStartingSeconds, faultData, batteryVoltage);
 				lcd.clear();
 				lcd.setRGB(225, 0, 0);
 				lcd.setCursor(0, 0);
@@ -1325,8 +1325,8 @@ boolean PowerManager::processDefaultCommands(String command){
 	return processed;
 }
 void PowerManager::endOfLoopProcessing(){
-	long now = timeManager.getCurrentTimeInSeconds();
-	int loopConsumingPowerSeconds = timeManager.getCurrentTimeInSeconds()-now -poweredDownInLoopSeconds;
+  long now = timeManager.getCurrentTimeInSeconds();
+	int loopConsumingPowerSeconds = -loopStartingSeconds -poweredDownInLoopSeconds;
 	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
 	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
@@ -1376,14 +1376,14 @@ PowerStatisticsStruct PowerManager::getPowerStatisticsStruct(){
 //	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 
 	aPowerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-	aPowerStatisticsStruct.dailyMinBatteryVoltage=1;//dailyMinBatteryVoltage;
-	aPowerStatisticsStruct.dailyMaxBatteryVoltage=2;//dailyMaxBatteryVoltage;
-	aPowerStatisticsStruct.dailyMinBatteryCurrent=3;//dailyMinBatteryCurrent;
-	aPowerStatisticsStruct.dailyMaxBatteryCurrent=4;//dailyMaxBatteryCurrent;
-	aPowerStatisticsStruct.dailyBatteryOutEnergy=5;//dailyBatteryOutEnergy;
-	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=6;//dailyPoweredDownInLoopSeconds;
-	aPowerStatisticsStruct.hourlyBatteryOutEnergy=7;//hourlyBatteryOutEnergy;
-	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=8;//hourlyPoweredDownInLoopSeconds;
+	aPowerStatisticsStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
+	aPowerStatisticsStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
+	aPowerStatisticsStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
+	aPowerStatisticsStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
+	aPowerStatisticsStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
+	aPowerStatisticsStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
+	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
 
 	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
 
@@ -1392,45 +1392,19 @@ PowerStatisticsStruct PowerManager::getPowerStatisticsStruct(){
 
 void PowerManager::printPowerStatusStructToSerialPort(){
 	
-	lcd.clear();
-	lcd.setCursor(0,0);
-	long now = millis();
 	float batteryVoltage = getBatteryVoltage();
-	
-	long dur = millis()-now;
-	lcd.print(dur);
-
 	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
-
-
-	now = millis();
-
-
 	int currentValue = getCurrentFromBattery();
-	
-	 dur = millis()-now;
-		lcd.print(dur);
-	lcd.setCursor(0,1);
-	now = millis();
 	float capacitorVoltage= getLockCapacitorVoltage();
-	
-	 dur = millis()-now;
-		lcd.print(dur);
 
-	//boolean hypothalamusStatus = digitalRead(PI_POWER_PIN);
-	// Generate the SensorData String
-	String sensorDataString="";
 	//
 	// Sensor Request Queue Position 1
 	//
-	now = millis();
 	char batteryVoltageStr[15];
 	dtostrf(batteryVoltage,4, 1, batteryVoltageStr);
 	_HardSerial.print(batteryVoltageStr) ;
 	_HardSerial.print("#") ;
 	
-	 dur = millis()-now;
-		lcd.print(dur);
 	//
 	// Sensor Request Queue Position 2
 	//
@@ -1453,14 +1427,15 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 	//
 	_HardSerial.print( internalBatteryStateOfCharge);
 	_HardSerial.print("#") ;
-	//
-	// Sensor Request Queue Position 5
-	//
-	float regulatorVoltage = getVoltageRegulatorOutput();
-	char regulatorVoltageStr[15];
-	dtostrf(regulatorVoltage,2, 2, regulatorVoltageStr);
-	_HardSerial.print( regulatorVoltageStr);
-	_HardSerial.print("#") ;
+
+//	//
+//	// Sensor Request Queue Position 5
+//	//
+//	float regulatorVoltage = getVoltageRegulatorOutput();
+//	char regulatorVoltageStr[15];
+//	dtostrf(regulatorVoltage,2, 2, regulatorVoltageStr);
+//	_HardSerial.print( regulatorVoltageStr);
+//	_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 6
 	//
@@ -1468,6 +1443,10 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print( operatingStatus);
 	_HardSerial.print("#") ;
 
+	
+}
+
+void PowerManager::printPowerStatisticsStructToSerialPort(){
 	//
 	// Sensor Request Queue Position 7
 	//
@@ -1539,24 +1518,5 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print(hourlyPoweredDownInLoopSecondsStr) ;
 	_HardSerial.print("#") ;
 
-	//
-	// Sensor Request Queue Position 15
-	//
-	now = millis();
-	//lcd.clear();
-	//lcd.setCursor(0,0);
-	
-	long totalDiskUse=dataStorageManager.getDiskUsage();
-	//dur = millis()-now;
 
-	//lcd.print(dur);
-	_HardSerial.print(totalDiskUse/1024);
-	_HardSerial.print("#");
-	//
-	// Sensor Request Queue Position 16
-	//
-
-	_HardSerial.print(pauseDuringWPS);
-	_HardSerial.print("#");
-	_HardSerial.flush();
 }
