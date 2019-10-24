@@ -181,25 +181,25 @@ float PowerManager::getSolarPanelVoltage(void){
 }
 
 
-float PowerManager::getCurrentFromBattery(void){
-	int sensorValue=0;             //value read from the sensor
-	int sensorMax = 0;
-	uint32_t start_time = millis();
-	while((millis()-start_time) < 500)//sample for 1000ms
-	{
-		sensorValue = analogRead(CURRENT_SENSOR);
-		if (sensorValue > sensorMax)
-		{
-			//record the maximum sensor value
-			sensorMax = sensorValue;
-		}
-	}
-
-	//the VCC on the Grove interface of the sensor is 5v
-	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
-	int effective_value=(amplitude_current/1.414);
-	return effective_value;
-}
+//float PowerManager::getCurrentFromBattery(void){
+//	int sensorValue=0;             //value read from the sensor
+//	int sensorMax = 0;
+//	uint32_t start_time = millis();
+//	while((millis()-start_time) < 500)//sample for 1000ms
+//	{
+//		sensorValue = analogRead(CURRENT_SENSOR);
+//		if (sensorValue > sensorMax)
+//		{
+//			//record the maximum sensor value
+//			sensorMax = sensorValue;
+//		}
+//	}
+//
+//	//the VCC on the Grove interface of the sensor is 5v
+//	float amplitude_current=(float)(sensorMax-512)/1024*5/185*1000000;
+//	int effective_value=(amplitude_current/1.414);
+//	return effective_value;
+//}
 
 float PowerManager::getBatteryVoltage(){
    
@@ -1325,10 +1325,30 @@ boolean PowerManager::processDefaultCommands(String command){
 	return processed;
 }
 void PowerManager::endOfLoopProcessing(){
-  long now = timeManager.getCurrentTimeInSeconds();
-	int loopConsumingPowerSeconds = -loopStartingSeconds -poweredDownInLoopSeconds;
-	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
-	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*getCurrentFromBattery()/3600;
+
+  long now = millis();//timeManager.getCurrentTimeInSeconds();
+  int loopConsumingPowerSeconds = now -loopStartingSeconds -poweredDownInLoopSeconds;
+  float currentFromBattery = getCurrentFromBattery();
+
+  _HardSerial.print(" endOfLoopProcessing, now=");
+  _HardSerial.print(now);
+  _HardSerial.print(" currentFromBattery=");
+    _HardSerial.print(currentFromBattery);
+
+  _HardSerial.print(" loopStartingSeconds=");
+  _HardSerial.print(loopStartingSeconds);
+
+
+  _HardSerial.print(" poweredDownInLoopSeconds=");
+  _HardSerial.print(poweredDownInLoopSeconds);
+  _HardSerial.print(" loopConsumingPowerSeconds=");
+   _HardSerial.println(loopConsumingPowerSeconds);
+
+
+
+
+	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*currentFromBattery/3600;
+	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*currentFromBattery/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 	hourlyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 	_HardSerial.print("dailyBatteryOutEnergy=");
@@ -1352,46 +1372,46 @@ void PowerManager::toggleWDT(){
 	}
 }
 
-PowerStatusStruct PowerManager::getPowerStatusStruct(){
-	float batteryVoltage = getBatteryVoltage();
-	int currentValue = getCurrentFromBattery();
-	float capacitorVoltage= getLockCapacitorVoltage();
-	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
-	float regulatorVoltage = getVoltageRegulatorOutput();
-	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
-
-	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-	aPowerStatusStruct.batteryVoltage= batteryVoltage;
-	aPowerStatusStruct.solarPanelVoltage= getSolarPanelVoltage();
-	aPowerStatusStruct.currentFromBattery=currentValue;
-	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
-	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
-	aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
-	aPowerStatusStruct.operatingStatus=operatingStatus;
-
-	return aPowerStatusStruct;
-}
-
-PowerStatisticsStruct PowerManager::getPowerStatisticsStruct(){
-//	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
-
-	aPowerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-	aPowerStatisticsStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
-	aPowerStatisticsStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
-	aPowerStatisticsStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
-	aPowerStatisticsStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
-	aPowerStatisticsStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
-	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
-	aPowerStatisticsStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
-	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
-
-	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
-
-	return aPowerStatisticsStruct;
-}
+//PowerStatusStruct PowerManager::getPowerStatusStruct(){
+//	float batteryVoltage = getBatteryVoltage();
+//	int currentValue = getCurrentFromBattery();
+//	float capacitorVoltage= getLockCapacitorVoltage();
+//	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+//	//float regulatorVoltage = getVoltageRegulatorOutput();
+//	//long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
+//
+//	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
+//	aPowerStatusStruct.batteryVoltage= batteryVoltage;
+//	aPowerStatusStruct.solarPanelVoltage= getSolarPanelVoltage();
+//	aPowerStatusStruct.currentFromBattery=currentValue;
+//	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
+//	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
+//	//aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
+//	aPowerStatusStruct.operatingStatus=operatingStatus;
+//
+//	return aPowerStatusStruct;
+//}
+//
+//PowerStatisticsStruct PowerManager::getPowerStatisticsStruct(){
+////	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
+//
+//	aPowerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
+//	aPowerStatisticsStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
+//	aPowerStatisticsStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
+//	aPowerStatisticsStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
+//	aPowerStatisticsStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
+//	aPowerStatisticsStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+//	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
+//	aPowerStatisticsStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
+//	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
+//
+//	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
+//
+//	return aPowerStatisticsStruct;
+//}
 
 void PowerManager::printPowerStatusStructToSerialPort(){
-	
+	_HardSerial.print("in PowerManager printPowerStatusStructToSerialPort" ) ;
 	float batteryVoltage = getBatteryVoltage();
 	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 	int currentValue = getCurrentFromBattery();

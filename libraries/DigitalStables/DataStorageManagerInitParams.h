@@ -15,7 +15,7 @@ struct DataStorageManagerInitParams{
 //	uint8_t discreteRecordFolderSize;
 //	uint8_t eventFolderSize;
 //	uint8_t rememberedValueFolderSize;
-
+	uint8_t  sdPin;
 };
 
 

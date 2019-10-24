@@ -17,19 +17,21 @@
 class SolarPowerManager : public PowerManager{
 public:
 	SecretManager  secretManager;
-	GeneralFunctions  generalFunctions;
 	DataStorageManager  &dataStorageManager;
 	HardwareSerial _HardSerial;
 	LCDDisplay&  lcd;
 	TimeManager & timeManager;
 
+
 	SolarPowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
 	float getCurrentFromBattery(void);
+	float getBatteryVoltage();
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
 	void printPowerStatusStructToSerialPort();
 	void printPowerStatisticsStructToSerialPort();
-
+	PowerStatusStruct getPowerStatusStruct();
+	PowerStatisticsStruct getPowerStatisticsStruct();
 	virtual ~SolarPowerManager();
 
 

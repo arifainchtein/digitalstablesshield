@@ -47,11 +47,32 @@ float amplitude_current;               //amplitude current
 float effective_value;
 
 
+
 SolarPowerManager::SolarPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t,HardwareSerial& serial ):PowerManager(l,  s,  sd,  t, serial ), lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t), _HardSerial(serial)
 {}
 
 
+float SolarPowerManager::getBatteryVoltage(){
+	return 13.4;
+	int NUM_SAMPLES=10;
+  int sample_count=0;
+  float sum=0;
+  while (sample_count < NUM_SAMPLES) {
+        sum += analogRead(BATTERY_VOLTAGE_PIN);
+        sample_count++;
+        delay(10);
+    }
+    float avg = (float)sum / (float)NUM_SAMPLES;
+    float voltage = 11*avg * 5.0 / 1024.0;
+
+
+    return voltage;
+}
+
 float SolarPowerManager::getCurrentInputFromSolarPanel(void){
+
+	return 150;
+
 	int sensorValue;             //value read from the sensor
 		int sensorMax = 0;
 		uint32_t start_time = millis();
@@ -73,6 +94,8 @@ float SolarPowerManager::getCurrentInputFromSolarPanel(void){
 
 
 float SolarPowerManager::getSolarPanelVoltage(){
+	return 19.5;
+
 	long  sensorValue=analogRead(SOLAR_PANEL_VOLTAGE_PIN);
 	long  sum=0;
 	for(int i=0;i<10;i++)
@@ -87,6 +110,7 @@ float SolarPowerManager::getSolarPanelVoltage(){
 }
 
 float SolarPowerManager::getCurrentFromBattery(void){
+	return 99;
 	int sensorValue;             //value read from the sensor
 	int sensorMax = 0;
 	uint32_t start_time = millis();
@@ -106,13 +130,109 @@ float SolarPowerManager::getCurrentFromBattery(void){
 	return effective_value;
 }
 
+PowerStatusStruct SolarPowerManager::getPowerStatusStruct(){
+	float batteryVoltage = getBatteryVoltage();
+
+	float capacitorVoltage= 0.0;//getLockCapacitorVoltage();
+	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+	//float regulatorVoltage = getVoltageRegulatorOutput();
+	//long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
+
+	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
+	aPowerStatusStruct.batteryVoltage= batteryVoltage;
+	aPowerStatusStruct.solarPanelVoltage= getSolarPanelVoltage();
+	aPowerStatusStruct.currentFromSolarPanel= getCurrentInputFromSolarPanel();
+	aPowerStatusStruct.currentFromBattery=getCurrentFromBattery();
+	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
+	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
+	//aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
+	aPowerStatusStruct.operatingStatus=operatingStatus;
+
+	return aPowerStatusStruct;
+}
+
+PowerStatisticsStruct SolarPowerManager::getPowerStatisticsStruct(){
+//	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
+
+	aPowerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
+	aPowerStatisticsStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
+	aPowerStatisticsStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
+	aPowerStatisticsStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
+	aPowerStatisticsStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
+	aPowerStatisticsStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
+	aPowerStatisticsStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
+	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
+
+	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
+
+	return aPowerStatisticsStruct;
+}
 
 
 void SolarPowerManager::printPowerStatusStructToSerialPort(){
-	_HardSerial.print("point 0") ;
-//	float batteryVoltage = this->getBatteryVoltage();
+	PowerStatusStruct aPowerStatusStruct =  getPowerStatusStruct();
+	this->_HardSerial.print(aPowerStatusStruct.sampleTime) ;
+	this->  _HardSerial.print("#") ;
+	  //
+	  // Sensor Request Queue Position 1
+	  //
+	  char solarPanelVoltageStr[15];
+	  dtostrf(aPowerStatusStruct.solarPanelVoltage,4, 1, solarPanelVoltageStr);
+	  _HardSerial.print(solarPanelVoltageStr) ;
+	  _HardSerial.print("#") ;
+
+	  //
+	  // Sensor Request Queue Position 2
+	  //
+	  char batteryVoltageStr[15];
+	  dtostrf(aPowerStatusStruct.batteryVoltage,4, 1, batteryVoltageStr);
+	  _HardSerial.print(batteryVoltageStr) ;
+	  _HardSerial.print("#") ;
+
+	  //
+	  // Sensor Request Queue Position 3
+	  //
+	  char solarCurrentValueStr[15];
+	  dtostrf(aPowerStatusStruct.currentFromSolarPanel,4, 0, solarCurrentValueStr);
+	  _HardSerial.print(solarCurrentValueStr) ;
+	  _HardSerial.print("#") ;
+
+	  //
+	  // Sensor Request Queue Position 4
+	  //
+	  char batteryOutputCurrentValueStr[15];
+	  dtostrf(aPowerStatusStruct.currentFromBattery,4, 0, batteryOutputCurrentValueStr);
+	  _HardSerial.print(solarCurrentValueStr) ;
+	  _HardSerial.print("#") ;
+
+
+	  //
+	  // Sensor Request Queue Position 5
+	  //
+	  char capacitorVoltageStr[15];
+	  dtostrf(aPowerStatusStruct.capacitorVoltage,2, 1, capacitorVoltageStr);
+	  _HardSerial.print(capacitorVoltageStr) ;
+	  _HardSerial.print("#") ;
+
+
+	  //
+	  // Sensor Request Queue Position 6
+	  //
+	  _HardSerial.print( aPowerStatusStruct.internalBatteryStateOfCharge);
+	  _HardSerial.print("#") ;
+
+
+
+	  _HardSerial.print(aPowerStatusStruct. operatingStatus);
+	  _HardSerial.print("#") ;
+}
+
+//void SolarPowerManager::printPowerStatusStructToSerialPort(){
+//	_HardSerial.print("point 0") ;
+//	float batteryVoltage = getBatteryVoltage();
 //	_HardSerial.print("point 1, batteryVoltage") ;
-//	float solarPanelVoltage = this->getSolarPanelVoltage();
+//	float solarPanelVoltage = getSolarPanelVoltage();
 //	_HardSerial.print("point 1, solarVoltage");
 //	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 //	_HardSerial.print("point 1, internalBatteryStateOfCharge");
@@ -120,7 +240,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 //	_HardSerial.print("point 1, solarPanelCurrentValue");
 //	int batteryOutputCurrentValue = getCurrentFromBattery();
 //	_HardSerial.print("point 1, batteryOutputCurrentValue");
-//	float capacitorVoltage= getLockCapacitorVoltage();
+//	float capacitorVoltage= 0;//getLockCapacitorVoltage();
 //	_HardSerial.print("point 1") ;
 //	//
 //	// Sensor Request Queue Position 1
@@ -174,9 +294,9 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 //
 //	_HardSerial.print( operatingStatus);
 //	_HardSerial.print("#") ;
-
-
-}
+//
+//
+//}
 
 void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 	//

@@ -14,7 +14,7 @@
 #include <DataStorageManager.h>
 #include <TimeManager.h>
 #include <DiscreteRecord.h>
-#include <DataStorageManagerInitParams.h>
+#include <SDCardInitParams.h>
 
 class SDCardManager: public DataStorageManager{
 

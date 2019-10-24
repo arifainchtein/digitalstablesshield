@@ -132,7 +132,7 @@ public:
 	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear );
 	void monthlyTasks(long time);
 	void yearlyTasks(long time);
-	float getCurrentFromBattery(void);
+	virtual float getCurrentFromBattery(void)=0;
 	float getCurrentInputFromSolarPanel(void);
 	float getSolarPanelVoltage();
 	float getBatteryVoltage();
@@ -148,8 +148,8 @@ public:
 	void endOfLoopProcessing();
 	float getLockCapacitorVoltage();
 	void toggleWDT();
-	PowerStatusStruct getPowerStatusStruct();
-	PowerStatisticsStruct getPowerStatisticsStruct();
+	virtual PowerStatusStruct getPowerStatusStruct()=0;
+	virtual PowerStatisticsStruct getPowerStatisticsStruct()=0;
 
 	void printPowerStatusStructToSerialPort();
 	void printPowerStatisticsStructToSerialPort();

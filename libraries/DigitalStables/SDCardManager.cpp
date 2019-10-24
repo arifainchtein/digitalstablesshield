@@ -16,11 +16,14 @@
 #include <RTCInfoRecord.h>
 #include <DiscreteRecord.h>
 #include <DataStorageManagerInitParams.h>
-
 #include <SPI.h>
+#include <avr/interrupt.h>
 
-
-#define SD_PIN 4
+#define BIT0  0x01
+#define PB  0x0100
+#define SD_PIN 19
+#define   spi_ss  19//const byte  spi_ss[2]={PB,BIT0};// 19
+#define  spi_ss_2 PB | BIT0
 
 const char *sensorDirName="WPSSensr";
 const char *lifeCycleFileName="LifeCycl";
@@ -34,7 +37,9 @@ const char *MAXIMUM_VALUE="Max";
 const char *MINIMUM_VALUE="Min";
 const char *AVERAGE_VALUE="Avg";
 
-
+Sd2Card card;
+SdVolume volume;
+SdFile root;
 
 
 
@@ -46,9 +51,13 @@ SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t,Hard
 
 bool SDCardManager::start(){
 	//setup SD card
-	//_HardSerial.println("Initializing SD card...");
+	_HardSerial.println("Initializing SD card...");
 
-	if (!SD.begin(SD_PIN)) {
+	//uint8_t SD_PIN = dataStorageManagerInitParams.sdPin;
+
+	 SD.begin(19);
+	  if (!card.init(SPI_HALF_SPEED, spi_ss)) {
+	//if (!SD.begin(SD_PIN)) {
 		//		_HardSerial.println("No SD-card.");
 		//		_HardSerial.flush();
 		lcdDisplay.setCursor(0, 0);
@@ -60,6 +69,16 @@ bool SDCardManager::start(){
 		lcdDisplay.clear();
 		lcdDisplay.setCursor(0, 0);
 		lcdDisplay.print("SD-card found") ;
+		_HardSerial.println("Wiring is correct and a card is present. \r\n");
+
+
+
+		    // Now we will try to open the 'volume'/'partition' - it should be FAT16 or FAT32
+		    if (!volume.init(card)) {
+		    	_HardSerial.println("Could not find FAT16/FAT32 partition.\nMake sure you've formatted the card");
+		      //while (1);
+		    }
+
 		// Check dir for db files
 		if (!SD.exists(sensorDirName )) {
 			//			_HardSerial.println("wpsSensorData Dir does not exist, creating...");
@@ -88,15 +107,33 @@ bool SDCardManager::start(){
 		rememberedValueFile.close();
 		cardOk=true;
 		uint32_t totalSize = SD.get_total_Kb();
+		uint32_t volumesize;
+		 volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
+		    volumesize *= volume.clusterCount();       // we'll have a lot of clusters
+		    volumesize /= 2;                           // SD card blocks are always 512 bytes (2 blocks are 1KB)
+		    _HardSerial.print("Volume size (Kb):  ");
+		    _HardSerial.println(volumesize);
+		    _HardSerial.print("Volume size (Mb):  ");
+		    volumesize /= 1024;
+		    _HardSerial.println(volumesize);
+		    _HardSerial.print("Volume size (Gb):  ");
+		    _HardSerial.println((float)volumesize / 1024.0);
 
-		// _HardSerial.print("card initialized:");
-		// _HardSerial.print(totalSize);
-		// _HardSerial.println("b");
-		// _HardSerial.flush();
+		    _HardSerial.println("\nFiles found on the card (name, date and size in bytes): ");
+		    root.openRoot(volume);
+
+		    // list all files in the card with date and size
+		    root.ls(LS_R | LS_DATE | LS_SIZE);
+
+
+		 _HardSerial.print("card initialized:");
+		 _HardSerial.print(totalSize);
+		 _HardSerial.println("b");
+		 _HardSerial.flush();
 		lcdDisplay.print("SD Card initialized.");
-		
-		return true;
 
+		return true;
+//
 	}
 }
 

@@ -37,7 +37,7 @@ public:
 	virtual ~FlowSensorNetworkManager();
 
 private:
-	boolean updateMeter( FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist);
+	boolean updateMeter( FlowMeter & meter, bool & meterInEvent, FlowMeterEventDataUnion & aFlowMeterEventDataUnion, uint8_t & currentSampleIndexMeter, bool dist);
 
 };
 

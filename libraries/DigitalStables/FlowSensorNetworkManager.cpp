@@ -44,14 +44,18 @@ FlowMeter* Meter3 = nullptr;
 FlowMeter* Meter4 = nullptr;
 FlowMeter* Meter5 = nullptr;
 
-FlowMeterEventData aFlowMeter0EventData;
-FlowMeterEventData aFlowMeter1EventData;
-FlowMeterEventData aFlowMeter2EventData;
-FlowMeterEventData aFlowMeter3EventData;
-FlowMeterEventData aFlowMeter4EventData;
-FlowMeterEventData aFlowMeter5EventData;
+FlowMeterEventDataUnion aFlowMeter0EventDataUnion;
+FlowMeterEventDataUnion aFlowMeter1EventDataUnion;
+FlowMeterEventDataUnion aFlowMeter2EventDataUnion;
+FlowMeterEventDataUnion aFlowMeter3EventDataUnion;
+FlowMeterEventDataUnion aFlowMeter4EventDataUnion;
+FlowMeterEventDataUnion aFlowMeter5EventDataUnion;
+
 bool withDistributionPoint=false;
 bool canPublishAsync=false;
+
+const char  *flowMeterEventUnstraferedFileName ="FMEUF.txt";
+const char  *EventsDirName="Events";
 
 FlowSensorNetworkManager::FlowSensorNetworkManager(HardwareSerial& s, PowerManager& p ,DataStorageManager& sd, TimeManager& t ): serial(s), powerManager(p), dataStorageManager(sd),timeManager(t)
 {}
@@ -103,12 +107,12 @@ bool FlowSensorNetworkManager::updateValues(){
 	boolean meter4Status=false;
 	boolean meter5Status=false;
 	//serial.println("in updatevalues flowsensor");
-	meter0Status = updateMeter(Meter0, meter0InEvent, aFlowMeter0EventData,currentSampleIndexMeter0, withDistributionPoint);
-	if(Meter1 != nullptr)meter1Status=updateMeter(*Meter1, meter1InEvent, aFlowMeter1EventData,currentSampleIndexMeter1, false);
-	if(Meter2 != nullptr)meter2Status=updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventData,currentSampleIndexMeter2, false);
-	if(Meter3 != nullptr)meter3Status=updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventData, currentSampleIndexMeter3, false);
-	if(Meter4 != nullptr)meter4Status=updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventData, currentSampleIndexMeter4, false);
-	if(Meter5 != nullptr)meter5Status=updateMeter(*Meter5, meter5InEvent, aFlowMeter5EventData, currentSampleIndexMeter5, false);
+	meter0Status = updateMeter(Meter0, meter0InEvent, aFlowMeter0EventDataUnion,currentSampleIndexMeter0, withDistributionPoint);
+	if(Meter1 != nullptr)meter1Status=updateMeter(*Meter1, meter1InEvent, aFlowMeter1EventDataUnion,currentSampleIndexMeter1, false);
+	if(Meter2 != nullptr)meter2Status=updateMeter(*Meter2, meter2InEvent, aFlowMeter2EventDataUnion,currentSampleIndexMeter2, false);
+	if(Meter3 != nullptr)meter3Status=updateMeter(*Meter3, meter3InEvent, aFlowMeter3EventDataUnion, currentSampleIndexMeter3, false);
+	if(Meter4 != nullptr)meter4Status=updateMeter(*Meter4, meter4InEvent, aFlowMeter4EventDataUnion, currentSampleIndexMeter4, false);
+	if(Meter5 != nullptr)meter5Status=updateMeter(*Meter5, meter5InEvent, aFlowMeter5EventDataUnion, currentSampleIndexMeter5, false);
 
 	bool ret =  meter0Status || meter1Status || meter2Status|| meter3Status || meter4Status || meter5Status;
 	//serial.print("in  flowsensor, ret=");
@@ -117,15 +121,15 @@ bool FlowSensorNetworkManager::updateValues(){
 }
 
 
-bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventData & aFlowMeterEventData, uint8_t & currentSampleIndexMeter, bool dist){
+bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventDataUnion & aFlowMeterEventDataUnion, uint8_t & currentSampleIndexMeter, bool dist){
 
 	//
 	// if water is not running
 	// then if the event is going, close the event
 	boolean toReturn=false;
 	meter.tick(period);
-	serial.print("meter freq=");
-    serial.println(meter.getCurrentFrequency());
+	//serial.print("meter freq=");
+  //  serial.println(meter.getCurrentFrequency());
 
 	if(meter.getCurrentFrequency()>0){
 		long currentTime = timeManager.getCurrentTimeInSeconds();
@@ -135,7 +139,7 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			// if we are here it means that the flow meter
 			// just detected a new starting event
 			meterInEvent=true;
-			aFlowMeterEventData.startTime = currentTime;
+			aFlowMeterEventDataUnion.aFlowMeterEventData.startTime = currentTime;
 		}
 		currentSampleIndexMeter++;
 		float flowRate = meter.getCurrentFlowrate();
@@ -143,18 +147,18 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 		    serial.println(flowRate);
 
 
-		aFlowMeterEventData.flowMeterId=0;
+		    aFlowMeterEventDataUnion.aFlowMeterEventData.flowMeterId=0;
 		if(dist){
 			currentMeter0StartTime=currentTime;
-			aFlowMeterEventData.eventGroupStartTime=currentMeter0StartTime;
+			aFlowMeterEventDataUnion.aFlowMeterEventData.eventGroupStartTime=currentMeter0StartTime;
 		}else{
-			aFlowMeterEventData.eventGroupStartTime=currentTime;
+			aFlowMeterEventDataUnion.aFlowMeterEventData.eventGroupStartTime=currentTime;
 		}
 
 
-		aFlowMeterEventData.totalVolume+=meter.getCurrentVolume();
-		aFlowMeterEventData.samples[currentSampleIndexMeter].sampleTime=currentTime;
-		aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
+		aFlowMeterEventDataUnion.aFlowMeterEventData.totalVolume+=meter.getCurrentVolume();
+		aFlowMeterEventDataUnion.aFlowMeterEventData.samples[currentSampleIndexMeter].sampleTime=currentTime;
+		aFlowMeterEventDataUnion.aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
 
 	}else{
 		if(meterInEvent){
@@ -168,15 +172,20 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			// since the last time check,
 			// this means that the event is finished
 			//
-			aFlowMeterEventData.endTime=timeManager.getCurrentTimeInSeconds();
-			aFlowMeterEventData.averageflow=0;
-			aFlowMeterEventData.numberOfSamples=currentSampleIndexMeter+1;
-			aFlowMeterEventData.sampleFrequencySeconds=0;
+			aFlowMeterEventDataUnion.aFlowMeterEventData.endTime=timeManager.getCurrentTimeInSeconds();
+			aFlowMeterEventDataUnion.aFlowMeterEventData.averageflow=0;
+			aFlowMeterEventDataUnion.aFlowMeterEventData.numberOfSamples=currentSampleIndexMeter+1;
+			aFlowMeterEventDataUnion.aFlowMeterEventData.sampleFrequencySeconds=0;
 			meter0InEvent=false;
 			//
 			// now ask the powermanager for permission to transmit
 			//
-			//dataStorageManager.storeEventRecord(aFlowMeterEventData);
+			const byte* eventData = reinterpret_cast<const byte*>(&aFlowMeterEventDataUnion.aFlowMeterEventData);
+			dataStorageManager.openEventRecordFile(flowMeterEventUnstraferedFileName);
+			dataStorageManager.storeEventRecord(EventsDirName,eventData, sizeof(aFlowMeterEventDataUnion.aFlowMeterEventData) );
+
+
+			//dataStorageManager.storeEventRecord(aFlowMeterEventDataUnion.aFlowMeterEventData);
 
 						//
 		}else{
@@ -184,7 +193,7 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			// if we are here it means that the current flow is 0
 			// and we are not in an event, this means that
 			// the flow meter is idle
-			aFlowMeterEventData.reset();
+			aFlowMeterEventDataUnion.aFlowMeterEventData.reset();
 			currentSampleIndexMeter=-1;
 			currentMeter0StartTime=0;
 			meter.reset();
