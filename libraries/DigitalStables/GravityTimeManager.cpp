@@ -42,6 +42,7 @@ GravityTimeManager::~GravityTimeManager( ){}
  }
 
 bool GravityTimeManager::setTime(String command){
+	//SetTime#24#10#19#4#17#32#00
 	int date = GeneralFunctions::getValue(command, '#', 1).toInt();
 	int month = GeneralFunctions::getValue(command, '#', 2).toInt();
 	int year = GeneralFunctions::getValue(command, '#', 3).toInt();

@@ -34,6 +34,9 @@ public:
 	bool updateValues();
 	float getMeterCurrentFlow(uint8_t meterIndex);
 	float getMeterCurrentVolume(uint8_t meterIndex);
+
+
+
 	virtual ~FlowSensorNetworkManager();
 
 private:

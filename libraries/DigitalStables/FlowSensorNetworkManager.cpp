@@ -121,6 +121,8 @@ bool FlowSensorNetworkManager::updateValues(){
 }
 
 
+
+
 bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEvent, FlowMeterEventDataUnion & aFlowMeterEventDataUnion, uint8_t & currentSampleIndexMeter, bool dist){
 
 	//
@@ -143,8 +145,8 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 		}
 		currentSampleIndexMeter++;
 		float flowRate = meter.getCurrentFlowrate();
-		serial.print("flow rate=");
-		    serial.println(flowRate);
+		//serial.print("flow rate=");
+		    //serial.println(flowRate);
 
 
 		    aFlowMeterEventDataUnion.aFlowMeterEventData.flowMeterId=0;
@@ -182,7 +184,7 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			//
 			const byte* eventData = reinterpret_cast<const byte*>(&aFlowMeterEventDataUnion.aFlowMeterEventData);
 			dataStorageManager.openEventRecordFile(flowMeterEventUnstraferedFileName);
-			dataStorageManager.storeEventRecord(EventsDirName,eventData, sizeof(aFlowMeterEventDataUnion.aFlowMeterEventData) );
+			dataStorageManager.storeEventRecord(EventsDirName,flowMeterEventUnstraferedFileName, eventData, sizeof(aFlowMeterEventDataUnion.aFlowMeterEventData) );
 
 
 			//dataStorageManager.storeEventRecord(aFlowMeterEventDataUnion.aFlowMeterEventData);

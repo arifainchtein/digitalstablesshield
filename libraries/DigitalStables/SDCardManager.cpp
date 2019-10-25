@@ -15,13 +15,15 @@
 #include <GravityRtc.h>
 #include <RTCInfoRecord.h>
 #include <DiscreteRecord.h>
-#include <DataStorageManagerInitParams.h>
+#include <SDCardInitParams.h>
 #include <SPI.h>
 #include <avr/interrupt.h>
 
 #define BIT0  0x01
 #define PB  0x0100
-#define SD_PIN 19
+
+//#define SD_PIN 19
+
 #define   spi_ss  19//const byte  spi_ss[2]={PB,BIT0};// 19
 #define  spi_ss_2 PB | BIT0
 
@@ -46,29 +48,28 @@ SdFile root;
 File currentlyOpenFile;
 const char *currentlyOpenFileName;
 bool cardOk=false;
-SDCardManager::SDCardManager(DataStorageManagerInitParams& d,TimeManager& t,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t),  _HardSerial(serial), lcdDisplay(l)
+SDCardManager::SDCardManager(SDCardInitParams& d,TimeManager& t,HardwareSerial& serial, LCDDisplay& l ):dataStorageManagerInitParams(d), timeManager(t),  _HardSerial(serial), lcdDisplay(l)
 {}
 
 bool SDCardManager::start(){
 	//setup SD card
-	_HardSerial.println("Initializing SD card...");
 
-	//uint8_t SD_PIN = dataStorageManagerInitParams.sdPin;
+	uint8_t SD_PIN = dataStorageManagerInitParams.sdPin;
 
-	 SD.begin(19);
+	 SD.begin(SD_PIN);
 	  if (!card.init(SPI_HALF_SPEED, spi_ss)) {
 	//if (!SD.begin(SD_PIN)) {
 		//		_HardSerial.println("No SD-card.");
 		//		_HardSerial.flush();
-		lcdDisplay.setCursor(0, 0);
-		lcdDisplay.print("No SD-card.") ;
+//		lcdDisplay.setCursor(0, 0);
+//		lcdDisplay.print("No SD-card.") ;
 		_HardSerial.print("No SD-card.");
 		cardOk=false;
 		return false;
 	}else{
-		lcdDisplay.clear();
-		lcdDisplay.setCursor(0, 0);
-		lcdDisplay.print("SD-card found") ;
+//		lcdDisplay.clear();
+//		lcdDisplay.setCursor(0, 0);
+//		lcdDisplay.print("SD-card found") ;
 		_HardSerial.println("Wiring is correct and a card is present. \r\n");
 
 
@@ -93,6 +94,10 @@ bool SDCardManager::start(){
 		if (!SD.exists(remFileName)) {
 			SD.mkdir(remFileName);
 		}
+		if (!SD.exists(EventRecordDirName)) {
+			SD.mkdir(EventRecordDirName);
+		}
+
 		File sensorFile = SD.open(sensorDirName );
 		long totalDiskUse=getSDCardDiskUse(sensorFile);
 
@@ -101,6 +106,9 @@ bool SDCardManager::start(){
 
 		File rememberedValueFile = SD.open(remFileName );
 		totalDiskUse+=getSDCardDiskUse(rememberedValueFile);
+
+		File eventValueFile = SD.open(EventRecordDirName );
+				totalDiskUse+=getSDCardDiskUse(eventValueFile);
 
 		sensorFile.close();
 		lifeCycleFile.close();
@@ -111,25 +119,25 @@ bool SDCardManager::start(){
 		 volumesize = volume.blocksPerCluster();    // clusters are collections of blocks
 		    volumesize *= volume.clusterCount();       // we'll have a lot of clusters
 		    volumesize /= 2;                           // SD card blocks are always 512 bytes (2 blocks are 1KB)
-		    _HardSerial.print("Volume size (Kb):  ");
-		    _HardSerial.println(volumesize);
-		    _HardSerial.print("Volume size (Mb):  ");
+//		    _HardSerial.print("Volume size (Kb):  ");
+//		    _HardSerial.println(volumesize);
+//		    _HardSerial.print("Volume size (Mb):  ");
 		    volumesize /= 1024;
-		    _HardSerial.println(volumesize);
-		    _HardSerial.print("Volume size (Gb):  ");
-		    _HardSerial.println((float)volumesize / 1024.0);
+//		    _HardSerial.println(volumesize);
+//		    _HardSerial.print("Volume size (Gb):  ");
+//		    _HardSerial.println((float)volumesize / 1024.0);
 
-		    _HardSerial.println("\nFiles found on the card (name, date and size in bytes): ");
-		    root.openRoot(volume);
+//		    _HardSerial.println("\nFiles found on the card (name, date and size in bytes): ");
+	    root.openRoot(volume);
+//
+//		    // list all files in the card with date and size
+	    root.ls(LS_R | LS_DATE | LS_SIZE);
 
-		    // list all files in the card with date and size
-		    root.ls(LS_R | LS_DATE | LS_SIZE);
 
-
-		 _HardSerial.print("card initialized:");
-		 _HardSerial.print(totalSize);
-		 _HardSerial.println("b");
-		 _HardSerial.flush();
+//		 _HardSerial.print("card initialized:");
+//		 _HardSerial.print(totalSize);
+//		 _HardSerial.println("b");
+//		 _HardSerial.flush();
 		lcdDisplay.print("SD Card initialized.");
 
 		return true;
@@ -177,14 +185,27 @@ if(!cardOk)return -9999.0;
 	File sensorFile = SD.open(sensorDirName );
 	File lifeCycleFile = SD.open(lifeCycleFileName );
 	File rememberedValueFile = SD.open(remFileName );
+	File eventFile = SD.open(EventRecordDirName );
+
 
 	long totalDiskUse=printDirectory(sensorFile, 1);
+
+
 	_HardSerial.println(" ");
 	_HardSerial.println(lifeCycleFileName);
 	totalDiskUse+=printDirectory(lifeCycleFile, 1);
+
+
 	_HardSerial.println(" ");
 	_HardSerial.println(remFileName);
 	totalDiskUse+=printDirectory(rememberedValueFile, 1);
+
+
+	_HardSerial.println(" ");
+	_HardSerial.println(EventRecordDirName);
+	totalDiskUse+=printDirectory(eventFile, 1);
+
+
 	sensorFile.close();
 	lifeCycleFile.close();
 	rememberedValueFile.close();
@@ -323,16 +344,19 @@ bool SDCardManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec)
 	return toReturn;
 }
 
-void SDCardManager::storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize ){
-	if(!cardOk)return ;
+bool SDCardManager::storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize ){
+	bool toReturn;
+	if(!cardOk)return toReturn;
 	char untransferredFileName[25];
-	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,unstraferedFileName);
+	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,eventUnstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
 		untransferredFile.write(eventData, eventSize);
 		untransferredFile.close(); // close the file
+		toReturn=true;
 	}
+	return toReturn;
 }
 
 bool SDCardManager::openEventRecordFile(const char *filename)
@@ -368,11 +392,24 @@ bool SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSiz
 			snprintf(fileNameTF, sizeof fileName, "/%s/%s_%i_%i_%i.txt", EventRecordDirName,currentlyOpenFileName, anRTCInfoRecord.date,month, year);
 			tf = SD.open(fileNameTF, FILE_WRITE);
 		}
-
+		uint32_t currentlyPosition = currentlyOpenFile.position();
+		uint32_t fileSize = currentlyOpenFile.size();
 		toReturn = currentlyOpenFile.seek(index*eventSize);
+		_HardSerial.print(" currentlyPosition=");
+		_HardSerial.print(currentlyPosition);
+		_HardSerial.print(" fileSize=");
+		_HardSerial.print(fileSize);
+
+		_HardSerial.print(" index=");
+		_HardSerial.print(index);
+		_HardSerial.print(" eventSize=");
+		_HardSerial.print(eventSize);
+		_HardSerial.print(" toReturn=");
+		_HardSerial.println(toReturn);
+
 		if(toReturn){
 			currentlyOpenFile.read(eventData,eventSize);
-
+			_HardSerial.println(" read event ok=");
 			if(moveData==1){
 				tf.write(eventData, eventSize);
 			}

@@ -37,7 +37,10 @@ public:
 	// 1 Comma
 	uint8_t operatingStatus =3;
 
-
+	char *faultData;
+	long secondsToForcedWPS=60L;
+	long wpsAlertTime=0L;
+	int delayTime=1;
 	int currentViewIndex=0;
 
 	boolean isHost=true;

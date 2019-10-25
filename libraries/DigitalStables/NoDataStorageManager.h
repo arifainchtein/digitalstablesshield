@@ -31,9 +31,9 @@ public:
 	boolean openDiscreteRecordFile();
 	void closeDiscreteRecordFile();
 
-	void storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize );
-	boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
-	boolean openEventRecordFile(const char *filename);
+	bool storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize );
+	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
+	bool openEventRecordFile(const char *filename);
 	void closeEventRecordFile(boolean);
 
 

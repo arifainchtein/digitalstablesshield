@@ -53,7 +53,7 @@ void NoDataStorageManager::closeDiscreteRecordFile(){
 
 }
 
-void NoDataStorageManager::storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize ){
+bool NoDataStorageManager::storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize ){
 
 }
 

@@ -41,10 +41,10 @@ boolean EEPROMDataStorageManager::start(){
 
 }
 
-boolean EEPROMDataStorageManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
+bool EEPROMDataStorageManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
 
 }
-boolean EEPROMDataStorageManager::readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName){
+bool EEPROMDataStorageManager::readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName){
 
 }
 void EEPROMDataStorageManager::storeRememberedValue(long time, const char *name, float value, String unit){
@@ -53,24 +53,24 @@ void EEPROMDataStorageManager::storeRememberedValue(long time, const char *name,
 void EEPROMDataStorageManager::storeDiscreteRecord( DiscreteRecord &discreteRec){
 
 }
-boolean EEPROMDataStorageManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec){
+bool EEPROMDataStorageManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec){
 
 }
-boolean EEPROMDataStorageManager::openDiscreteRecordFile(){
+bool EEPROMDataStorageManager::openDiscreteRecordFile(){
 
 }
 void EEPROMDataStorageManager::closeDiscreteRecordFile(){
 
 }
 
-void EEPROMDataStorageManager::storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize ){
+bool EEPROMDataStorageManager::storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize ){
 
 }
 
-boolean EEPROMDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
+bool EEPROMDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
 
 }
-boolean EEPROMDataStorageManager::openEventRecordFile(const char *filename){
+bool EEPROMDataStorageManager::openEventRecordFile(const char *filename){
 
 }
 void EEPROMDataStorageManager::closeEventRecordFile(boolean){
@@ -83,10 +83,10 @@ void EEPROMDataStorageManager::closeEventRecordFile(boolean){
 void storeEventRecord( byte eventData[]){
 
 }
-boolean readEventRecord(uint16_t index, byte *eventData,int eventSize){
+bool readEventRecord(uint16_t index, byte *eventData,int eventSize){
 
 }
-boolean openEventRecordFile(const char *filename){
+bool openEventRecordFile(const char *filename){
 
 }
 void closeEventRecordFile(){
@@ -108,7 +108,7 @@ long EEPROMDataStorageManager::getDiskUsage(){
 long EEPROMDataStorageManager::getSDCardDiskUse(File dir ){
 
 }
-boolean EEPROMDataStorageManager::getHistoricalData(const char *dirName, int date, int month, int year){
+bool EEPROMDataStorageManager::getHistoricalData(const char *dirName, int date, int month, int year){
 
 }
 void EEPROMDataStorageManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
@@ -118,7 +118,7 @@ void EEPROMDataStorageManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRe
 //
 // Functions that represent Serial commands
 //
-boolean EEPROMDataStorageManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus){
+bool EEPROMDataStorageManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus){
 
 }
 float EEPROMDataStorageManager::listFiles(){

@@ -21,9 +21,7 @@
 #define LOCK_CAPACITOR_PIN A5
 #define VOLTAGE_REGULATOR_OUTPUT_SENSOR A6
 
-char *faultData;
-long secondsToForcedWPS=60L;
-long wpsAlertTime=0L;
+
 
 
 float capacitorVoltage= 0;
@@ -68,7 +66,7 @@ float voltage;
 
 String currentIpAddress="No IP";
 String currentSSID="No SSID";
-int delayTime=1;
+
 
 
 

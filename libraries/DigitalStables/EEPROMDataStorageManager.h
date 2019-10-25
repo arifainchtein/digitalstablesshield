@@ -7,7 +7,7 @@
 
 #ifndef LIBRARIES_DIGITALSTABLES_EEPROMDATASTORAGEMANAGER_H_
 #define LIBRARIES_DIGITALSTABLES_EEPROMDATASTORAGEMANAGER_H_
-
+#include <Arduino.h>
 #include <DataStorageManager.h>
 #include <EEPROMDataStorageManagerInitParams.h>
 
@@ -30,18 +30,18 @@ public:
 	virtual ~EEPROMDataStorageManager();
 
 	EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager & t, HardwareSerial& serial, LCDDisplay& l);
-	boolean start();
-	boolean readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
-	boolean readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
+	bool start();
+	bool readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
+	bool readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
 	void storeRememberedValue(long time, const char *name, float value, String unit);
 	void storeDiscreteRecord( DiscreteRecord &discreteRec);
-	boolean readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
-	boolean openDiscreteRecordFile();
+	bool readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
+	bool openDiscreteRecordFile();
 	void closeDiscreteRecordFile();
 
-	void storeEventRecord(const char *EventRecordDirName, const byte *eventData,int eventSize );
-	boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
-	boolean openEventRecordFile(const char *filename);
+	bool storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize );
+	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
+	bool openEventRecordFile(const char *filename);
 	void closeEventRecordFile(boolean);
 
 
@@ -50,7 +50,7 @@ public:
 	long printDirectory(File dir, int numTabs);
 	long getDiskUsage();
 	long getSDCardDiskUse(File dir );
-	boolean getHistoricalData(const char *dirName, int date, int month, int year);
+	bool getHistoricalData(const char *dirName, int date, int month, int year);
 	void saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord);
 
 	//

@@ -9,10 +9,8 @@
 #define LIBRARIES_DIGITALSTABLES_SDCARDINITPARAMS_H_
 
 struct SDCardInitParams : public DataStorageManagerInitParams{
-	SDCardInitParams(uint8_t t):sdPin(t){
-
-		}
-  uint8_t  sdPin=19;
+	SDCardInitParams(uint8_t t):sdPin(t){}
+		uint8_t  sdPin=19;
 };
 
 
