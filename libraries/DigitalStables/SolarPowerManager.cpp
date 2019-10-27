@@ -37,12 +37,12 @@
 //#define LOCK_CAPACITOR_PIN 5
 //#endif
 
-#define SOLAR_PANEL_VOLTAGE_PIN 0
-#define BATTERY_VOLTAGE_PIN 1
-#define SOLAR_PANEL_INPUT_CURRENT_SENSOR 2
-#define BATTERY_OUPUT_CURRENT_SENSOR 3
-#define RS485_SOURCE_VOLTAGE_PIN 4
-#define LOCK_CAPACITOR_PIN 5
+#define SOLAR_PANEL_VOLTAGE_PIN A0
+#define BATTERY_VOLTAGE_PIN A1
+#define SOLAR_PANEL_INPUT_CURRENT_SENSOR A2
+#define BATTERY_OUPUT_CURRENT_SENSOR A3
+#define RS485_SOURCE_VOLTAGE_PIN A4
+#define LOCK_CAPACITOR_PIN A5
 float amplitude_current;               //amplitude current
 float effective_value;
 
@@ -172,8 +172,8 @@ PowerStatisticsStruct SolarPowerManager::getPowerStatisticsStruct(){
 
 void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	PowerStatusStruct aPowerStatusStruct =  getPowerStatusStruct();
-	this->_HardSerial.print(aPowerStatusStruct.sampleTime) ;
-	this->  _HardSerial.print("#") ;
+	_HardSerial.print(aPowerStatusStruct.sampleTime) ;
+	  _HardSerial.print("#") ;
 	  //
 	  // Sensor Request Queue Position 1
 	  //
@@ -305,8 +305,8 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char dailyMinBatteryVoltageStr[15];
 	dtostrf(dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
-	_HardSerial.print(dailyMinBatteryVoltageStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(dailyMinBatteryVoltageStr) ;
+	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 2
@@ -314,8 +314,8 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char dailyMaxBatteryVoltageStr[15];
 	dtostrf(dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
-	_HardSerial.print(dailyMaxBatteryVoltageStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(dailyMaxBatteryVoltageStr) ;
+	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 3
@@ -323,8 +323,8 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char dailyMinBatteryCurrentStr[15];
 	dtostrf(dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
-	_HardSerial.print(dailyMinBatteryCurrentStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(dailyMinBatteryCurrentStr) ;
+	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 4
@@ -332,8 +332,8 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char dailyMaxBatteryCurrentStr[15];
 	dtostrf(dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
-	_HardSerial.print(dailyMaxBatteryCurrentStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(dailyMaxBatteryCurrentStr) ;
+	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 5
@@ -341,8 +341,8 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char dailyBatteryOutEnergyStr[15];
 	dtostrf(dailyBatteryOutEnergy,4, 0, dailyBatteryOutEnergyStr);
-	_HardSerial.print(dailyBatteryOutEnergyStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(dailyBatteryOutEnergyStr) ;
+	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 6
@@ -350,8 +350,8 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char dailyPoweredDownInLoopSecondsStr[15];
 	dtostrf(dailyPoweredDownInLoopSeconds,4, 0, dailyPoweredDownInLoopSecondsStr);
-	_HardSerial.print(dailyPoweredDownInLoopSecondsStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(dailyPoweredDownInLoopSecondsStr) ;
+	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 7
@@ -359,16 +359,16 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 	char hourlyBatteryOutEnergyStr[15];
 	dtostrf(hourlyBatteryOutEnergy,4, 0, hourlyBatteryOutEnergyStr);
-	_HardSerial.print(hourlyBatteryOutEnergyStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(hourlyBatteryOutEnergyStr) ;
+	this->_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 8
 	//
 
 	char hourlyPoweredDownInLoopSecondsStr[15];
 	dtostrf(hourlyPoweredDownInLoopSeconds,4, 0, hourlyPoweredDownInLoopSecondsStr);
-	_HardSerial.print(hourlyPoweredDownInLoopSecondsStr) ;
-	_HardSerial.print("#") ;
+	this->_HardSerial.print(hourlyPoweredDownInLoopSecondsStr) ;
+	this->_HardSerial.print("#") ;
 
 
 }

@@ -77,7 +77,10 @@ void EEPROMDataStorageManager::closeEventRecordFile(boolean){
 
 }
 
+bool EEPROMDataStorageManager::deleteEventRecordFile(const char *filename)
+{
 
+}
 
 
 void storeEventRecord( byte eventData[]){

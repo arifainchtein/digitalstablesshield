@@ -45,6 +45,7 @@ public:
 	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
 	bool openEventRecordFile(const char *filename);
 	void closeEventRecordFile(boolean);
+	bool deleteEventRecordFile(const char *filename);
 
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
 	void storeLifeCycleEvent(long time, const char *eventType, int eventValue);

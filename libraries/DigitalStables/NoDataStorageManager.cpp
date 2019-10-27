@@ -57,6 +57,12 @@ bool NoDataStorageManager::storeEventRecord(const char *EventRecordDirName,const
 
 }
 
+bool NoDataStorageManager::deleteEventRecordFile(const char *filename)
+{
+
+}
+
+
 boolean NoDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
 
 }

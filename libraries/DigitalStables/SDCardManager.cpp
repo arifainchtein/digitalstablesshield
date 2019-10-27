@@ -57,7 +57,7 @@ bool SDCardManager::start(){
 	uint8_t SD_PIN = dataStorageManagerInitParams.sdPin;
 
 	 SD.begin(SD_PIN);
-	  if (!card.init(SPI_HALF_SPEED, spi_ss)) {
+	  if (!card.init(SPI_HALF_SPEED, SD_PIN)) {
 	//if (!SD.begin(SD_PIN)) {
 		//		_HardSerial.println("No SD-card.");
 		//		_HardSerial.flush();
@@ -209,6 +209,7 @@ if(!cardOk)return -9999.0;
 	sensorFile.close();
 	lifeCycleFile.close();
 	rememberedValueFile.close();
+	eventFile.close();
 	float total= (float)totalDiskUse/1024;
 	return total;
 }
@@ -348,7 +349,7 @@ bool SDCardManager::storeEventRecord(const char *EventRecordDirName,const char *
 	bool toReturn;
 	if(!cardOk)return toReturn;
 	char untransferredFileName[25];
-	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,eventUnstraferedFileName);
+	sprintf(untransferredFileName,"/%s/%s.bin",EventRecordDirName,eventUnstraferedFileName);
 	File untransferredFile = SD.open(untransferredFileName, FILE_WRITE);
 	if (untransferredFile) {
 		// Write to file
@@ -359,12 +360,21 @@ bool SDCardManager::storeEventRecord(const char *EventRecordDirName,const char *
 	return toReturn;
 }
 
+bool SDCardManager::deleteEventRecordFile(const char *filename)
+{
+	if(!cardOk)return false;
+	char untransferredFileName[25];
+	sprintf(untransferredFileName,"/%s/%s.bin",EventRecordDirName,filename);
+	bool t = SD.remove(untransferredFileName);
+	return t;
+}
+
 bool SDCardManager::openEventRecordFile(const char *filename)
 {
 	if(!cardOk)return false;
 	char untransferredFileName[25];
 
-	sprintf(untransferredFileName,"/%s/%s",EventRecordDirName,filename);
+	sprintf(untransferredFileName,"/%s/%s.bin",EventRecordDirName,filename);
 	currentlyOpenFile = SD.open(untransferredFileName, FILE_WRITE);
 	currentlyOpenFileName=filename;
 	return currentlyOpenFile;
@@ -376,46 +386,56 @@ bool SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSiz
 	bool toReturn=false;
 	if (currentlyOpenFile) {
 		File tf;
-		if(moveData==1){
+		if(moveData){
 
 			char fileName[25] = "/";
-			snprintf(fileName, sizeof fileName, "/%s/%s", EventRecordDirName, currentlyOpenFileName);
+			snprintf(fileName, sizeof fileName, "/%s/%s_h", EventRecordDirName, currentlyOpenFileName);
 
 
 
+			if (!SD.exists(fileName )) {
+				SD.mkdir(fileName);
+			}
 
-
-			char fileNameTF[24];
+			char fileNameTF[30];
 			RTCInfoRecord anRTCInfoRecord = timeManager.getCurrentDateTime();
 			int year = anRTCInfoRecord.year-2000;
 			int month = anRTCInfoRecord.month-1;
-			snprintf(fileNameTF, sizeof fileName, "/%s/%s_%i_%i_%i.txt", EventRecordDirName,currentlyOpenFileName, anRTCInfoRecord.date,month, year);
+			snprintf(fileNameTF, sizeof fileNameTF, "/%s/%s_h/%i_%i_%i.bin", EventRecordDirName,currentlyOpenFileName, anRTCInfoRecord.date,month, year);
+//			_HardSerial.println("  ");
+//			_HardSerial.print(" fileNameTF=");
+//			_HardSerial.print(fileNameTF);
 			tf = SD.open(fileNameTF, FILE_WRITE);
+
+//			_HardSerial.print(" tf=");
+//						_HardSerial.print(tf);
 		}
 		uint32_t currentlyPosition = currentlyOpenFile.position();
 		uint32_t fileSize = currentlyOpenFile.size();
 		toReturn = currentlyOpenFile.seek(index*eventSize);
-		_HardSerial.print(" currentlyPosition=");
-		_HardSerial.print(currentlyPosition);
-		_HardSerial.print(" fileSize=");
-		_HardSerial.print(fileSize);
 
-		_HardSerial.print(" index=");
-		_HardSerial.print(index);
-		_HardSerial.print(" eventSize=");
-		_HardSerial.print(eventSize);
-		_HardSerial.print(" toReturn=");
-		_HardSerial.println(toReturn);
+//		_HardSerial.print(" currentlyPosition=");
+//		_HardSerial.print(currentlyPosition);
+//		_HardSerial.print(" fileSize=");
+//		_HardSerial.print(fileSize);
+//
+//		_HardSerial.print(" index=");
+//		_HardSerial.print(index);
+//		_HardSerial.print(" eventSize=");
+//		_HardSerial.print(eventSize);
+//		_HardSerial.print(" toReturn=");
+//		_HardSerial.println(toReturn);
 
 		if(toReturn){
 			currentlyOpenFile.read(eventData,eventSize);
-			_HardSerial.println(" read event ok=");
-			if(moveData==1){
+//			_HardSerial.println(" read event ok=");
+			if(moveData){
 				tf.write(eventData, eventSize);
+//				_HardSerial.println(" wrote backup data");
 			}
 
 		}
-		if(moveData==1){
+		if(moveData){
 			tf.close();
 		}
 	}

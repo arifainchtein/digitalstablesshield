@@ -84,8 +84,11 @@ int GeneralFunctions::getStateOfCharge(double batteryVoltage){
 void GeneralFunctions::printPowerStatusStructToSerial(HardwareSerial& serial, const PowerStatusStruct powerStatusStruct){
 	serial.print(powerStatusStruct.sampleTime );
 	serial.print("#" );
-
+	serial.print(powerStatusStruct.solarPanelVoltage );
+	serial.print("#" );
 	serial.print(powerStatusStruct.batteryVoltage );
+	serial.print("#" );
+	serial.print(powerStatusStruct.currentFromSolarPanel);
 	serial.print("#" );
 	serial.print(powerStatusStruct.currentFromBattery);
 	serial.print("#" );

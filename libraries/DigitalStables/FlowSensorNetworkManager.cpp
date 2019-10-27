@@ -54,8 +54,7 @@ FlowMeterEventDataUnion aFlowMeter5EventDataUnion;
 bool withDistributionPoint=false;
 bool canPublishAsync=false;
 
-const char  *flowMeterEventUnstraferedFileName ="FMEUF.txt";
-const char  *EventsDirName="Events";
+
 
 FlowSensorNetworkManager::FlowSensorNetworkManager(HardwareSerial& s, PowerManager& p ,DataStorageManager& sd, TimeManager& t ): serial(s), powerManager(p), dataStorageManager(sd),timeManager(t)
 {}
@@ -136,31 +135,41 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 	if(meter.getCurrentFrequency()>0){
 		long currentTime = timeManager.getCurrentTimeInSeconds();
 		toReturn=true;
+		float flowRate = meter.getCurrentFlowrate();
+
 		if(!meterInEvent){
 			//
 			// if we are here it means that the flow meter
 			// just detected a new starting event
 			meterInEvent=true;
 			aFlowMeterEventDataUnion.aFlowMeterEventData.startTime = currentTime;
+			 aFlowMeterEventDataUnion.aFlowMeterEventData.flowMeterId=0;
+			 if(dist){
+				currentMeter0StartTime=currentTime;
+				aFlowMeterEventDataUnion.aFlowMeterEventData.eventGroupStartTime=currentMeter0StartTime;
+			}else{
+				aFlowMeterEventDataUnion.aFlowMeterEventData.eventGroupStartTime=currentTime;
+			}
+		}else{
+			//
+			// if we are here it means that we are in the
+			// middle of an event
+
+
 		}
 		currentSampleIndexMeter++;
-		float flowRate = meter.getCurrentFlowrate();
+
 		//serial.print("flow rate=");
 		    //serial.println(flowRate);
 
-
-		    aFlowMeterEventDataUnion.aFlowMeterEventData.flowMeterId=0;
-		if(dist){
-			currentMeter0StartTime=currentTime;
-			aFlowMeterEventDataUnion.aFlowMeterEventData.eventGroupStartTime=currentMeter0StartTime;
-		}else{
-			aFlowMeterEventDataUnion.aFlowMeterEventData.eventGroupStartTime=currentTime;
-		}
-
-
 		aFlowMeterEventDataUnion.aFlowMeterEventData.totalVolume+=meter.getCurrentVolume();
-		aFlowMeterEventDataUnion.aFlowMeterEventData.samples[currentSampleIndexMeter].sampleTime=currentTime;
-		aFlowMeterEventDataUnion.aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
+
+
+
+
+
+		//aFlowMeterEventDataUnion.aFlowMeterEventData.samples[currentSampleIndexMeter].sampleTime=currentTime;
+		//aFlowMeterEventDataUnion.aFlowMeterEventData.samples[currentSampleIndexMeter].flow=flowRate;
 
 	}else{
 		if(meterInEvent){
@@ -183,6 +192,9 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, bool & meterInEven
 			// now ask the powermanager for permission to transmit
 			//
 			const byte* eventData = reinterpret_cast<const byte*>(&aFlowMeterEventDataUnion.aFlowMeterEventData);
+
+			const char  *flowMeterEventUnstraferedFileName ="FMEUF.txt";
+			const char  *EventsDirName="Events";
 			dataStorageManager.openEventRecordFile(flowMeterEventUnstraferedFileName);
 			dataStorageManager.storeEventRecord(EventsDirName,flowMeterEventUnstraferedFileName, eventData, sizeof(aFlowMeterEventDataUnion.aFlowMeterEventData) );
 

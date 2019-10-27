@@ -37,7 +37,7 @@ public:
 	virtual boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData)=0;
 	virtual boolean openEventRecordFile(const char *filename)=0;
 	virtual void closeEventRecordFile(boolean)=0;
-
+	virtual bool deleteEventRecordFile(const char *filename)=0;
 
 	virtual float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor)=0;
 	virtual void storeLifeCycleEvent(long time, const char *eventType, int eventValue)=0;
