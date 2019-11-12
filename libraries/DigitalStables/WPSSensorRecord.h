@@ -10,9 +10,9 @@ struct WPSSensorRecord{
 		float current;
 		uint8_t stateOfCharge;
 		long lastWPSRecordSeconds;
-		float  batteryVoltage;
-		float hourlyBatteryOutEnergy;
-		float dailyBatteryOutEnergy;
+		float  energyStorageVoltage;
+		float hourlyEnergyStorageOutEnergy;
+		float dailyEnergyStorageOutEnergy;
 		float hourlyPoweredDownInLoopSeconds;
 		float dailyPoweredDownInLoopSeconds;
 		boolean pauseDuringWPS;

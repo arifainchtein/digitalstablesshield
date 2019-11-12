@@ -23,11 +23,27 @@ class PowerManager{
 
 
 public:
-
-
-
+	long previousUpdate;
+	boolean hypothalamusStatus=false;
+	long shutDownRequestedseconds= 0L;
+	boolean shuttingDownPiCountdown=false;
+	boolean manualShutdown=false;
+	boolean waitingManualPiStart=false;
+	String currentIpAddress="No IP";
+	String currentSSID="No SSID";
 	PowerStatusStruct aPowerStatusStruct;
 	PowerStatisticsStruct aPowerStatisticsStruct;
+
+	//
+	// power variables
+	//
+	// sources  0=Solar 1=Grid
+	// storage  0=Battery 1=Capacitor
+
+	constexpr static const uint8_t BATTERY_ENERGY_STORAGE = 0;
+	constexpr static const uint8_t CAPACITOR_ENERGY_STORAGE =1;
+	constexpr static const uint8_t SOLAR_ENERGY_SOURCE =0;
+	constexpr static const uint8_t GRID_ENERGY_SOURCE =1;
 
 	//
 	// the operating status can be:
@@ -50,10 +66,14 @@ public:
 
 	float dailyMinBatteryCurrent=0;
 	float dailyMaxBatteryCurrent=0;
+
 	float dailyBatteryOutEnergy=0;
+	float dailyBatteryInEnergy;
+	float hourlyBatteryInEnergy;
+	float hourlyBatteryOutEnergy=0;
+
 	float dailyPoweredDownInLoopSeconds=0;
 
-	float hourlyBatteryOutEnergy=0;
 	float hourlyPoweredDownInLoopSeconds=0;
 	boolean pauseDuringWPS=false;
 	boolean inPulse=false;
@@ -131,14 +151,17 @@ public:
 	PowerManager();
 	PowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
 	void start();
-	void hourlyTasks(long time, int previousHour );
-	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear );
-	void monthlyTasks(long time);
-	void yearlyTasks(long time);
-	virtual float getCurrentFromBattery(void)=0;
-	float getCurrentInputFromSolarPanel(void);
-	float getSolarPanelVoltage();
-	float getBatteryVoltage();
+	virtual void hourlyTasks(long time, int previousHour )=0;
+	virtual void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear) =0;
+	virtual void monthlyTasks(long time)=0;
+	virtual void yearlyTasks(long time)=0;
+	virtual uint8_t getEnergySourceType()=0;  // 0=Solar 1=Grid
+	virtual uint8_t getEnergyStorageType()=0; //0=Battery 1=Capacitor
+
+	float getCurrentFromEnergyStorage(void);
+	float getCurrentInputFromEnergySource(void);
+	virtual float getEnergySourceVoltage()=0;
+	virtual float getEnergyStorageVoltage()=0;
 	void initializeWDT();
 	void enterArduinoSleep(void);
 	void pauseWPS();
@@ -146,16 +169,16 @@ public:
 	void turnPiOffForced(long time);
 	void turnPiOff(long time);
 	void turnPiOn(long time);
-	void defineState();
+	virtual void defineState()=0;
 	bool processDefaultCommands(String command);
-	void endOfLoopProcessing();
+	virtual void endOfLoopProcessing()=0;
 	float getLockCapacitorVoltage();
 	void toggleWDT();
 	virtual PowerStatusStruct getPowerStatusStruct()=0;
 	virtual PowerStatisticsStruct getPowerStatisticsStruct()=0;
 
-	void printPowerStatusStructToSerialPort();
-	void printPowerStatisticsStructToSerialPort();
+	virtual void printPowerStatusStructToSerialPort()=0;
+	virtual void printPowerStatisticsStructToSerialPort()=0;
 	bool getHypothalamusStatus();
 	float getVoltageRegulatorOutput();
 	void setCurrentViewIndex(int);

@@ -43,7 +43,7 @@ public:
 
 	bool storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize );
 	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
-	bool openEventRecordFile(const char *filename);
+	int openEventRecordFile(const char *filename, int eventSize);
 	void closeEventRecordFile(boolean);
 	bool deleteEventRecordFile(const char *filename);
 

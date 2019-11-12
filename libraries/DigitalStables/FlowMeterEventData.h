@@ -29,7 +29,7 @@ typedef struct FlowMeterEventData:public EventRecord{
 	//
 
 	float averageflow;
-	uint8_t numberOfSamples;
+	//uint8_t numberOfSamples;
 	float totalVolume;
 	uint8_t flowMeterId;
 	uint16_t sampleFrequencySeconds;

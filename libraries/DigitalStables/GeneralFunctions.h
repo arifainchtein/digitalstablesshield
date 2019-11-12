@@ -13,7 +13,8 @@ class GeneralFunctions{
 public:
 	GeneralFunctions();
 	static String getValue(String data, char separator, int index);
-	static int getStateOfCharge(double batteryVoltage);
+	static uint8_t getStateOfCharge(float batteryVoltage);
+	static uint8_t getCapacitorStateOfCharge(float capacitorVoltage);
 	static float stringToFloat(String s);
 	static char * generatePassword();
 	static void printPowerStatusStructToSerial(HardwareSerial& serial, const PowerStatusStruct powerManagerStruct);

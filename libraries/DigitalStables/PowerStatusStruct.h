@@ -10,14 +10,15 @@
 #define LIBRARIES_DIGITALSTABLES_POWERSTATUSSTRUCT_H_
 
 struct PowerStatusStruct :public DiscreteRecord{
-
-		float batteryVoltage ;
-		float solarPanelVoltage;
-		int currentFromBattery;
-		int currentFromSolarPanel;
-		float capacitorVoltage;
-		byte internalBatteryStateOfCharge;
-		float regulatorVoltage;
+		uint8_t energySourceType;  // 0=Solar 1=Grid
+		uint8_t energyStorageType;  // 0=battery 1=capacitor
+		float energyStorageVoltage ;
+		float sourceVoltage;
+		int currentFromEnergyStorage;
+		int currentFromEnergySource;
+		float lockCapacitorVoltage;
+		byte internalEnergyStorageStateOfCharge;
+		//float regulatorVoltage;
 		uint8_t operatingStatus;
 		//long totalDiskUse;
 		//long totalDiskAvailable;
@@ -26,13 +27,13 @@ struct PowerStatusStruct :public DiscreteRecord{
 struct PowerStatisticsStruct :public DiscreteRecord{
 
 
-		float dailyMinBatteryVoltage;
-		float dailyMaxBatteryVoltage;
-		float dailyMinBatteryCurrent;
-		float dailyMaxBatteryCurrent;
-		float dailyBatteryOutEnergy;
+		float dailyMinEnergyStorgeVoltage;
+		float dailyMaxEnergyStorageVoltage;
+		float dailyMinEnergyStorageCurrent;
+		float dailyMaxEnergyStorageCurrent;
+		float dailyEnergyStorageOutEnergy;
 		float dailyPoweredDownInLoopSeconds;
-		float hourlyBatteryOutEnergy;
+		float hourlyEnergyStorageOutEnergy;
 		float hourlyPoweredDownInLoopSeconds;
 		//long totalDiskUse;
 		//long totalDiskAvailable;

@@ -18,7 +18,7 @@ class SolarPowerManager : public PowerManager{
 public:
 	SecretManager  secretManager;
 	DataStorageManager  &dataStorageManager;
-	HardwareSerial _HardSerial;
+	//HardwareSerial _HardSerial;
 	LCDDisplay&  lcd;
 	TimeManager & timeManager;
 
@@ -32,6 +32,13 @@ public:
 	void printPowerStatisticsStructToSerialPort();
 	PowerStatusStruct getPowerStatusStruct();
 	PowerStatisticsStruct getPowerStatisticsStruct();
+	void endOfLoopProcessing();
+	void defineState();
+	void hourlyTasks(long time, int previousHour );
+	void dailyTasks(long time, int yesterdayDate, int yesterdayMonth, uint16_t yesterdayYear);
+	void monthlyTasks(long time);
+	void yearlyTasks(long time);
+
 	virtual ~SolarPowerManager();
 
 

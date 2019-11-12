@@ -129,8 +129,6 @@ bool SDCardManager::start(){
 
 //		    _HardSerial.println("\nFiles found on the card (name, date and size in bytes): ");
 	    root.openRoot(volume);
-//
-//		    // list all files in the card with date and size
 	    root.ls(LS_R | LS_DATE | LS_SIZE);
 
 
@@ -138,7 +136,7 @@ bool SDCardManager::start(){
 //		 _HardSerial.print(totalSize);
 //		 _HardSerial.println("b");
 //		 _HardSerial.flush();
-		lcdDisplay.print("SD Card initialized.");
+	//	lcdDisplay.print("SD Card initialized.");
 
 		return true;
 //
@@ -369,15 +367,20 @@ bool SDCardManager::deleteEventRecordFile(const char *filename)
 	return t;
 }
 
-bool SDCardManager::openEventRecordFile(const char *filename)
+int SDCardManager::openEventRecordFile(const char *filename, int eventSize)
 {
 	if(!cardOk)return false;
 	char untransferredFileName[25];
 
 	sprintf(untransferredFileName,"/%s/%s.bin",EventRecordDirName,filename);
 	currentlyOpenFile = SD.open(untransferredFileName, FILE_WRITE);
+
 	currentlyOpenFileName=filename;
-	return currentlyOpenFile;
+	_HardSerial.print("currentlyOpenFile.size()=  ");
+	_HardSerial.println(currentlyOpenFile.size());
+
+
+	return currentlyOpenFile.size()/eventSize;
 }
 
 bool SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, bool moveData)
@@ -412,23 +415,32 @@ bool SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSiz
 		}
 		uint32_t currentlyPosition = currentlyOpenFile.position();
 		uint32_t fileSize = currentlyOpenFile.size();
-		toReturn = currentlyOpenFile.seek(index*eventSize);
-
-//		_HardSerial.print(" currentlyPosition=");
-//		_HardSerial.print(currentlyPosition);
-//		_HardSerial.print(" fileSize=");
-//		_HardSerial.print(fileSize);
-//
 //		_HardSerial.print(" index=");
 //		_HardSerial.print(index);
 //		_HardSerial.print(" eventSize=");
 //		_HardSerial.print(eventSize);
-//		_HardSerial.print(" toReturn=");
-//		_HardSerial.println(toReturn);
+//		_HardSerial.print(" currentlyPosition=");
+//		_HardSerial.print(currentlyPosition);
+//
+//		_HardSerial.print(" fileSize=");
+//		_HardSerial.print(fileSize);
 
-		if(toReturn){
-			currentlyOpenFile.read(eventData,eventSize);
-//			_HardSerial.println(" read event ok=");
+		bool seekResult = currentlyOpenFile.seek(index*eventSize);
+
+//		_HardSerial.print(" seekResult=");
+//		_HardSerial.print(seekResult);
+
+
+		if(seekResult){
+			uint8_t readReturn = currentlyOpenFile.read(eventData,eventSize);
+			if(readReturn>0){
+				toReturn=true;
+			}else{
+				toReturn=false;
+			}
+//			_HardSerial.print(" after read event ok, toReturn=");
+//			_HardSerial.print(toReturn);
+
 			if(moveData){
 				tf.write(eventData, eventSize);
 //				_HardSerial.println(" wrote backup data");

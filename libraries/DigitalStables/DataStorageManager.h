@@ -35,7 +35,7 @@ public:
 
 	virtual bool storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize )=0;
 	virtual boolean readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData)=0;
-	virtual boolean openEventRecordFile(const char *filename)=0;
+	virtual int openEventRecordFile(const char *filename, int eventSize)=0;
 	virtual void closeEventRecordFile(boolean)=0;
 	virtual bool deleteEventRecordFile(const char *filename)=0;
 
