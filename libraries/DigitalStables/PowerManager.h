@@ -61,16 +61,16 @@ public:
 
 	boolean isHost=true;
 	long poweredDownInLoopSeconds=0L;
-	float dailyMinBatteryVoltage=0;
-	float dailyMaxBatteryVoltage=0;
+	float dailyMinEnergyStorageVoltage=0;
+	float dailyMaxEnergyStorageVoltage=0;
 
-	float dailyMinBatteryCurrent=0;
-	float dailyMaxBatteryCurrent=0;
+	float dailyMinEnergyStorageCurrent=0;
+	float dailyMaxEnergyStorageCurrent=0;
 
-	float dailyBatteryOutEnergy=0;
-	float dailyBatteryInEnergy;
-	float hourlyBatteryInEnergy;
-	float hourlyBatteryOutEnergy=0;
+	float dailyEnergyStorageOutEnergy=0;
+	float dailyEnergyStorageInEnergy;
+	float hourlyEnergyStorageInEnergy;
+	float hourlyEnergyStorageOutEnergy=0;
 
 	float dailyPoweredDownInLoopSeconds=0;
 
@@ -158,8 +158,8 @@ public:
 	virtual uint8_t getEnergySourceType()=0;  // 0=Solar 1=Grid
 	virtual uint8_t getEnergyStorageType()=0; //0=Battery 1=Capacitor
 
-	float getCurrentFromEnergyStorage(void);
-	float getCurrentInputFromEnergySource(void);
+	virtual float getCurrentFromEnergyStorage(void)=0;
+	virtual float getCurrentInputFromEnergySource(void)=0;
 	virtual float getEnergySourceVoltage()=0;
 	virtual float getEnergyStorageVoltage()=0;
 	void initializeWDT();

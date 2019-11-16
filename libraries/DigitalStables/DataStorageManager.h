@@ -42,8 +42,6 @@ public:
 	virtual float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor)=0;
 	virtual void storeLifeCycleEvent(long time, const char *eventType, int eventValue)=0;
 	virtual long printDirectory(File dir, int numTabs)=0;
-	virtual long getDiskUsage()=0;
-	virtual long getSDCardDiskUse(File dir )=0;
 	virtual boolean getHistoricalData(const char *dirName, int date, int month, int year)=0;
 	virtual void saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord)=0;
 
@@ -53,6 +51,7 @@ public:
 	virtual boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, uint8_t operatingStatus)=0;
 	virtual float listFiles()=0;
 	virtual uint32_t getFreeDiskSpace()=0;
+	virtual uint32_t getDiskUsage()=0;
 
 	virtual ~DataStorageManager();
 };

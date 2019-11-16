@@ -51,6 +51,14 @@ float effective_value;
 SolarPowerManager::SolarPowerManager(LCDDisplay& l, SecretManager& s, DataStorageManager& sd, TimeManager& t,HardwareSerial& serial ):PowerManager(l,  s,  sd,  t, serial ), lcd(l),secretManager(s), dataStorageManager(sd),timeManager(t)
 {}
 
+uint8_t SolarPowerManager::getEnergySourceType(){
+	return SOLAR_ENERGY_SOURCE;
+}
+
+uint8_t SolarPowerManager::getEnergyStorageType(){
+	return BATTERY_ENERGY_STORAGE;
+}
+
 void SolarPowerManager::endOfLoopProcessing(){
 
 	//	endOfLoopProcessing,
@@ -63,25 +71,25 @@ void SolarPowerManager::endOfLoopProcessing(){
 
 	long now = timeManager.getCurrentTimeInSeconds();
 	int loopConsumingPowerSeconds = now -loopStartingSeconds -poweredDownInLoopSeconds;
-	float currentFromBattery = getCurrentFromBattery();
-	 float currentFromSolarPanel = getCurrentInputFromSolarPanel();
+	float currentFromEnergyStorage = getCurrentFromEnergyStorage();
+	 float currentFromSolarPanel = getCurrentInputFromEnergySource();
 
 
 
 
 
 
-	dailyBatteryOutEnergy+= loopConsumingPowerSeconds*currentFromBattery/3600;
-	hourlyBatteryOutEnergy+= loopConsumingPowerSeconds*currentFromBattery/3600;
-	dailyBatteryInEnergy+= loopConsumingPowerSeconds*currentFromSolarPanel/3600;
-	hourlyBatteryInEnergy+= loopConsumingPowerSeconds*currentFromSolarPanel/3600;
+	dailyEnergyStorageOutEnergy+= loopConsumingPowerSeconds*currentFromEnergyStorage/3600;
+	hourlyEnergyStorageOutEnergy+= loopConsumingPowerSeconds*currentFromEnergyStorage/3600;
+	dailyEnergyStorageInEnergy+= loopConsumingPowerSeconds*currentFromSolarPanel/3600;
+	hourlyEnergyStorageInEnergy+= loopConsumingPowerSeconds*currentFromSolarPanel/3600;
 	dailyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
 	hourlyPoweredDownInLoopSeconds+=poweredDownInLoopSeconds;
-	_HardSerial.print("dailyBatteryOutEnergy=");
-	_HardSerial.print(dailyBatteryOutEnergy);
+	_HardSerial.print("dailyEnergyStorageOutEnergy=");
+	_HardSerial.print(dailyEnergyStorageOutEnergy);
 
-	_HardSerial.print("dailyBatteryInEnergy=");
-	_HardSerial.print(dailyBatteryInEnergy);
+	_HardSerial.print("dailyEnergyStorageInEnergy=");
+	_HardSerial.print(dailyEnergyStorageInEnergy);
 
 
 	_HardSerial.print(" poweredDownInLoopSeconds=");
@@ -91,8 +99,8 @@ void SolarPowerManager::endOfLoopProcessing(){
 
 	_HardSerial.print(" endOfLoopProcessing, now=");
 	_HardSerial.print(now);
-	_HardSerial.print(" currentFromBattery=");
-	_HardSerial.print(currentFromBattery);
+	_HardSerial.print(" currentFromEnergyStorage=");
+	_HardSerial.print(currentFromEnergyStorage);
 
 	_HardSerial.print(" loopStartingSeconds=");
 	_HardSerial.print(loopStartingSeconds);
@@ -107,23 +115,23 @@ void SolarPowerManager::defineState(){
 	poweredDownInLoopSeconds=0;
 	loopStartingSeconds = timeManager.getCurrentTimeInSeconds();
 
-	float batteryVoltage = getBatteryVoltage();
+	float batteryVoltage = getEnergyStorageVoltage();
 	//_HardSerial.print("staring define state, batteryVoltage =");
 	//_HardSerial.println(batteryVoltage);
 
-	float regulatorVoltage = getVoltageRegulatorOutput();
-	int internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
-	float currentFromBattery = getCurrentFromBattery();
-	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
-	float solarPanelVolltage = getSolarPanelVoltage();
+//	float regulatorVoltage = getVoltageRegulatorOutput();
+	int internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+	float currentFromEnergyStorage = getCurrentFromEnergyStorage();
+	float inputFromSOlarPanel =  getCurrentInputFromEnergySource();
+	float solarPanelVolltage = getEnergySourceVoltage();
 	float lockCapacitor = getLockCapacitorVoltage();
 
 
 
-	if(batteryVoltage<this->dailyMinBatteryVoltage)this->dailyMinBatteryVoltage = batteryVoltage;
-	if(batteryVoltage>this->dailyMaxBatteryVoltage)this->dailyMaxBatteryVoltage = batteryVoltage;
-	if(currentFromBattery<this->dailyMinBatteryCurrent)this->dailyMinBatteryCurrent = currentFromBattery;
-	if(currentFromBattery>this->dailyMaxBatteryCurrent)this->dailyMaxBatteryCurrent = currentFromBattery;
+	if(batteryVoltage<this->dailyMinEnergyStorageVoltage)this->dailyMinEnergyStorageVoltage = batteryVoltage;
+	if(batteryVoltage>this->dailyMaxEnergyStorageVoltage)this->dailyMaxEnergyStorageVoltage = batteryVoltage;
+	if(currentFromEnergyStorage<this->dailyMinEnergyStorageCurrent)this->dailyMinEnergyStorageCurrent = currentFromEnergyStorage;
+	if(currentFromEnergyStorage>this->dailyMaxEnergyStorageCurrent)this->dailyMaxEnergyStorageCurrent = currentFromEnergyStorage;
 
 
 	hypothalamusStatus = digitalRead(PI_POWER_PIN);
@@ -198,13 +206,13 @@ void SolarPowerManager::defineState(){
 					}
 					lcd.print(lockCapacitor);
 					lcd.print(" ") ;
-					lcd.print((int)currentFromBattery);
+					lcd.print((int)currentFromEnergyStorage);
 					lcd.print("mA ") ;
 					lcd.setCursor(0, 1);
 					lcd.print(timeManager.getCurrentDateTimeForDisplay());
 					lcd.print(" " );
-					lcd.print(regulatorVoltage );
-					lcd.print("V" );
+					//lcd.print(regulatorVoltage );
+					//lcd.print("V" );
 
 					lcd.setCursor(0, 2);
 					long freeDiskSpace=dataStorageManager.getFreeDiskSpace()/1024;
@@ -299,7 +307,7 @@ void SolarPowerManager::defineState(){
 				lcd.setCursor(0,1);
 				lcd.print(batteryVoltage);
 				lcd.print("V ");
-				lcd.print(internalBatteryStateOfCharge);
+				lcd.print(internalEnergyStorageStateOfCharge);
 				lcd.print("%") ;
 				lastWPSStartUp = loopStartingSeconds;
 			}else{
@@ -327,12 +335,12 @@ void SolarPowerManager::defineState(){
 
 					lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 					WPSSensorRecord anWPSSensorRecord;
-					anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
-					anWPSSensorRecord.current = getCurrentFromBattery();
+					anWPSSensorRecord.energyStorageVoltage= getEnergyStorageVoltage();
+					anWPSSensorRecord.current = getCurrentFromEnergyStorage();
 					anWPSSensorRecord.stateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 					anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
-					anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
-					anWPSSensorRecord.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+					anWPSSensorRecord.hourlyEnergyStorageOutEnergy=hourlyEnergyStorageOutEnergy;
+					anWPSSensorRecord.dailyEnergyStorageOutEnergy=dailyEnergyStorageOutEnergy;
 					anWPSSensorRecord.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
@@ -438,7 +446,7 @@ void SolarPowerManager::defineState(){
 					lcd.setCursor(0,1);
 					lcd.print(batteryVoltage);
 					lcd.print("V ");
-					lcd.print(internalBatteryStateOfCharge);
+					lcd.print(internalEnergyStorageStateOfCharge);
 					lcd.print("%") ;
 					lastWPSStartUp = loopStartingSeconds;
 				}else{
@@ -466,12 +474,12 @@ void SolarPowerManager::defineState(){
 
 						lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 						WPSSensorRecord anWPSSensorRecord;
-						anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
-						anWPSSensorRecord.current = getCurrentFromBattery();
+						anWPSSensorRecord.energyStorageVoltage= getEnergyStorageVoltage();
+						anWPSSensorRecord.current = getCurrentFromEnergyStorage();
 						anWPSSensorRecord.stateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 						anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
-						anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
-						anWPSSensorRecord.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+						anWPSSensorRecord.hourlyEnergyStorageOutEnergy=hourlyEnergyStorageOutEnergy;
+						anWPSSensorRecord.dailyEnergyStorageOutEnergy=dailyEnergyStorageOutEnergy;
 						anWPSSensorRecord.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
 						anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 						anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;
@@ -632,7 +640,7 @@ void SolarPowerManager::defineState(){
 	//_HardSerial.println("ending define state");
 }
 
-float SolarPowerManager::getBatteryVoltage(){
+float SolarPowerManager::getEnergyStorageVoltage(){
 	return 13.4;
 	int NUM_SAMPLES=10;
 	int sample_count=0;
@@ -649,7 +657,7 @@ float SolarPowerManager::getBatteryVoltage(){
 	return voltage;
 }
 
-float SolarPowerManager::getCurrentInputFromSolarPanel(void){
+float SolarPowerManager::getCurrentInputFromEnergySource(void){
 
 	return 150;
 
@@ -673,7 +681,7 @@ float SolarPowerManager::getCurrentInputFromSolarPanel(void){
 }
 
 
-float SolarPowerManager::getSolarPanelVoltage(){
+float SolarPowerManager::getEnergySourceVoltage(){
 	return 19.5;
 
 	long  sensorValue=analogRead(SOLAR_PANEL_VOLTAGE_PIN);
@@ -689,7 +697,7 @@ float SolarPowerManager::getSolarPanelVoltage(){
 	return value;
 }
 
-float SolarPowerManager::getCurrentFromBattery(void){
+float SolarPowerManager::getCurrentFromEnergyStorage(void){
 	return 99;
 	int sensorValue;             //value read from the sensor
 	int sensorMax = 0;
@@ -711,20 +719,20 @@ float SolarPowerManager::getCurrentFromBattery(void){
 }
 
 PowerStatusStruct SolarPowerManager::getPowerStatusStruct(){
-	float batteryVoltage = getBatteryVoltage();
+	float batteryVoltage = getEnergyStorageVoltage();
 
 	float capacitorVoltage= 0.0;//getLockCapacitorVoltage();
-	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+	byte internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 	//float regulatorVoltage = getVoltageRegulatorOutput();
 	//long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 
 	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-	aPowerStatusStruct.batteryVoltage= batteryVoltage;
-	aPowerStatusStruct.solarPanelVoltage= getSolarPanelVoltage();
-	aPowerStatusStruct.currentFromSolarPanel= getCurrentInputFromSolarPanel();
-	aPowerStatusStruct.currentFromBattery=getCurrentFromBattery();
-	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
-	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
+	aPowerStatusStruct.energyStorageVoltage= batteryVoltage;
+	aPowerStatusStruct.energySourceVoltage= getEnergySourceVoltage();
+	aPowerStatusStruct.currentFromEnergySource= getCurrentInputFromEnergySource();
+	aPowerStatusStruct.currentFromEnergyStorage=getCurrentFromEnergyStorage();
+	aPowerStatusStruct.lockCapacitorVoltage=capacitorVoltage;
+	aPowerStatusStruct.internalEnergyStorageStateOfCharge=internalEnergyStorageStateOfCharge;
 	//aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
 	aPowerStatusStruct.operatingStatus=operatingStatus;
 
@@ -742,7 +750,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	// Sensor Request Queue Position 1
 	//
 	char solarPanelVoltageStr[15];
-	dtostrf(aPowerStatusStruct.solarPanelVoltage,4, 1, solarPanelVoltageStr);
+	dtostrf(aPowerStatusStruct.energySourceVoltage,4, 1, solarPanelVoltageStr);
 	_HardSerial.print(solarPanelVoltageStr) ;
 	_HardSerial.print("#") ;
 
@@ -750,7 +758,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	// Sensor Request Queue Position 2
 	//
 	char batteryVoltageStr[15];
-	dtostrf(aPowerStatusStruct.batteryVoltage,4, 1, batteryVoltageStr);
+	dtostrf(aPowerStatusStruct.energyStorageVoltage,4, 1, batteryVoltageStr);
 	_HardSerial.print(batteryVoltageStr) ;
 	_HardSerial.print("#") ;
 
@@ -758,7 +766,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	// Sensor Request Queue Position 3
 	//
 	char solarCurrentValueStr[15];
-	dtostrf(aPowerStatusStruct.currentFromSolarPanel,4, 0, solarCurrentValueStr);
+	dtostrf(aPowerStatusStruct.currentFromEnergySource,4, 0, solarCurrentValueStr);
 	_HardSerial.print(solarCurrentValueStr) ;
 	_HardSerial.print("#") ;
 
@@ -766,7 +774,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	// Sensor Request Queue Position 4
 	//
 	char batteryOutputCurrentValueStr[15];
-	dtostrf(aPowerStatusStruct.currentFromBattery,4, 0, batteryOutputCurrentValueStr);
+	dtostrf(aPowerStatusStruct.currentFromEnergyStorage,4, 0, batteryOutputCurrentValueStr);
 	_HardSerial.print(solarCurrentValueStr) ;
 	_HardSerial.print("#") ;
 
@@ -775,7 +783,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	// Sensor Request Queue Position 5
 	//
 	char capacitorVoltageStr[15];
-	dtostrf(aPowerStatusStruct.capacitorVoltage,2, 1, capacitorVoltageStr);
+	dtostrf(aPowerStatusStruct.lockCapacitorVoltage,2, 1, capacitorVoltageStr);
 	_HardSerial.print(capacitorVoltageStr) ;
 	_HardSerial.print("#") ;
 
@@ -783,7 +791,7 @@ void SolarPowerManager::printPowerStatusStructToSerialPort(){
 	//
 	// Sensor Request Queue Position 6
 	//
-	_HardSerial.print( aPowerStatusStruct.internalBatteryStateOfCharge);
+	_HardSerial.print( aPowerStatusStruct.internalEnergyStorageStateOfCharge);
 	_HardSerial.print("#") ;
 
 
@@ -797,13 +805,13 @@ PowerStatisticsStruct SolarPowerManager::getPowerStatisticsStruct(){
 	//	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 	PowerStatisticsStruct powerStatisticsStruct;
 	powerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-	powerStatisticsStruct.dailyMinBatteryVoltage=this->dailyMinBatteryVoltage;
-	powerStatisticsStruct.dailyMaxBatteryVoltage=this->dailyMaxBatteryVoltage;
-	powerStatisticsStruct.dailyMinBatteryCurrent=this->dailyMinBatteryCurrent;
-	powerStatisticsStruct.dailyMaxBatteryCurrent=this->dailyMaxBatteryCurrent;
-	powerStatisticsStruct.dailyBatteryOutEnergy=this->dailyBatteryOutEnergy;
+	powerStatisticsStruct.dailyMinEnergyStorageVoltage=this->dailyMinEnergyStorageVoltage;
+	powerStatisticsStruct.dailyMaxEnergyStorageVoltage=this->dailyMaxEnergyStorageVoltage;
+	powerStatisticsStruct.dailyMinEnergyStorageCurrent=this->dailyMinEnergyStorageCurrent;
+	powerStatisticsStruct.dailyMaxEnergyStorageCurrent=this->dailyMaxEnergyStorageCurrent;
+	powerStatisticsStruct.dailyEnergyStorageOutEnergy=this->dailyEnergyStorageOutEnergy;
 	powerStatisticsStruct.dailyPoweredDownInLoopSeconds=this->dailyPoweredDownInLoopSeconds;
-	powerStatisticsStruct.hourlyBatteryOutEnergy=this->hourlyBatteryOutEnergy;
+	powerStatisticsStruct.hourlyEnergyStorageOutEnergy=this->hourlyEnergyStorageOutEnergy;
 	powerStatisticsStruct.hourlyPoweredDownInLoopSeconds=this->hourlyPoweredDownInLoopSeconds;
 
 	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
@@ -816,45 +824,45 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 	// Sensor Request Queue Position 1
 	//
 	PowerStatisticsStruct aPowerStatisticsStruct=getPowerStatisticsStruct();
-	char dailyMinBatteryVoltageStr[15];
-	dtostrf(aPowerStatisticsStruct.dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
-	this->_HardSerial.print(dailyMinBatteryVoltageStr) ;
+	char dailyMinEnergyStorageVoltageStr[15];
+	dtostrf(aPowerStatisticsStruct.dailyMinEnergyStorageVoltage,4, 0, dailyMinEnergyStorageVoltageStr);
+	this->_HardSerial.print(dailyMinEnergyStorageVoltageStr) ;
 	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 2
 	//
 
-	char dailyMaxBatteryVoltageStr[15];
-	dtostrf(aPowerStatisticsStruct.dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
-	this->_HardSerial.print(dailyMaxBatteryVoltageStr) ;
+	char dailyMaxEnergyStorageVoltageStr[15];
+	dtostrf(aPowerStatisticsStruct.dailyMaxEnergyStorageVoltage,4, 0, dailyMaxEnergyStorageVoltageStr);
+	this->_HardSerial.print(dailyMaxEnergyStorageVoltageStr) ;
 	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 3
 	//
 
-	char dailyMinBatteryCurrentStr[15];
-	dtostrf(aPowerStatisticsStruct.dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
-	this->_HardSerial.print(dailyMinBatteryCurrentStr) ;
+	char dailyMinEnergyStorageCurrentStr[15];
+	dtostrf(aPowerStatisticsStruct.dailyMinEnergyStorageCurrent,4, 0, dailyMinEnergyStorageCurrentStr);
+	this->_HardSerial.print(dailyMinEnergyStorageCurrentStr) ;
 	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 4
 	//
 
-	char dailyMaxBatteryCurrentStr[15];
-	dtostrf(dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
-	this->_HardSerial.print(dailyMaxBatteryCurrentStr) ;
+	char dailyMaxEnergyStorageCurrentStr[15];
+	dtostrf(dailyMaxEnergyStorageCurrent,4, 0, dailyMaxEnergyStorageCurrentStr);
+	this->_HardSerial.print(dailyMaxEnergyStorageCurrentStr) ;
 	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 5
 	//
 
-	char dailyBatteryOutEnergyStr[15];
-	dtostrf(dailyBatteryOutEnergy,4, 2, dailyBatteryOutEnergyStr);
-	this->_HardSerial.print(dailyBatteryOutEnergyStr) ;
+	char dailyEnergyStorageOutEnergyStr[15];
+	dtostrf(dailyEnergyStorageOutEnergy,4, 2, dailyEnergyStorageOutEnergyStr);
+	this->_HardSerial.print(dailyEnergyStorageOutEnergyStr) ;
 	this->_HardSerial.print("#") ;
 
 	//
@@ -870,9 +878,9 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 	// Sensor Request Queue Position 7
 	//
 
-	char hourlyBatteryOutEnergyStr[15];
-	dtostrf(hourlyBatteryOutEnergy,4, 2, hourlyBatteryOutEnergyStr);
-	this->_HardSerial.print(hourlyBatteryOutEnergyStr) ;
+	char hourlyEnergyStorageOutEnergyStr[15];
+	dtostrf(hourlyEnergyStorageOutEnergy,4, 2, hourlyEnergyStorageOutEnergyStr);
+	this->_HardSerial.print(hourlyEnergyStorageOutEnergyStr) ;
 	this->_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 8
@@ -888,10 +896,10 @@ void SolarPowerManager::printPowerStatisticsStructToSerialPort(){
 
 void SolarPowerManager::hourlyTasks(long time, int previousHour ){
 
-	dataStorageManager.storeRememberedValue(time,HOURLY_ENERGY, hourlyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	dataStorageManager.storeRememberedValue(time,HOURLY_ENERGY, hourlyEnergyStorageOutEnergy, UNIT_MILLI_AMPERES_HOURS);
 	dataStorageManager.storeRememberedValue(time,HOURLY_POWERED_DOWN_IN_LOOP_SECONDS, hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
 	dataStorageManager.storeRememberedValue(time,HOURLY_OPERATING_IN_LOOP_SECONDS, 3600-hourlyPoweredDownInLoopSeconds, UNIT_SECONDS);
-	hourlyBatteryOutEnergy=0;
+	hourlyEnergyStorageOutEnergy=0;
 	hourlyPoweredDownInLoopSeconds=0;
 }
 
@@ -906,17 +914,17 @@ void SolarPowerManager::dailyTasks(long time, int yesterdayDate, int yesterdayMo
 	result = dataStorageManager.readUntransferredFileFromSDCardByDate( 1,false, LifeCycleDataDirName,yesterdayDate, yesterdayMonth, yesterdayYear);
 	long yesterdayDateSeconds = timeManager.dateAsSeconds(yesterdayYear,yesterdayMonth,yesterdayDate, 0, 0, 0);
 	dataStorageManager.storeRememberedValue(time,DAILY_STATS_TIMESTAMP, yesterdayDateSeconds, UNIT_NO_UNIT);
-	dataStorageManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinBatteryVoltage, UNIT_VOLT);
-	dataStorageManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxBatteryVoltage, UNIT_VOLT);
-	dataStorageManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinBatteryCurrent, UNIT_MILLI_AMPERES);
-	dataStorageManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxBatteryCurrent, UNIT_MILLI_AMPERES);
-	dataStorageManager.storeRememberedValue(time,DAILY_ENERGY, dailyBatteryOutEnergy, UNIT_MILLI_AMPERES_HOURS);
+	dataStorageManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_VOLTAGE, dailyMinEnergyStorageVoltage, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_VOLTAGE, dailyMaxEnergyStorageVoltage, UNIT_VOLT);
+	dataStorageManager.storeRememberedValue(time,DAILY_MINIMUM_BATTERY_CURRENT, dailyMinEnergyStorageCurrent, UNIT_MILLI_AMPERES);
+	dataStorageManager.storeRememberedValue(time,DAILY_MAXIMUM_BATTERY_CURRENT, dailyMaxEnergyStorageCurrent, UNIT_MILLI_AMPERES);
+	dataStorageManager.storeRememberedValue(time,DAILY_ENERGY, dailyEnergyStorageOutEnergy, UNIT_MILLI_AMPERES_HOURS);
 	dataStorageManager.storeRememberedValue(time,DAILY_POWERED_DOWN_IN_LOOP_SECONDS, dailyPoweredDownInLoopSeconds, UNIT_SECONDS);
-	dailyMinBatteryVoltage = 9999.0;
-	dailyMaxBatteryVoltage = -1.0;
-	dailyMinBatteryCurrent = 9999.0;
-	dailyMaxBatteryCurrent = -1.0;
-	dailyBatteryOutEnergy=0.0;
+	dailyMinEnergyStorageVoltage = 9999.0;
+	dailyMaxEnergyStorageVoltage = -1.0;
+	dailyMinEnergyStorageCurrent = 9999.0;
+	dailyMaxEnergyStorageCurrent = -1.0;
+	dailyEnergyStorageOutEnergy=0.0;
 	dailyPoweredDownInLoopSeconds=0.0;
 
 }

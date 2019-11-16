@@ -24,10 +24,14 @@ public:
 
 
 	SolarPowerManager(LCDDisplay & l , SecretManager & s, DataStorageManager & sd, TimeManager & t, HardwareSerial& serial);
-	float getCurrentFromBattery(void);
-	float getBatteryVoltage();
-	float getCurrentInputFromSolarPanel(void);
-	float getSolarPanelVoltage();
+
+	uint8_t getEnergySourceType();  // 0=Solar 1=Grid
+	uint8_t getEnergyStorageType(); //0=Battery 1=Capacitor
+	float getEnergySourceVoltage();
+	float getEnergyStorageVoltage();
+	float getCurrentFromEnergyStorage(void);
+	float getCurrentInputFromEnergySource(void);
+
 	void printPowerStatusStructToSerialPort();
 	void printPowerStatisticsStructToSerialPort();
 	PowerStatusStruct getPowerStatusStruct();

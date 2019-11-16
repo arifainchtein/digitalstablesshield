@@ -10,10 +10,12 @@
 #define LIBRARIES_DIGITALSTABLES_POWERSTATUSSTRUCT_H_
 
 struct PowerStatusStruct :public DiscreteRecord{
+
+
 		uint8_t energySourceType;  // 0=Solar 1=Grid
 		uint8_t energyStorageType;  // 0=battery 1=capacitor
 		float energyStorageVoltage ;
-		float sourceVoltage;
+		float energySourceVoltage;
 		int currentFromEnergyStorage;
 		int currentFromEnergySource;
 		float lockCapacitorVoltage;
@@ -22,12 +24,20 @@ struct PowerStatusStruct :public DiscreteRecord{
 		uint8_t operatingStatus;
 		//long totalDiskUse;
 		//long totalDiskAvailable;
+
+
+		PowerStatusStruct():energySourceType(0), energyStorageType(0), energyStorageVoltage(-1.0) , energySourceVoltage(-1.0),
+		currentFromEnergyStorage(-1),  currentFromEnergySource(-1), lockCapacitorVoltage(-10), internalEnergyStorageStateOfCharge(-1), operatingStatus(-1)
+		{}
 	};
 
 struct PowerStatisticsStruct :public DiscreteRecord{
 
 
-		float dailyMinEnergyStorgeVoltage;
+		uint8_t energySourceType;  // 0=Solar 1=Grid
+		uint8_t energyStorageType;  // 0=battery 1=capacitor
+
+		float dailyMinEnergyStorageVoltage;
 		float dailyMaxEnergyStorageVoltage;
 		float dailyMinEnergyStorageCurrent;
 		float dailyMaxEnergyStorageCurrent;

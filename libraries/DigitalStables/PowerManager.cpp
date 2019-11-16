@@ -77,6 +77,9 @@ PowerManager::~PowerManager() {
 	// TODO Auto-generated destructor stub
 }
 
+
+
+
 void PowerManager::start(){
 	// pinMode(52, OUTPUT);
 	// digitalWrite(52, LOW);
@@ -715,16 +718,16 @@ void PowerManager::toggleWDT(){
 //	float batteryVoltage = getEnergyStorageVoltage();
 //	int currentValue = getCurrentFromEnergyStorage();
 //	float capacitorVoltage= getLockCapacitorVoltage();
-//	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+//	byte internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 //	//float regulatorVoltage = getVoltageRegulatorOutput();
 //	//long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 //
 //	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
 //	aPowerStatusStruct.batteryVoltage= batteryVoltage;
 //	aPowerStatusStruct.solarPanelVoltage= getSolarPanelVoltage();
-//	aPowerStatusStruct.currentFromBattery=currentValue;
+//	aPowerStatusStruct.currentFromEnergyStorage=currentValue;
 //	aPowerStatusStruct.capacitorVoltage=capacitorVoltage;
-//	aPowerStatusStruct.internalBatteryStateOfCharge=internalBatteryStateOfCharge;
+//	aPowerStatusStruct.internalEnergyStorageStateOfCharge=internalEnergyStorageStateOfCharge;
 //	//aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
 //	aPowerStatusStruct.operatingStatus=operatingStatus;
 //
@@ -735,13 +738,13 @@ void PowerManager::toggleWDT(){
 ////	long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 //
 //	aPowerStatisticsStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-//	aPowerStatisticsStruct.dailyMinBatteryVoltage=dailyMinBatteryVoltage;
-//	aPowerStatisticsStruct.dailyMaxBatteryVoltage=dailyMaxBatteryVoltage;
-//	aPowerStatisticsStruct.dailyMinBatteryCurrent=dailyMinBatteryCurrent;
-//	aPowerStatisticsStruct.dailyMaxBatteryCurrent=dailyMaxBatteryCurrent;
-//	aPowerStatisticsStruct.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+//	aPowerStatisticsStruct.dailyMinEnergyStorageVoltage=dailyMinEnergyStorageVoltage;
+//	aPowerStatisticsStruct.dailyMaxEnergyStorageVoltage=dailyMaxEnergyStorageVoltage;
+//	aPowerStatisticsStruct.dailyMinEnergyStorageCurrent=dailyMinEnergyStorageCurrent;
+//	aPowerStatisticsStruct.dailyMaxEnergyStorageCurrent=dailyMaxEnergyStorageCurrent;
+//	aPowerStatisticsStruct.dailyEnergyStorageOutEnergy=dailyEnergyStorageOutEnergy;
 //	aPowerStatisticsStruct.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
-//	aPowerStatisticsStruct.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
+//	aPowerStatisticsStruct.hourlyEnergyStorageOutEnergy=hourlyEnergyStorageOutEnergy;
 //	aPowerStatisticsStruct.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
 //
 //	//	aPowerStatusStruct.totalDiskUse=totalDiskUse;
@@ -752,7 +755,7 @@ void PowerManager::toggleWDT(){
 void PowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print("in PowerManager printPowerStatusStructToSerialPort" ) ;
 	float batteryVoltage = getEnergyStorageVoltage();
-	byte internalBatteryStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+	byte internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
 	int currentValue = getCurrentFromEnergyStorage();
 	float capacitorVoltage= getLockCapacitorVoltage();
 
@@ -784,7 +787,7 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 	//
 	// Sensor Request Queue Position 4
 	//
-	_HardSerial.print( internalBatteryStateOfCharge);
+	_HardSerial.print( internalEnergyStorageStateOfCharge);
 	_HardSerial.print("#") ;
 
 //	//
@@ -810,45 +813,45 @@ void PowerManager::printPowerStatisticsStructToSerialPort(){
 	// Sensor Request Queue Position 7
 	//
 
-	char dailyMinBatteryVoltageStr[15];
-	dtostrf(dailyMinBatteryVoltage,4, 0, dailyMinBatteryVoltageStr);
-	_HardSerial.print(dailyMinBatteryVoltageStr) ;
+	char dailyMinEnergyStorageVoltageStr[15];
+	dtostrf(dailyMinEnergyStorageVoltage,4, 0, dailyMinEnergyStorageVoltageStr);
+	_HardSerial.print(dailyMinEnergyStorageVoltageStr) ;
 	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 8
 	//
 
-	char dailyMaxBatteryVoltageStr[15];
-	dtostrf(dailyMaxBatteryVoltage,4, 0, dailyMaxBatteryVoltageStr);
-	_HardSerial.print(dailyMaxBatteryVoltageStr) ;
+	char dailyMaxEnergyStorageVoltageStr[15];
+	dtostrf(dailyMaxEnergyStorageVoltage,4, 0, dailyMaxEnergyStorageVoltageStr);
+	_HardSerial.print(dailyMaxEnergyStorageVoltageStr) ;
 	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 9
 	//
 
-	char dailyMinBatteryCurrentStr[15];
-	dtostrf(dailyMinBatteryCurrent,4, 0, dailyMinBatteryCurrentStr);
-	_HardSerial.print(dailyMinBatteryCurrentStr) ;
+	char dailyMinEnergyStorageCurrentStr[15];
+	dtostrf(dailyMinEnergyStorageCurrent,4, 0, dailyMinEnergyStorageCurrentStr);
+	_HardSerial.print(dailyMinEnergyStorageCurrentStr) ;
 	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 10
 	//
 
-	char dailyMaxBatteryCurrentStr[15];
-	dtostrf(dailyMaxBatteryCurrent,4, 0, dailyMaxBatteryCurrentStr);
-	_HardSerial.print(dailyMaxBatteryCurrentStr) ;
+	char dailyMaxEnergyStorageCurrentStr[15];
+	dtostrf(dailyMaxEnergyStorageCurrent,4, 0, dailyMaxEnergyStorageCurrentStr);
+	_HardSerial.print(dailyMaxEnergyStorageCurrentStr) ;
 	_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 11
 	//
 
-	char dailyBatteryOutEnergyStr[15];
-	dtostrf(dailyBatteryOutEnergy,4, 0, dailyBatteryOutEnergyStr);
-	_HardSerial.print(dailyBatteryOutEnergyStr) ;
+	char dailyEnergyStorageOutEnergyStr[15];
+	dtostrf(dailyEnergyStorageOutEnergy,4, 0, dailyEnergyStorageOutEnergyStr);
+	_HardSerial.print(dailyEnergyStorageOutEnergyStr) ;
 	_HardSerial.print("#") ;
 
 	//
@@ -864,9 +867,9 @@ void PowerManager::printPowerStatisticsStructToSerialPort(){
 	// Sensor Request Queue Position 13
 	//
 
-	char hourlyBatteryOutEnergyStr[15];
-	dtostrf(hourlyBatteryOutEnergy,4, 0, hourlyBatteryOutEnergyStr);
-	_HardSerial.print(hourlyBatteryOutEnergyStr) ;
+	char hourlyEnergyStorageOutEnergyStr[15];
+	dtostrf(hourlyEnergyStorageOutEnergy,4, 0, hourlyEnergyStorageOutEnergyStr);
+	_HardSerial.print(hourlyEnergyStorageOutEnergyStr) ;
 	_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 14

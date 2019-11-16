@@ -40,9 +40,19 @@ boolean NoDataStorageManager::readUntransferredFileFromSDCard(int moveData, bool
 void NoDataStorageManager::storeRememberedValue(long time, const char *name, float value, String unit){
 
 }
-void NoDataStorageManager::storeDiscreteRecord( DiscreteRecord &discreteRec){
+bool NoDataStorageManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, uint8_t operatingStatus){
 
 }
+
+void NoDataStorageManager::storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus){
+
+}
+
+
+void NoDataStorageManager::storeDiscreteRecord(const DiscreteRecord &discreteRec){
+
+}
+
 boolean NoDataStorageManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec){
 
 }
@@ -66,14 +76,20 @@ bool NoDataStorageManager::deleteEventRecordFile(const char *filename)
 boolean NoDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
 
 }
-boolean NoDataStorageManager::openEventRecordFile(const char *filename){
-
+int NoDataStorageManager::openEventRecordFile(const char *filename, int eventSize){
+	return -1;
 }
 void NoDataStorageManager::closeEventRecordFile(boolean){
 
 }
 
+uint32_t NoDataStorageManager::getFreeDiskSpace(){
+	return 0;
+}
 
+uint32_t NoDataStorageManager::getDiskUsage(){
+	return 0;
+}
 
 float NoDataStorageManager::searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor){
 
@@ -84,12 +100,7 @@ void NoDataStorageManager::storeLifeCycleEvent(long time, const char *eventType,
 long NoDataStorageManager::printDirectory(File dir, int numTabs){
 
 }
-long NoDataStorageManager::getDiskUsage(){
 
-}
-long NoDataStorageManager::getSDCardDiskUse(File dir ){
-
-}
 boolean NoDataStorageManager::getHistoricalData(const char *dirName, int date, int month, int year){
 
 }

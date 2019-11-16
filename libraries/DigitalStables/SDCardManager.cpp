@@ -590,7 +590,7 @@ uint32_t SDCardManager::getFreeDiskSpace(){
 
 }
 
-long SDCardManager::getDiskUsage(){
+uint32_t SDCardManager::getDiskUsage(){
 	if(!cardOk)return -9999L;
 	File sensorFile = SD.open(sensorDirName );
 	File lifeCycleFile = SD.open(lifeCycleFileName );
@@ -644,7 +644,7 @@ void SDCardManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
 	if (untransferredFile) {
 		// Write to file
 		lcdDisplay.setRGB(0,0,255);
-		float batteryVoltage = anWPSSensorRecord.batteryVoltage;
+		float batteryVoltage = anWPSSensorRecord.energyStorageVoltage;
 		float current = anWPSSensorRecord.current;
 		int sc = anWPSSensorRecord.stateOfCharge;
 		untransferredFile.print(anWPSSensorRecord.lastWPSRecordSeconds);
@@ -662,10 +662,10 @@ void SDCardManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
 		//		untransferredFile.print("#");
 		//		hourlyBatteryOutEnergy+=energy;
 
-		untransferredFile.print(anWPSSensorRecord.hourlyBatteryOutEnergy);
+		untransferredFile.print(anWPSSensorRecord.hourlyEnergyStorageOutEnergy);
 		untransferredFile.print("#");
 
-		untransferredFile.print(anWPSSensorRecord.dailyBatteryOutEnergy);
+		untransferredFile.print(anWPSSensorRecord.dailyEnergyStorageOutEnergy);
 		untransferredFile.print("#");
 
 		untransferredFile.print(anWPSSensorRecord.hourlyPoweredDownInLoopSeconds);

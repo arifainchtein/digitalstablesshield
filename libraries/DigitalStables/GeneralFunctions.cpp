@@ -118,19 +118,17 @@ uint8_t GeneralFunctions::getCapacitorStateOfCharge(float capacitorVoltage){
 void GeneralFunctions::printPowerStatusStructToSerial(HardwareSerial& serial, const PowerStatusStruct powerStatusStruct){
 	serial.print(powerStatusStruct.sampleTime );
 	serial.print("#" );
-	serial.print(powerStatusStruct.solarPanelVoltage );
+	serial.print(powerStatusStruct.energySourceVoltage );
 	serial.print("#" );
-	serial.print(powerStatusStruct.batteryVoltage );
+	serial.print(powerStatusStruct.energyStorageVoltage );
 	serial.print("#" );
-	serial.print(powerStatusStruct.currentFromSolarPanel);
+	serial.print(powerStatusStruct.currentFromEnergySource);
 	serial.print("#" );
-	serial.print(powerStatusStruct.currentFromBattery);
+	serial.print(powerStatusStruct.currentFromEnergyStorage);
 	serial.print("#" );
-	serial.print(powerStatusStruct.capacitorVoltage);
+	serial.print(powerStatusStruct.lockCapacitorVoltage);
 	serial.print("#" );
-	serial.print(powerStatusStruct.internalBatteryStateOfCharge);
-	serial.print("#" );
-	serial.print(powerStatusStruct.regulatorVoltage);
+	serial.print(powerStatusStruct.internalEnergyStorageStateOfCharge);
 	serial.print("#" );
 	serial.print(powerStatusStruct.operatingStatus);
 	serial.print("#" );
@@ -143,20 +141,20 @@ void GeneralFunctions::printPowerStatusStructToSerial(HardwareSerial& serial, co
 void GeneralFunctions::printPowerStatisticsStructToSerial(HardwareSerial& serial, const PowerStatisticsStruct powerStatisticsStruct){
 	serial.print(powerStatisticsStruct.sampleTime );
 	serial.print("#" );
-	serial.print(powerStatisticsStruct.dailyMinBatteryVoltage);
+	serial.print(powerStatisticsStruct.dailyMinEnergyStorageVoltage);
 	serial.print("#" );
-	serial.print(powerStatisticsStruct.dailyMaxBatteryVoltage);
+	serial.print(powerStatisticsStruct.dailyMaxEnergyStorageVoltage);
 	serial.print("#" );
-	serial.print(powerStatisticsStruct.dailyMinBatteryCurrent);
+	serial.print(powerStatisticsStruct.dailyMinEnergyStorageCurrent);
 	serial.print("#" );
 
-	serial.print(powerStatisticsStruct.dailyMaxBatteryCurrent);
+	serial.print(powerStatisticsStruct.dailyMaxEnergyStorageCurrent);
 	serial.print("#" );
-	serial.print(powerStatisticsStruct.dailyBatteryOutEnergy);
+	serial.print(powerStatisticsStruct.dailyEnergyStorageOutEnergy);
 	serial.print("#" );
 	serial.print(powerStatisticsStruct.dailyPoweredDownInLoopSeconds);
 	serial.print("#" );
-	serial.print(powerStatisticsStruct.hourlyBatteryOutEnergy);
+	serial.print(powerStatisticsStruct.hourlyEnergyStorageOutEnergy);
 	serial.print("#" );
 	serial.print(powerStatisticsStruct.hourlyPoweredDownInLoopSeconds);
 	serial.print("#" );

@@ -64,6 +64,13 @@ XBeeTelepathonPowerManager::XBeeTelepathonPowerManager(LCDDisplay& l, SecretMana
 {}
 
 
+uint8_t XBeeTelepathonPowerManager::getEnergySourceType(){
+	return SOLAR_ENERGY_SOURCE;
+}
+
+uint8_t XBeeTelepathonPowerManager::getEnergyStorageType(){
+	return BATTERY_ENERGY_STORAGE;
+}
 
 
 void XBeeTelepathonPowerManager::start(){
@@ -82,13 +89,13 @@ void XBeeTelepathonPowerManager::start(){
 
 
 bool XBeeTelepathonPowerManager::canPublish(){
-	if(getBatteryVoltage()>12.4){
+	if(getEnergyStorageVoltage()>12.4){
 		return true;
 	}else{
 		return false;
 	}
 }
-float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
+float XBeeTelepathonPowerManager::getCurrentInputFromEnergySource(void){
 	int sensorValue;             //value read from the sensor
 	int sensorMax = 0;
 	uint32_t start_time = millis();
@@ -110,7 +117,7 @@ float XBeeTelepathonPowerManager::getCurrentInputFromSolarPanel(void){
 
 
 
-float XBeeTelepathonPowerManager::getSolarPanelVoltage(){
+float XBeeTelepathonPowerManager::getEnergySourceVoltage(){
 
 //#define volt_ref= 500
 //#define volt_mult=   57
@@ -153,7 +160,7 @@ float XBeeTelepathonPowerManager::getSolarPanelVoltage(){
 //	return value;
 //}
 
-float XBeeTelepathonPowerManager::getCurrentFromBattery(void){
+float XBeeTelepathonPowerManager::getCurrentFromEnergyStorage(void){
 	int sensorValue;             //value read from the sensor
 	int sensorMax = 0;
 	uint32_t start_time = millis();
@@ -178,11 +185,11 @@ void XBeeTelepathonPowerManager::defineState(){
 	this->poweredDownInLoopSeconds=0;
 	long time = timeManager.getCurrentTimeInSeconds();
 
-	float batteryVoltage = getBatteryVoltage();
+	float batteryVoltage = getEnergyStorageVoltage();
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
-	float currentFromBattery = getCurrentFromBattery();
-	float inputFromSOlarPanel =  getCurrentInputFromSolarPanel();
-	float solarPanelVolltage = getSolarPanelVoltage();
+	float currentFromBattery = getCurrentFromEnergyStorage();
+	float inputFromSOlarPanel =  getCurrentInputFromEnergySource();
+	float solarPanelVolltage = getEnergySourceVoltage();
 
 
 
@@ -233,12 +240,12 @@ void XBeeTelepathonPowerManager::defineState(){
 
 					lastWPSRecordSeconds = timeManager.getCurrentTimeInSeconds();
 					WPSSensorRecord anWPSSensorRecord;
-					anWPSSensorRecord.batteryVoltage= getBatteryVoltage();
-					anWPSSensorRecord.current = getCurrentFromBattery();
+					anWPSSensorRecord.energyStorageVoltage= getEnergyStorageVoltage();
+					anWPSSensorRecord.current = getCurrentFromEnergyStorage();
 					anWPSSensorRecord.stateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
 					anWPSSensorRecord.lastWPSRecordSeconds=lastWPSRecordSeconds;
-					anWPSSensorRecord.hourlyBatteryOutEnergy=hourlyBatteryOutEnergy;
-					anWPSSensorRecord.dailyBatteryOutEnergy=dailyBatteryOutEnergy;
+					anWPSSensorRecord.hourlyEnergyStorageOutEnergy=hourlyEnergyStorageOutEnergy;
+					anWPSSensorRecord.dailyEnergyStorageOutEnergy=dailyEnergyStorageOutEnergy;
 					anWPSSensorRecord.hourlyPoweredDownInLoopSeconds=hourlyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.dailyPoweredDownInLoopSeconds=dailyPoweredDownInLoopSeconds;
 					anWPSSensorRecord.pauseDuringWPS=pauseDuringWPS;

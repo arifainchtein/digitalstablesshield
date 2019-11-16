@@ -50,7 +50,9 @@ public:
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
 	void storeLifeCycleEvent(long time, const char *eventType, int eventValue);
 	long printDirectory(File dir, int numTabs);
-	long getDiskUsage();
+	uint32_t getFreeDiskSpace();
+		uint32_t getDiskUsage();
+
 	long getSDCardDiskUse(File dir );
 	boolean getHistoricalData(const char *dirName, int date, int month, int year);
 	void saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord);
@@ -60,7 +62,6 @@ public:
 	//
 	bool testWPSSensor(float batteryVoltage, float current, int stateOfCharge, uint8_t operatingStatus);
 	float listFiles();
-	uint32_t getFreeDiskSpace();
 
 private:
 	File dataFile;

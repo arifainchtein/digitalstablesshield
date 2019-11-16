@@ -17,7 +17,7 @@ class CapacitorPowerManager : public PowerManager{
 public:
 		SecretManager  secretManager;
 		DataStorageManager  &dataStorageManager;
-		//HardwareSerial _HardSerial;
+		HardwareSerial _HardSerial;
 		LCDDisplay&  lcd;
 		TimeManager & timeManager;
 		GeneralFunctions generalFunctions;
@@ -29,6 +29,9 @@ public:
 		uint8_t getEnergyStorageType(); //0=Battery 1=Capacitor
 		float getEnergySourceVoltage();
 		float getEnergyStorageVoltage();
+		float getCurrentFromEnergyStorage();
+		float getCurrentInputFromEnergySource();
+
 		void printPowerStatusStructToSerialPort();
 		void printPowerStatisticsStructToSerialPort();
 		PowerStatusStruct getPowerStatusStruct();

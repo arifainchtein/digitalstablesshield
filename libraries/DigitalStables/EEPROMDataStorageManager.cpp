@@ -105,10 +105,10 @@ void EEPROMDataStorageManager::storeLifeCycleEvent(long time, const char *eventT
 long EEPROMDataStorageManager::printDirectory(File dir, int numTabs){
 
 }
-long EEPROMDataStorageManager::getDiskUsage(){
+uint32_t EEPROMDataStorageManager::getDiskUsage(){
 
 }
-long EEPROMDataStorageManager::getSDCardDiskUse(File dir ){
+uint32_t EEPROMDataStorageManager::getFreeDiskSpace( ){
 
 }
 bool EEPROMDataStorageManager::getHistoricalData(const char *dirName, int date, int month, int year){
