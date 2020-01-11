@@ -7,7 +7,7 @@
 #include <Arduino.h>
 #include <NetworkSensorController.h>
 #include <Adafruit_NeoPixel.h>
-#include <static_str.h>
+//#include <static_str.h>
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
