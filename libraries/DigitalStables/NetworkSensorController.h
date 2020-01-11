@@ -8,7 +8,7 @@
 #ifndef LIBRARIES_DIGITALSTABLES_NETWORKSENSORCONTROLLER_H_
 #define LIBRARIES_DIGITALSTABLES_NETWORKSENSORCONTROLLER_H_
 
-#include <static_str.h>
+//#include <static_str.h>
 
 class NetworkSensorController {
 
