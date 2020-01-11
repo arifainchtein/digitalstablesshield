@@ -9,7 +9,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <static_str.h>
 #ifdef __AVR__
-#include <AVR/power.h>
+#include <avr/power.h>
 #endif
 
 #define NETWORK_STATUS_LED_PIN 23
