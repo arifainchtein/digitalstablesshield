@@ -16,6 +16,23 @@ TimeManager::TimeManager( HardwareSerial& serial): _HardSerial(serial){
 
 }
 
+String TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
+	//String seconds = String(elapsedTime % 60);
+	long seconds = elapsedTime/1000;
+	int minutes = (seconds % 3600) / 60;
+	String minP ="";
+	if(minutes<10)minP="0";
+
+
+	int hours = seconds / 3600;
+	String hoursS = "";
+	if(hours<10)hoursS="0";
+
+
+	String time =  hoursS + hours + ":" + minP + minutes;// + ":" + seconds;
+	return time;
+}
+
 TimeManager::~TimeManager( ){
 
 }

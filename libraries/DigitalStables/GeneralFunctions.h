@@ -15,6 +15,7 @@ public:
 	static String getValue(String data, char separator, int index);
 	static uint8_t getStateOfCharge(float batteryVoltage);
 	static uint8_t getCapacitorStateOfCharge(float capacitorVoltage);
+	static String getElapsedTimeHoursMinutesSecondsString(long elapsedTime);
 	static float stringToFloat(String s);
 	static char * generatePassword();
 	static void printPowerStatusStructToSerial(HardwareSerial& serial, const PowerStatusStruct powerManagerStruct);
