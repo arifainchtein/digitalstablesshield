@@ -26,9 +26,9 @@ struct PowerStatusStruct :public DiscreteRecord{
 		//long totalDiskAvailable;
 
 
-		PowerStatusStruct():energySourceType(0), energyStorageType(0), energyStorageVoltage(-1.0) , energySourceVoltage(-1.0),
-		currentFromEnergyStorage(-1),  currentFromEnergySource(-1), lockCapacitorVoltage(-10), internalEnergyStorageStateOfCharge(-1), operatingStatus(-1)
-		{}
+		//PowerStatusStruct():energySourceType(0), energyStorageType(0), energyStorageVoltage(-1.0) , energySourceVoltage(-1.0),
+		//currentFromEnergyStorage(-1),  currentFromEnergySource(-1), lockCapacitorVoltage(-10), internalEnergyStorageStateOfCharge(-1), operatingStatus(-1)
+		//{}
 	};
 
 struct PowerStatisticsStruct :public DiscreteRecord{
