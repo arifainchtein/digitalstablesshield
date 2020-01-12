@@ -69,7 +69,7 @@ void GloriaRF24Communicator::start(RF24CommunicatorInitParams p){
 	// Start listening
 	//
 
-//	radio.startListening();
+	//	radio.startListening();
 
 	//
 	// Dump the configuration of the rf unit for debugging
@@ -109,7 +109,10 @@ bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData[]){
 	return toReturn;
 }
 
- bool GloriaRF24Communicator::receive(TelepathonData& telepathonData[]){
+unsigned long lastReading;
+unsigned int counter;
+
+bool GloriaRF24Communicator::receive(TelepathonData& telepathonData[]){
 
 	TelepathonData data[] new TelepathonData[2];
 	GloriaBaseData baseData;
@@ -117,7 +120,79 @@ bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData[]){
 	GloriaFlowData gloriaFlowData;
 	data[1]=gloriaFlowData;
 
-	return data;
+	//
+	//  the code to receive
+	//
+	if ( radio.available() ){
+
+		uint8_t bytesReceivedLength = radio.getDynamicPayloadSize();
+		Serial.print ("bytesReceivedLength = ");
+		Serial.print (bytesReceivedLength);
+		// Dump the payloads until we've gotten everything
+
+
+
+		bool done = false;
+		while (!done)
+		{
+			// Fetch the payload, and see if this was the last one.
+			if(bytesReceivedLength == sizeof baseData){
+				done = radio.read( &baseData, sizeof baseData);
+				if (counter > 9999)
+					counter = 0;
+
+
+				// float results = InternalReferenceVoltage / float (voltage + 0.5) * 1024.0;
+				int elapsedTime = (millis () - lastReading) / 1000;
+				long timestamp = baseData.secondsTime;
+
+
+
+			}else if(bytesReceivedLength == sizeof gloriaFlowData){
+				done = radio.read( &gloriaFlowData, sizeof gloriaFlowData);
+				if (counter > 9999)
+					counter = 0;
+
+
+				// float results = InternalReferenceVoltage / float (voltage + 0.5) * 1024.0;
+				int elapsedTime = (millis () - lastReading) / 1000;
+				long timestamp = gloriaFlowData.secondsTime;
+
+				Serial.print ("Reading = ");
+				Serial.print (timestamp);
+				Serial.print ("   ");
+				// String timeString = GeneralFunctions::getElapsedTimeHoursMinutesSecondsString(timestamp);
+				//      Serial.print (timeString);
+				Serial.print ("   ");
+
+
+				Serial.print (",  flow1=");
+				Serial.print (gloriaFlowData.flowRate1);
+				Serial.print (",  volume1=");
+				Serial.print (gloriaFlowData.volume1);
+				Serial.print (",  flow2=");
+				Serial.print (gloriaFlowData.flowRate2);
+				Serial.print (",  volume2=");
+				Serial.println (gloriaFlowData.volume2);
+
+			}
+
+			lastReading = millis ();
+
+
+
+		}  // end reading the payload
+	}
+
+
+
+
+
+
+
+
+
+	return true;
 }
 
 void GloriaRF24Communicator::scan(void)
