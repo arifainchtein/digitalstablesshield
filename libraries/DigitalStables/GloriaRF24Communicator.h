@@ -16,8 +16,8 @@ public:
 	GloriaRF24Communicator();
 	void start(RF24CommunicatorInitParams p);
 	void scan( );
-	void publish(TelepathonData& data[] );
-    TelepathonData * receive();
+	bool publish(const TelepathonData& data[] );
+    bool receive(TelepathonData& data[]);
 	virtual ~GloriaRF24Communicator();
 };
 

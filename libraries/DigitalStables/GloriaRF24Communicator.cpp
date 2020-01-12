@@ -78,7 +78,7 @@ void GloriaRF24Communicator::start(RF24CommunicatorInitParams p){
 	radio.printDetails();
 }
 
-void GloriaRF24Communicator::publish(TelepathonData& telepathonData[]){
+bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData[]){
 	//RF24 radio(aRF24CommunicatorInitParams.cepin, aRF24CommunicatorInitParams.cspin);
 	digitalWrite (SS, HIGH);
 	SPI.begin ();
@@ -99,16 +99,17 @@ void GloriaRF24Communicator::publish(TelepathonData& telepathonData[]){
 	delay (10);
 	GloriaBaseData data = telepathonData[0];
 	GloriaFlowData gloriaFlowData = telepathonData[1];
-	bool ok = radio.write (&data, sizeof data);
-	ok = radio.write (&gloriaFlowData, sizeof gloriaFlowData);
+	bool toReturn=false;
+	toReturn = radio.write (&data, sizeof data);
+	toReturn = radio.write (&gloriaFlowData, sizeof gloriaFlowData);
 	radio.startListening ();
 	radio.powerDown ();
 
 	SPI.end ();
-
+	return toReturn;
 }
 
-TelepathonData * GloriaRF24Communicator::receive(){
+ bool GloriaRF24Communicator::receive(TelepathonData& telepathonData[]){
 
 	TelepathonData data[] new TelepathonData[2];
 	GloriaBaseData baseData;
