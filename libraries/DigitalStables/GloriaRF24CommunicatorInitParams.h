@@ -17,6 +17,8 @@ struct RF24CommunicatorInitParams : public CommunicatorInitParams{
 
 		uint8_t cepin=12;
 		uint8_t cspin=4;
+		uint64_t pipe0=0xF0F0F0F0E1LL;
+		uint64_t pipe1=0xF0F0F0F0D2LL;
 };
 
 
