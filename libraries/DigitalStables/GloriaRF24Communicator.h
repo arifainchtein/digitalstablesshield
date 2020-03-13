@@ -9,15 +9,14 @@
 #define LIBRARIES_DIGITALSTABLES_GLORIARF24COMMUNICATOR_H_
 
 #include <Communicator.h>
-#include <GloriaRF24CommunicatorInitParams.h>
 #include <TelepathonData.h>
 class GloriaRF24Communicator: public Communicator {
 public:
 	GloriaRF24Communicator();
-	void start(RF24CommunicatorInitParams p);
+	void start();
 	void scan( );
-	bool publish(const TelepathonData& data[] );
-    bool receive(TelepathonData& data[]);
+	bool publish(const TelepathonData& data );
+    bool receive(TelepathonData& data);
 	virtual ~GloriaRF24Communicator();
 };
 

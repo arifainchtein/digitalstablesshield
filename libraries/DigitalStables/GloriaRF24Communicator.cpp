@@ -42,16 +42,20 @@ const int num_reps = 100;
 const uint8_t num_channels = 128;
 uint8_t values[num_channels];
 
-RF24& radio;
-RF24CommunicatorInitParams  aRF24CommunicatorInitParams;
+uint8_t CHIP_ENABLE=22;
+uint8_t CHIP_SELECT=23;
+uint64_t PIPE0=0xF0F0F0F0E1LL;
+uint64_t PIPE1=0xF0F0F0F0D2LL;
+
+RF24 radio(CHIP_ENABLE, CHIP_SELECT);
+
 GloriaRF24Communicator::GloriaRF24Communicator() {
 	// TODO Auto-generated constructor stub
 
 }
 
-void GloriaRF24Communicator::start(RF24CommunicatorInitParams p){
-	aRF24CommunicatorInitParams =p;
-	radio = new RF24(p.cepin, p.cspin);
+void GloriaRF24Communicator::start(){
+
 	radio.begin();
 
 	// optionally, increase the delay between retries & # of retries
@@ -62,8 +66,8 @@ void GloriaRF24Communicator::start(RF24CommunicatorInitParams p){
 	// radio.setPayloadSize(32);
 	radio.enableDynamicPayloads();
 
-	radio.openWritingPipe(p.pipe1);
-	radio.openReadingPipe(1,p.pipe0);
+	radio.openWritingPipe(PIPE1);
+	radio.openReadingPipe(1,PIPE0);
 
 	//
 	// Start listening
@@ -78,20 +82,20 @@ void GloriaRF24Communicator::start(RF24CommunicatorInitParams p){
 	radio.printDetails();
 }
 
-bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData[]){
+bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData){
 	//RF24 radio(aRF24CommunicatorInitParams.cepin, aRF24CommunicatorInitParams.cspin);
 	digitalWrite (SS, HIGH);
 	SPI.begin ();
-	digitalWrite (aRF24CommunicatorInitParams.cepin, LOW);
-	digitalWrite (aRF24CommunicatorInitParams.cspin, HIGH);
+	digitalWrite (CHIP_ENABLE, LOW);
+	digitalWrite (CHIP_SELECT, HIGH);
 	//radio.begin();
 	radio.powerUp();
 
 	radio.setRetries(15, 15);
 	radio.enableDynamicPayloads();
-	radio.openWritingPipe (aRF24CommunicatorInitParams.pipe0);
+	radio.openWritingPipe (PIPE0);
 	radio.setPALevel(RF24_PA_MIN);
-	radio.openReadingPipe (1, aRF24CommunicatorInitParams.pipe1);
+	radio.openReadingPipe (1, PIPE1);
 
 	radio.startListening ();
 	delay (10);
@@ -112,14 +116,14 @@ bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData[]){
 unsigned long lastReading;
 unsigned int counter;
 
-bool GloriaRF24Communicator::receive(TelepathonData& telepathonData[]){
+bool GloriaRF24Communicator::receive(TelepathonData& telepathonData){
 
-	TelepathonData data[] new TelepathonData[2];
+	TelepathonData data[] =  new TelepathonData[2];
 	GloriaBaseData baseData;
 	data[0]=baseData;
 	GloriaFlowData gloriaFlowData;
 	data[1]=gloriaFlowData;
-
+	bool toReturn=false;
 	//
 	//  the code to receive
 	//
@@ -145,7 +149,7 @@ bool GloriaRF24Communicator::receive(TelepathonData& telepathonData[]){
 				// float results = InternalReferenceVoltage / float (voltage + 0.5) * 1024.0;
 				int elapsedTime = (millis () - lastReading) / 1000;
 				long timestamp = baseData.secondsTime;
-
+				toReturn=true;
 
 
 			}else if(bytesReceivedLength == sizeof gloriaFlowData){
@@ -174,13 +178,9 @@ bool GloriaRF24Communicator::receive(TelepathonData& telepathonData[]){
 				Serial.print (gloriaFlowData.flowRate2);
 				Serial.print (",  volume2=");
 				Serial.println (gloriaFlowData.volume2);
-
+				toReturn=true;
 			}
-
 			lastReading = millis ();
-
-
-
 		}  // end reading the payload
 	}
 
