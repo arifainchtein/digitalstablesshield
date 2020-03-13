@@ -82,7 +82,7 @@ void GloriaRF24Communicator::start(){
 	radio.printDetails();
 }
 
-bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData){
+bool GloriaRF24Communicator::publish(const TelepathonData telepathonData[]){
 	//RF24 radio(aRF24CommunicatorInitParams.cepin, aRF24CommunicatorInitParams.cspin);
 	digitalWrite (SS, HIGH);
 	SPI.begin ();
@@ -116,7 +116,7 @@ bool GloriaRF24Communicator::publish(const TelepathonData& telepathonData){
 unsigned long lastReading;
 unsigned int counter;
 
-bool GloriaRF24Communicator::receive(TelepathonData& telepathonData){
+bool GloriaRF24Communicator::receive(TelepathonData telepathonData[]){
 
 	TelepathonData data[] =  new TelepathonData[2];
 	GloriaBaseData baseData;
