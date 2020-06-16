@@ -19,10 +19,10 @@ public:
 	};
 
 	Communicator();
-	virtual void start(CommunicatorInitParams p)=0;
-	virtual void process()=0;
-	virtual bool publish(const TelepathonData data[] )=0;
-	virtual bool receive(TelepathonData data[] )=0;
+	//virtual void start(CommunicatorInitParams p)=0;
+	//virtual void scan()=0;
+	//virtual bool publish(const TelepathonData data[] )=0;
+	//virtual bool receive(TelepathonData data[] )=0;
 	virtual ~Communicator();
 };
 

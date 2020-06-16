@@ -332,6 +332,7 @@ boolean PowerManager::getHypothalamusStatus(){
 
 boolean PowerManager::processDefaultCommands(String command){
 	boolean processed=false;
+	capacitorVoltage = getLockCapacitorVoltage();
 	if(command=="TestWPSSensor"){
 		float batteryVoltage = getEnergyStorageVoltage();
 		float regulatorVoltage = getVoltageRegulatorOutput();
@@ -374,8 +375,10 @@ boolean PowerManager::processDefaultCommands(String command){
 		_HardSerial.flush();
 		processed=true;
 	}else if(command.startsWith("SetTime")){
+		_HardSerial.print("capacitorVoltage=");
+		_HardSerial.print(capacitorVoltage);
 
-		if(capacitorVoltage==0){
+		if(capacitorVoltage>4.8){
 			//
 			// we are in normal operation
 			//
@@ -469,7 +472,7 @@ boolean PowerManager::processDefaultCommands(String command){
 
 		processed=true;
 	} else if(command.startsWith("SetSecret")){
-		if(capacitorVoltage==0){
+		if(capacitorVoltage<4.8){
 			//
 			// we are in normal operation
 			//
@@ -756,7 +759,7 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print("in PowerManager printPowerStatusStructToSerialPort" ) ;
 	float batteryVoltage = getEnergyStorageVoltage();
 	byte internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
-	int currentValue = getCurrentFromEnergyStorage();
+	//int currentValue = getCurrentFromEnergyStorage();
 	float capacitorVoltage= getLockCapacitorVoltage();
 
 	//
@@ -767,16 +770,16 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print(batteryVoltageStr) ;
 	_HardSerial.print("#") ;
 	
-	//
-	// Sensor Request Queue Position 2
-	//
-	char currentValueStr[15];
-	dtostrf(currentValue,4, 0, currentValueStr);
-	_HardSerial.print(currentValueStr) ;
-	_HardSerial.print("#") ;
+//	//
+//	// Sensor Request Queue Position 2
+//	//
+//	char currentValueStr[15];
+//	dtostrf(currentValue,4, 0, currentValueStr);
+//	_HardSerial.print(currentValueStr) ;
+//	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 3
+	// Sensor Request Queue Position 2
 	//
 	char capacitorVoltageStr[15];
 	dtostrf(capacitorVoltage,2, 1, capacitorVoltageStr);
@@ -785,7 +788,7 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 
 
 	//
-	// Sensor Request Queue Position 4
+	// Sensor Request Queue Position 3
 	//
 	_HardSerial.print( internalEnergyStorageStateOfCharge);
 	_HardSerial.print("#") ;
@@ -798,8 +801,10 @@ void PowerManager::printPowerStatusStructToSerialPort(){
 //	dtostrf(regulatorVoltage,2, 2, regulatorVoltageStr);
 //	_HardSerial.print( regulatorVoltageStr);
 //	_HardSerial.print("#") ;
+
+
 	//
-	// Sensor Request Queue Position 6
+	// Sensor Request Queue Position 4
 	//
 
 	_HardSerial.print( operatingStatus);

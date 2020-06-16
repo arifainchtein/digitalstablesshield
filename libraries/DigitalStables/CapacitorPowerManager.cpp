@@ -319,28 +319,57 @@ void CapacitorPowerManager::start(){
 
 
 //
-// sourcez; https://forum.arduino.cc/index.php?topic=204429.0
+// source; https://forum.arduino.cc/index.php?topic=204429.0
 //
-float CapacitorPowerManager::getEnergyStorageVoltage() // Returns actual value of Vcc (x 100)
-    {
+float CapacitorPowerManager::getEnergyStorageVoltage(){ // Returns actual value of Vcc (x 100)
 
+
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+     // For mega boards
+     Serial.println(F("Using 1280/2560 Bandgap for calculations "));
+     Serial.println();
+     const long InternalReferenceVoltage = 1100L;  // Adjust this value to your boards specific internal BG voltage x1000
+        // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc reference
+        // MUX4 MUX3 MUX2 MUX1 MUX0  --> 11110 1.1V (VBG)         -Selects channel 30, bandgap voltage, to measure
+     ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR)| (0<<MUX5) | (1<<MUX4) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
+#elif defined(__AVR_ATmega1284__) || defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__)
      // For 1284/644
-     const long InternalReferenceVoltage = 1065L;  // Adjust this value to your boards specific internal BG voltage x1000
+     Serial.println(F("Using 1284/644 Bandgap for calculations "));
+     Serial.println();
+     const long InternalReferenceVoltage = 1115L;  // Adjust this value to your boards specific internal BG voltage x1000
         // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc reference
         // MUX4 MUX3 MUX2 MUX1 MUX0  --> 11110 1.1V (VBG)         -Selects channel 30, bandgap voltage, to measure
      ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR)| (1<<MUX4) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
+#else
+     // For 168/328 boards
+     Serial.println(F("Using 168/328 Bandgap for calculations"));
+     Serial.println();
+     const long InternalReferenceVoltage = 1100L;  // Adjust this value to your boards specific internal BG voltage x1000
+        // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc external reference
+        // MUX3 MUX2 MUX1 MUX0  --> 1110 1.1V (VBG)         -Selects channel 14, bandgap voltage, to measure
+     ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
 
+#endif
      delay(50);  // Let mux settle a little to get a more stable A/D conversion
         // Start a conversion
      ADCSRA |= _BV( ADSC );
         // Wait for it to complete
      while( ( (ADCSRA & (1<<ADSC)) != 0 ) );
         // Scale the value
-     int results = (((InternalReferenceVoltage * 1023L) / ADC) + 5L) / 10L; // calculates for straight line value
-     float voltage = results/100.0;
-	return voltage;
+     float  results = (((InternalReferenceVoltage * 1023L) / ADC) + 5L) / 10L; // calculates for straight line value
+     return results;
 
     }
+
+// Returns actual value of Vcc (x 100){
+
+
+
+
+
+
+
+
 
 bool CapacitorPowerManager::canPublish(){
 	if(getEnergyStorageVoltage()>publishMinimumVoltage){
