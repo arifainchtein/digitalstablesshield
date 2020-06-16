@@ -36,14 +36,14 @@ class TimeManager{
 		virtual String getElapsedTimeHoursMinutesSecondsString(long elapsedTime)=0;
 		virtual RTCInfoRecord getCurrentDateTime()=0;
 		virtual long getTimeForCodeGeneration()=0;
-		virtual String getCurrentTimeForDisplay(boolean showSec)=0;
+		virtual String getCurrentTimeForDisplay(bool showSec)=0;
 		virtual String getCurrentDateTimeForDisplay()=0;
 		virtual String getCurrentDateForDisplay()=0;
 		//
 		// Functions that represent Serial commands
 		//
-		virtual boolean printTimeToSerial()=0;
-		virtual boolean setTime(String)=0;
+		virtual bool printTimeToSerial()=0;
+		virtual bool setTime(String)=0;
         virtual ~TimeManager();
 
 
