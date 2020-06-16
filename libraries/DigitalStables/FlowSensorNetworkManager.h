@@ -40,7 +40,7 @@ public:
 	static void sensor_2();
 	static void sensor_3();
 	static void sensor_4();
-	static void sensor_10();
+	static void sensor_5();
 	void setSampleFrequencySeconds(int s);
 	bool updateValues();
 	float getMeterCurrentFlow(uint8_t meterIndex);

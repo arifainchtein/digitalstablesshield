@@ -111,14 +111,16 @@ void FlowSensorNetworkManager::begin(uint8_t numberOfWaterPoints,int s, bool dis
 	if(numberOfWaterPoints>2){
 		 Meter2 = new FlowMeter(flow_2);
 		pinMode(flow_2, INPUT);
-		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, RISING);
+		// attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, RISING);
+		 attachInterrupt(flow_2, sensor_2, RISING);
 		 Meter2->reset();
 
 	}
 	if(numberOfWaterPoints>3){
 		Meter3 = new FlowMeter(flow_3);
 		pinMode(flow_3, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, RISING);
+		//attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, RISING);
+		 attachInterrupt(flow_3, sensor_3, RISING);
 		Meter3->reset();
 
 	}
@@ -126,14 +128,16 @@ void FlowSensorNetworkManager::begin(uint8_t numberOfWaterPoints,int s, bool dis
 		 Meter4 = new FlowMeter(flow_4);
 		pinMode(18, INPUT);;
 //		attachInterrupt(INT3,sensor_4, RISING);
-		attachInterrupt(digitalPinToInterrupt(18), sensor_10, RISING);
+	//	attachInterrupt(digitalPinToInterrupt(18), sensor_10, RISING);
+		 attachInterrupt(flow_4, sensor_4, RISING);
 		Meter4->reset();
 
 	}
 	if(numberOfWaterPoints>5){
 		Meter5 = new FlowMeter(flow_5);
 		pinMode(flow_5, INPUT);
-		attachInterrupt(digitalPinToInterrupt(19), sensor_10, RISING);
+	//	attachInterrupt(digitalPinToInterrupt(19), sensor_10, RISING);
+		 attachInterrupt(flow_5, sensor_5, RISING);
 		Meter5->reset();
 	}
 
