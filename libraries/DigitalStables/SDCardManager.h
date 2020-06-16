@@ -29,8 +29,8 @@ class SDCardManager: public DataStorageManager{
 public:
 	SDCardManager(SDCardInitParams& d, TimeManager & t,  HardwareSerial& serial, LCDDisplay& l);
 	bool start();
-	bool readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
-	bool readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
+	bool readUntransferredFileFromSDCardByDate(int moveData, bool sendToSerial,const char *dirName, int date, int month, int year);
+	bool readUntransferredFileFromSDCard(int moveData, bool sendToSerial, const char *dirName);
 	void storeRememberedValue(long time, const char *name, float value, String unit);
 	void storeRememberedValue(long time, const char *name, float value, uint8_t operatingStatus);
 
@@ -42,9 +42,9 @@ public:
 	void closeDiscreteRecordFile();
 
 	bool storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize );
-	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
+	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, bool moveData);
 	int openEventRecordFile(const char *filename, int eventSize);
-	void closeEventRecordFile(boolean);
+	void closeEventRecordFile(bool);
 	bool deleteEventRecordFile(const char *filename);
 
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
