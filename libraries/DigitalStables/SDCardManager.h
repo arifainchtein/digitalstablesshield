@@ -54,7 +54,7 @@ public:
 		uint32_t getDiskUsage();
 
 	long getSDCardDiskUse(File dir );
-	boolean getHistoricalData(const char *dirName, int date, int month, int year);
+	bool getHistoricalData(const char *dirName, int date, int month, int year);
 	void saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord);
 
 	//
