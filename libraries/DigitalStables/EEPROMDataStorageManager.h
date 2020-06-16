@@ -31,8 +31,8 @@ public:
 
 	EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager & t, HardwareSerial& serial, LCDDisplay& l);
 	bool start();
-	bool readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year);
-	bool readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName);
+	bool readUntransferredFileFromSDCardByDate(int moveData, bool sendToSerial,const char *dirName, int date, int month, int year);
+	bool readUntransferredFileFromSDCard(int moveData, bool sendToSerial, const char *dirName);
 	void storeRememberedValue(long time, const char *name, float value, String unit);
 	void storeDiscreteRecord( DiscreteRecord &discreteRec);
 	bool readDiscreteRecord(uint16_t index,DiscreteRecord& rec);
@@ -40,9 +40,9 @@ public:
 	void closeDiscreteRecordFile();
 
 	bool storeEventRecord(const char *EventRecordDirName,const char *eventUnstraferedFileName, const byte *eventData,int eventSize );
-	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData);
+	bool readEventRecord(uint16_t index, byte *eventData,int eventSize, bool moveData);
 	bool openEventRecordFile(const char *filename);
-	void closeEventRecordFile(boolean);
+	void closeEventRecordFile(bool);
 	bool deleteEventRecordFile(const char *filename);
 
 	float searchRememberedValue(const char *label, int date, int month, int year, char *whatToSearchFor);
@@ -56,7 +56,7 @@ public:
 	//
 	// Functions that represent Serial commands
 	//
-	boolean testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
+	bool testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus);
 	float listFiles();
 	
 	

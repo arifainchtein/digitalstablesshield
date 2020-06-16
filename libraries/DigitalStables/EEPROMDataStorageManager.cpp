@@ -30,7 +30,7 @@ uint8_t rememberedValueFolderSize;
 EEPROMDataStorageManager::EEPROMDataStorageManager(EEPROMDataStorageManagerInitParams& d, TimeManager& t,HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t),  _HardSerial(serial), lcdDisplay(l)
 {}
 
-boolean EEPROMDataStorageManager::start(){
+bool EEPROMDataStorageManager::start(){
 
 	pageSize = dataStorageManagerInitParams.pageSize;
 	wpSensorDataFolderSize= dataStorageManagerInitParams.wpSensorDataFolderSize;
@@ -41,10 +41,10 @@ boolean EEPROMDataStorageManager::start(){
 
 }
 
-bool EEPROMDataStorageManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
+bool EEPROMDataStorageManager::readUntransferredFileFromSDCardByDate(int moveData, bool sendToSerial,const char *dirName, int date, int month, int year){
 
 }
-bool EEPROMDataStorageManager::readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName){
+bool EEPROMDataStorageManager::readUntransferredFileFromSDCard(int moveData, bool sendToSerial, const char *dirName){
 
 }
 void EEPROMDataStorageManager::storeRememberedValue(long time, const char *name, float value, String unit){
@@ -67,13 +67,13 @@ bool EEPROMDataStorageManager::storeEventRecord(const char *EventRecordDirName,c
 
 }
 
-bool EEPROMDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
+bool EEPROMDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, bool moveData){
 
 }
 bool EEPROMDataStorageManager::openEventRecordFile(const char *filename){
 
 }
-void EEPROMDataStorageManager::closeEventRecordFile(boolean){
+void EEPROMDataStorageManager::closeEventRecordFile(bool){
 
 }
 

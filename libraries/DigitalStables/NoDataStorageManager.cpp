@@ -25,16 +25,16 @@
 NoDataStorageManager::NoDataStorageManager(DataStorageManagerInitParams& d, TimeManager& t, HardwareSerial& serial, LCDDisplay& l ): dataStorageManagerInitParams(d), timeManager(t), _HardSerial(serial), lcdDisplay(l)
 {}
 
-boolean NoDataStorageManager::start(){
+bool NoDataStorageManager::start(){
 
 	
 
 }
 
-boolean NoDataStorageManager::readUntransferredFileFromSDCardByDate(int moveData, boolean sendToSerial,const char *dirName, int date, int month, int year){
+bool NoDataStorageManager::readUntransferredFileFromSDCardByDate(int moveData, bool sendToSerial,const char *dirName, int date, int month, int year){
 
 }
-boolean NoDataStorageManager::readUntransferredFileFromSDCard(int moveData, boolean sendToSerial, const char *dirName){
+bool NoDataStorageManager::readUntransferredFileFromSDCard(int moveData, bool sendToSerial, const char *dirName){
 
 }
 void NoDataStorageManager::storeRememberedValue(long time, const char *name, float value, String unit){
@@ -53,10 +53,10 @@ void NoDataStorageManager::storeDiscreteRecord(const DiscreteRecord &discreteRec
 
 }
 
-boolean NoDataStorageManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec){
+bool NoDataStorageManager::readDiscreteRecord(uint16_t index,DiscreteRecord& rec){
 
 }
-boolean NoDataStorageManager::openDiscreteRecordFile(){
+bool NoDataStorageManager::openDiscreteRecordFile(){
 
 }
 void NoDataStorageManager::closeDiscreteRecordFile(){
@@ -73,13 +73,13 @@ bool NoDataStorageManager::deleteEventRecordFile(const char *filename)
 }
 
 
-boolean NoDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, boolean moveData){
+bool NoDataStorageManager::readEventRecord(uint16_t index, byte *eventData,int eventSize, bool moveData){
 
 }
 int NoDataStorageManager::openEventRecordFile(const char *filename, int eventSize){
 	return -1;
 }
-void NoDataStorageManager::closeEventRecordFile(boolean){
+void NoDataStorageManager::closeEventRecordFile(bool){
 
 }
 
@@ -101,7 +101,7 @@ long NoDataStorageManager::printDirectory(File dir, int numTabs){
 
 }
 
-boolean NoDataStorageManager::getHistoricalData(const char *dirName, int date, int month, int year){
+bool NoDataStorageManager::getHistoricalData(const char *dirName, int date, int month, int year){
 
 }
 void NoDataStorageManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord){
@@ -111,13 +111,13 @@ void NoDataStorageManager::saveWPSSensorRecord(WPSSensorRecord anWPSSensorRecord
 //
 // Functions that represent Serial commands
 //
-boolean NoDataStorageManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus){
+bool NoDataStorageManager::testWPSSensor(float batteryVoltage, float current, int stateOfCharge, String operatingStatus){
 
 }
 float NoDataStorageManager::listFiles(){
 
 }
-boolean NoDataStorageManager::setTime(String){
+bool NoDataStorageManager::setTime(String){
 
 }
 

@@ -42,13 +42,17 @@ uint8_t currentSampleIndexMeter4=-1;
 uint8_t currentSampleIndexMeter5=-1;
 
 long currentMeterStartTime=0L;
-
-#define flow_0 9
-#define flow_1 8
-#define flow_2 3 //7
-#define flow_3 2 //6
-#define flow_4 18//46
-#define flow_5 19 //5
+//
+// the flow variables represent the actual interrupt not the pin
+// so flow_0 is interrupt 0 which in the 1284p is in pin 10
+// so flow_2 is interrupt 2 which in the 1284p is in pin 2
+//
+#define flow_0 0
+#define flow_1 1
+#define flow_2 2 //7
+#define flow_3 3 //6
+#define flow_4 4//46
+#define flow_5 5 //5
 
 FlowMeter Meter0 = FlowMeter(flow_0);
 FlowMeter* Meter1 = nullptr;
@@ -94,12 +98,13 @@ void FlowSensorNetworkManager::begin(uint8_t numberOfWaterPoints,int s, bool dis
 	sampleFrequencySeconds=s;
 	withDistributionPoint=distr;
 	pinMode(flow_0, INPUT);
-	attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, RISING);
+	//attachInterrupt(digitalPinToInterrupt(flow_0), sensor_0, RISING);
 
 	if(numberOfWaterPoints>1){
 		Meter1 = new FlowMeter(flow_1);
 		pinMode(flow_1, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, RISING);
+		//attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, RISING);
+		attachInterrupt(flow_1, sensor_1, RISING);
 		Meter1->reset();
 	}
 
@@ -118,7 +123,7 @@ void FlowSensorNetworkManager::begin(uint8_t numberOfWaterPoints,int s, bool dis
 
 	}
 	if(numberOfWaterPoints>4){
-		 Meter4 = new FlowMeter(18);
+		 Meter4 = new FlowMeter(flow_4);
 		pinMode(18, INPUT);;
 //		attachInterrupt(INT3,sensor_4, RISING);
 		attachInterrupt(digitalPinToInterrupt(18), sensor_10, RISING);
@@ -141,12 +146,12 @@ void FlowSensorNetworkManager::setSampleFrequencySeconds(int s){
 	sampleFrequencySeconds=s;
 }
 bool FlowSensorNetworkManager::updateValues(){
-	boolean meter0Status=false;
-	boolean meter1Status=false;
-	boolean meter2Status=false;
-	boolean meter3Status=false;
-	boolean meter4Status=false;
-	boolean meter5Status=false;
+	bool meter0Status=false;
+	bool meter1Status=false;
+	bool meter2Status=false;
+	bool meter3Status=false;
+	bool meter4Status=false;
+	bool meter5Status=false;
 	//serial.println("in updatevalues flowsensor");
 	meter0Status = updateMeter(Meter0, 0,meter0InEvent, aFlowMeter0EventDataUnion,currentSampleIndexMeter0, withDistributionPoint);
 	if(Meter1 != nullptr)meter1Status=updateMeter(*Meter1,1, meter1InEvent, aFlowMeter1EventDataUnion,currentSampleIndexMeter1, false);
@@ -171,7 +176,7 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, uint8_t meterId,bo
 	//
 	// if water is not running
 	// then if the event is going, close the event
-	boolean toReturn=false;
+	bool toReturn=false;
 	meter.tick(period);
 //	serial.print("meter freq=");
 //    serial.println(meter.getCurrentFrequency());
