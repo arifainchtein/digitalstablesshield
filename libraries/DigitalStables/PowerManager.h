@@ -24,11 +24,11 @@ class PowerManager{
 
 public:
 	long previousUpdate;
-	boolean hypothalamusStatus=false;
+	bool hypothalamusStatus=false;
 	long shutDownRequestedseconds= 0L;
-	boolean shuttingDownPiCountdown=false;
-	boolean manualShutdown=false;
-	boolean waitingManualPiStart=false;
+	bool shuttingDownPiCountdown=false;
+	bool manualShutdown=false;
+	bool waitingManualPiStart=false;
 	String currentIpAddress="No IP";
 	String currentSSID="No SSID";
 	PowerStatusStruct aPowerStatusStruct;
@@ -59,7 +59,7 @@ public:
 	int delayTime=1;
 	int currentViewIndex=0;
 
-	boolean isHost=true;
+	bool isHost=true;
 	long poweredDownInLoopSeconds=0L;
 	float dailyMinEnergyStorageVoltage=0;
 	float dailyMaxEnergyStorageVoltage=0;
@@ -75,8 +75,8 @@ public:
 	float dailyPoweredDownInLoopSeconds=0;
 
 	float hourlyPoweredDownInLoopSeconds=0;
-	boolean pauseDuringWPS=false;
-	boolean inPulse=false;
+	bool pauseDuringWPS=false;
+	bool inPulse=false;
 	String pulseStartTime="";
 	String pulseStopTime="";
 
@@ -84,16 +84,16 @@ public:
 	long secondsToTurnPowerOff = 30;
 	long secondsToNextPiOn=90L;
 	long currentSecondsToPowerOff=0L;
-	boolean wpsCountdown=false;
-	boolean wpsSleeping=false;
-	boolean inWPS=false;
+	bool wpsCountdown=false;
+	bool wpsSleeping=false;
+	bool inWPS=false;
 	float minWPSVoltage=12.4;
 	float enterWPSVoltage=12.6;
 	float exitWPSVoltage=12.8;
 	long lastWPSStartUp=0L;
 	long lastWPSRecordSeconds=0L;
 	int wpsPulseFrequencySeconds=60;
-	boolean waitingForWPSConfirmation=false;
+	bool waitingForWPSConfirmation=false;
 	long currentSleepStartTime=0L;
 	volatile int f_wdt=1;
 	long wpsCountDownStartSeconds=0L;

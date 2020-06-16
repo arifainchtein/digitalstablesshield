@@ -33,7 +33,7 @@ float capacitorVoltage= 0;
 
 
     //effective current
-boolean powerSupplyOn=false;
+bool powerSupplyOn=false;
 
 //
 // current view index
@@ -41,7 +41,7 @@ boolean powerSupplyOn=false;
 // it starts with a value of 99 which means is locked
 
 
-boolean showingAct=false;
+bool showingAct=false;
 
 int currentHour=0;
 int currentDay=0;
@@ -325,13 +325,13 @@ int PowerManager::getCurrentViewIndex(){
 void PowerManager::setCurrentViewIndex(int i){
 	currentViewIndex=i;
 }
-boolean PowerManager::getHypothalamusStatus(){
+bool PowerManager::getHypothalamusStatus(){
 	return hypothalamusStatus;
 }
 
 
-boolean PowerManager::processDefaultCommands(String command){
-	boolean processed=false;
+bool PowerManager::processDefaultCommands(String command){
+	bool processed=false;
 	capacitorVoltage = getLockCapacitorVoltage();
 	if(command=="TestWPSSensor"){
 		float batteryVoltage = getEnergyStorageVoltage();
@@ -339,7 +339,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		
 		float current = getCurrentFromEnergyStorage();
 		int stateOfCharge= GeneralFunctions::getStateOfCharge(batteryVoltage);
-		boolean result = dataStorageManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
+		bool result = dataStorageManager.testWPSSensor( batteryVoltage,  current,  stateOfCharge,  operatingStatus);
 		if(result){
 			_HardSerial.println("Ok-TestWPSSensor");
 		}else{
@@ -386,7 +386,7 @@ boolean PowerManager::processDefaultCommands(String command){
 			_HardSerial.flush();
 
 		}else{
-			boolean result = timeManager.setTime(command);
+			bool result = timeManager.setTime(command);
 			if(result){
 				_HardSerial.println("Ok-SetTime");
 			}else{
@@ -407,7 +407,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("VerifyUserCode")){
 		String codeInString = GeneralFunctions::getValue(command, '#', 1);
 		long userCode = codeInString.toInt();
-		boolean validCode = secretManager.checkCode( userCode);
+		bool validCode = secretManager.checkCode( userCode);
 		String result="Failure-Invalid Code";
 		if(validCode)result="Ok-Valid Code";
 		_HardSerial.println(result);
@@ -577,7 +577,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("GetRememberedValueData")){
 		//GetRememberedValueData#0
 		int transferData = GeneralFunctions::getValue(command, '#', 1).toInt();
-		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
+		bool result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, RememberedValueDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetRememberedValueData");
 		}else {
@@ -590,7 +590,7 @@ boolean PowerManager::processDefaultCommands(String command){
 	}else if(command.startsWith("GetLifeCycleData")){
 		//GetLifeCycleData#0
 		int transferData = GeneralFunctions::getValue(command, '#', 1).toInt();
-		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
+		bool result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, LifeCycleDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetLifeCycleData");
 		}else {
@@ -604,7 +604,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		//GetWPSSensorData#0
 		//GetLifeCycleData#0
 		int transferData = GeneralFunctions::getValue(command, '#', 1).toInt();
-		boolean result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
+		bool result = dataStorageManager.readUntransferredFileFromSDCard( transferData,true, WPSSensorDataDirName);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorData");
 		}else {
@@ -621,7 +621,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		int date = GeneralFunctions::getValue(command, '#', 1).toInt();
 		int month = GeneralFunctions::getValue(command, '#', 2).toInt();
 		int year = GeneralFunctions::getValue(command, '#', 3).toInt();
-		boolean result  =dataStorageManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
+		bool result  =dataStorageManager.getHistoricalData( WPSSensorDataDirName,  date,  month,  year);
 		if(result){
 			_HardSerial.println("Ok-GetWPSSensorDataHistory");
 		}else {
@@ -637,7 +637,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		int date = GeneralFunctions::getValue(command, '#', 1).toInt();
 		int month = GeneralFunctions::getValue(command, '#', 2).toInt();
 		int year = GeneralFunctions::getValue(command, '#', 3).toInt();
-		boolean result  = dataStorageManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
+		bool result  = dataStorageManager.getHistoricalData( LifeCycleDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalLifeCycleData");
 		}else {
@@ -652,7 +652,7 @@ boolean PowerManager::processDefaultCommands(String command){
 		int date = GeneralFunctions::getValue(command, '#', 1).toInt();
 		int month = GeneralFunctions::getValue(command, '#', 2).toInt();
 		int year = GeneralFunctions::getValue(command, '#', 3).toInt();
-		boolean result  = dataStorageManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
+		bool result  = dataStorageManager.getHistoricalData( RememberedValueDataDirName,  date,  month,  year);
 		if (result) {
 			_HardSerial.println("Ok-GetHistoricalRememberedValueData");
 		}else {
