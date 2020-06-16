@@ -28,14 +28,14 @@ public:
 	String getElapsedTimeHoursMinutesSecondsString(long elapsedTime);
 	RTCInfoRecord getCurrentDateTime();
 	long getTimeForCodeGeneration();
-	String getCurrentTimeForDisplay(boolean showSec);
+	String getCurrentTimeForDisplay(bool showSec);
 	String getCurrentDateTimeForDisplay();
 	String getCurrentDateForDisplay();
 	//
 	// Functions that represent Serial commands
 	//
-	boolean printTimeToSerial();
-	boolean setTime(String);
+	bool printTimeToSerial();
+	bool setTime(String);
 
 	virtual ~GravityTimeManager();
 };
