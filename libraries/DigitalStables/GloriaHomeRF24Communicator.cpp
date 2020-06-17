@@ -151,8 +151,7 @@ bool GloriaHomeRF24Communicator::receive(GloriaBaseData& gloriaBaseData,GloriaFl
 
 	if ( radio.available() ){
 
-		bool doneBase = false;
-		bool doneFlow = false;
+
 	//	lcd.clear();
 		//while (!doneBase && !doneFlow)
 		//{
@@ -161,14 +160,13 @@ bool GloriaHomeRF24Communicator::receive(GloriaBaseData& gloriaBaseData,GloriaFl
 			// Fetch the payload, and see if this was the last one.
 			if(bytesReceivedLength == sizeof gloriaBaseData){
 				  radio.read( &gloriaBaseData, sizeof gloriaBaseData);
-				doneBase=true;
+
 			//	delay(100);
 				toReturn=true;
 
 
 			}else if(bytesReceivedLength == sizeof gloriaFlowData){
 				radio.read( &gloriaFlowData, sizeof gloriaFlowData);
-				doneFlow=true;
 			//	delay(100);
 
 				toReturn=true;
