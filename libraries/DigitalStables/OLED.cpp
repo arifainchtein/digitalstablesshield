@@ -39,7 +39,7 @@ void OLED::begin(){
 
   uint32_t m = micros();
   anSSD1306AsciiAvrI2c.clear();
-  anSSD1306AsciiAvrI2c.println("Hello world!");
+  anSSD1306AsciiAvrI2c.println(F("Hello"));
 }
 
 void OLED::backlight(){
