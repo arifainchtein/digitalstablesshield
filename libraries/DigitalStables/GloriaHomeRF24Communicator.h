@@ -10,12 +10,11 @@
 
 #include <Communicator.h>
 #include <GloriaData.h>
-
+#include <LCDDisplay.h>
 class GloriaHomeRF24Communicator {
 public:
-	HardwareSerial& _HardSerial;
-
-	GloriaHomeRF24Communicator(HardwareSerial& serial);
+	LCDDisplay& lcd;
+	GloriaHomeRF24Communicator(LCDDisplay & l);
 	void start(GloriaCommData& commData);
 	void scan( );
 	bool publish(GloriaHomeBaseData& gloriaHomeBaseData  );

@@ -18,7 +18,7 @@ IntrusionDualLed::IntrusionDualLed() {
 
 }
 
-void IntrusionDualLed::start(HardwareSerial& serial){
+void IntrusionDualLed::start(){
 	intrusionleds.begin();
 	uint8_t red=0;
 	uint8_t green=255;
@@ -27,7 +27,7 @@ void IntrusionDualLed::start(HardwareSerial& serial){
 	intrusionleds.setPixelColor(0, intrusionleds.Color(green,red, blue));
 	intrusionleds.setPixelColor(1, intrusionleds.Color(green,red, blue));
 	intrusionleds.show();
-	serial.println("after showing");
+
 }
 
 void IntrusionDualLed::setStatusColor(unsigned char pin, String color ){

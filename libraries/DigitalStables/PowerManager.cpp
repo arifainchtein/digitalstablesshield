@@ -495,16 +495,14 @@ bool PowerManager::processDefaultCommands(String command){
 		pulseStartTime = GeneralFunctions::getValue(command, '#', 1);
 		_HardSerial.println("Ok-PulseStart");
 		_HardSerial.flush();
-		lcd.clear();
-		lcd.setRGB(255,0,0);
+
 		processed=true;
 	}else if(command.startsWith("PulseFinished")){
 		pulseStopTime = GeneralFunctions::getValue(command, '#', 1);
 		inPulse=false;
 		_HardSerial.println("Ok-PulseFinished");
 		_HardSerial.flush();
-		lcd.clear();
-		lcd.setRGB(255,255,255);
+
 		processed=true;
 
 

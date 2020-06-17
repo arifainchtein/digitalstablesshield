@@ -12,7 +12,7 @@
 class IntrusionDualLed {
 public:
 	IntrusionDualLed();
-	void start(HardwareSerial& serial);
+	void start();
 	void  refreshValue(uint8_t id,uint8_t red,uint8_t green, uint8_t blue );
 	void setStatusColor(unsigned char pin, String color );
 	void setColor(unsigned char pin, uint8_t red, uint8_t green, uint8_t blue );

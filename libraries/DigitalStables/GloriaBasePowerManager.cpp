@@ -314,21 +314,21 @@ void GloriaBasePowerManager::defineState(){
 }
 
 PowerStatusStruct GloriaBasePowerManager::getPowerStatusStruct(){
-	float batteryVoltage =getEnergyStorageVoltage();
-	//_HardSerial.print("line 318") ;
-	float capacitorVoltage= getLockCapacitorVoltage();
+
+		float capacitorVoltage= getLockCapacitorVoltage();
 	//_HardSerial.print("line 320") ;
-	byte internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(batteryVoltage);
+
 //	_HardSerial.print("line 322") ;
 	//float regulatorVoltage = getVoltageRegulatorOutput();
 	//long totalDiskUse=dataStorageManager.getDiskUsage()/1024;
 
 	aPowerStatusStruct.sampleTime = timeManager.getCurrentTimeInSeconds();
-	aPowerStatusStruct.energyStorageVoltage= batteryVoltage;
+	aPowerStatusStruct.energyStorageVoltage= getEnergyStorageVoltage();;
 	//aPowerStatusStruct.energySourceVoltage= getEnergySourceVoltage();
 	//aPowerStatusStruct.currentFromEnergySource= getCurrentInputFromEnergySource();
 	//aPowerStatusStruct.currentFromEnergyStorage=getCurrentFromEnergyStorage();
-	aPowerStatusStruct.lockCapacitorVoltage=capacitorVoltage;
+	aPowerStatusStruct.lockCapacitorVoltage=getLockCapacitorVoltage();
+	byte internalEnergyStorageStateOfCharge = GeneralFunctions::getStateOfCharge(aPowerStatusStruct.energyStorageVoltage);
 	aPowerStatusStruct.internalEnergyStorageStateOfCharge=internalEnergyStorageStateOfCharge;
 	//aPowerStatusStruct.regulatorVoltage=regulatorVoltage;
 	aPowerStatusStruct.operatingStatus=operatingStatus;

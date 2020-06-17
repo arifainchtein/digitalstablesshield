@@ -35,7 +35,7 @@ void OLED::begin(){
 #endif // RST_PIN >= 0
   // Call anSSD1306AsciiAvrI2c.setI2cClock(frequency) to change from the default frequency.
 
-  anSSD1306AsciiAvrI2c.setFont(Arial14);
+  anSSD1306AsciiAvrI2c.setFont(Verdana12);
 
   uint32_t m = micros();
   anSSD1306AsciiAvrI2c.clear();

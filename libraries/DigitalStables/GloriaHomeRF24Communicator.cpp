@@ -65,7 +65,7 @@ unsigned int gloriaDataCounter;
 GloriaCommData gloriaCommData;
 unsigned long lastRead2;
 
-GloriaHomeRF24Communicator::GloriaHomeRF24Communicator(HardwareSerial& serial):_HardSerial(serial) {
+GloriaHomeRF24Communicator::GloriaHomeRF24Communicator(LCDDisplay& l):lcd(l) {
 	// TODO Auto-generated constructor stub
 
 }
@@ -153,25 +153,24 @@ bool GloriaHomeRF24Communicator::receive(GloriaBaseData& gloriaBaseData,GloriaFl
 
 		bool doneBase = false;
 		bool doneFlow = false;
-
+		lcd.clear();
 		//while (!doneBase && !doneFlow)
 		//{
 			uint8_t bytesReceivedLength = radio.getDynamicPayloadSize();
-					_HardSerial.print ("radio available bytes recieved=");
-					_HardSerial.println (bytesReceivedLength);
+			lcd.println ("Rcv Gloria 1");
 			// Fetch the payload, and see if this was the last one.
 			if(bytesReceivedLength == sizeof gloriaBaseData){
 				  radio.read( &gloriaBaseData, sizeof gloriaBaseData);
 				doneBase=true;
 			//	delay(100);
 				toReturn=true;
-				_HardSerial.println ("Read base data ");
+
 
 			}else if(bytesReceivedLength == sizeof gloriaFlowData){
 				radio.read( &gloriaFlowData, sizeof gloriaFlowData);
 				doneFlow=true;
 			//	delay(100);
-				_HardSerial.println ("Read flow ");
+
 				toReturn=true;
 			}
 
