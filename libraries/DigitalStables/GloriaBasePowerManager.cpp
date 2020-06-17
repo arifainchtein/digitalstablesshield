@@ -204,11 +204,16 @@ void GloriaBasePowerManager::defineState(){
 
 	float batteryVoltage = getEnergyStorageVoltage();
 	int internalBatteryStateOfCharge = generalFunctions.getStateOfCharge(batteryVoltage);
-	float currentFromBattery = getCurrentFromEnergyStorage();
-	float inputFromSOlarPanel =  getCurrentInputFromEnergySource();
+	//float currentFromBattery = getCurrentFromEnergyStorage();
+	//float inputFromSOlarPanel =  getCurrentInputFromEnergySource();
 	//float solarPanelVolltage = getEnergySourceVoltage();
 
-
+	if(dailyMinEnergyStorageVoltage>batteryVoltage){
+		dailyMinEnergyStorageVoltage=batteryVoltage;
+	}
+	if(dailyMaxEnergyStorageVoltage<batteryVoltage){
+		dailyMaxEnergyStorageVoltage=batteryVoltage;
+	}
 
 	if(batteryVoltage>=minWPSVoltage ){
 		if(wpsSleeping){
@@ -345,7 +350,7 @@ void GloriaBasePowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 2
+	// Sensor Request Queue Position 1
 	//
 	char batteryVoltageStr[15];
 	dtostrf(aPowerStatusStruct.energyStorageVoltage,4, 1, batteryVoltageStr);
@@ -353,7 +358,7 @@ void GloriaBasePowerManager::printPowerStatusStructToSerialPort(){
 	_HardSerial.print("#") ;
 
 	//
-	// Sensor Request Queue Position 5
+	// Sensor Request Queue Position 2
 	//
 	char capacitorVoltageStr[15];
 	dtostrf(aPowerStatusStruct.lockCapacitorVoltage,2, 1, capacitorVoltageStr);
@@ -362,13 +367,15 @@ void GloriaBasePowerManager::printPowerStatusStructToSerialPort(){
 
 
 	//
-	// Sensor Request Queue Position 6
+	// Sensor Request Queue Position 3
 	//
 	_HardSerial.print(aPowerStatusStruct.internalEnergyStorageStateOfCharge);
 	_HardSerial.print("#") ;
 
 
-
+	//
+		// Sensor Request Queue Position 4
+		//
 	_HardSerial.print(aPowerStatusStruct. operatingStatus);
 	_HardSerial.print("#") ;
 }
@@ -411,32 +418,32 @@ void GloriaBasePowerManager::printPowerStatisticsStructToSerialPort(){
 	this->_HardSerial.print(dailyMaxEnergyStorageVoltageStr) ;
 	this->_HardSerial.print("#") ;
 
-	//
-	// Sensor Request Queue Position 3
-	//
-
-	char dailyMinEnergyStorageCurrentStr[15];
-	dtostrf(aPowerStatisticsStruct.dailyMinEnergyStorageCurrent,4, 0, dailyMinEnergyStorageCurrentStr);
-	this->_HardSerial.print(dailyMinEnergyStorageCurrentStr) ;
-	this->_HardSerial.print("#") ;
-
-	//
-	// Sensor Request Queue Position 4
-	//
-
-	char dailyMaxEnergyStorageCurrentStr[15];
-	dtostrf(dailyMaxEnergyStorageCurrent,4, 0, dailyMaxEnergyStorageCurrentStr);
-	this->_HardSerial.print(dailyMaxEnergyStorageCurrentStr) ;
-	this->_HardSerial.print("#") ;
-
-	//
-	// Sensor Request Queue Position 5
-	//
-
-	char dailyEnergyStorageOutEnergyStr[15];
-	dtostrf(dailyEnergyStorageOutEnergy,4, 2, dailyEnergyStorageOutEnergyStr);
-	this->_HardSerial.print(dailyEnergyStorageOutEnergyStr) ;
-	this->_HardSerial.print("#") ;
+//	//
+//	// Sensor Request Queue Position 3
+//	//
+//
+//	char dailyMinEnergyStorageCurrentStr[15];
+//	dtostrf(aPowerStatisticsStruct.dailyMinEnergyStorageCurrent,4, 0, dailyMinEnergyStorageCurrentStr);
+//	this->_HardSerial.print(dailyMinEnergyStorageCurrentStr) ;
+//	this->_HardSerial.print("#") ;
+//
+//	//
+//	// Sensor Request Queue Position 4
+//	//
+//
+//	char dailyMaxEnergyStorageCurrentStr[15];
+//	dtostrf(dailyMaxEnergyStorageCurrent,4, 0, dailyMaxEnergyStorageCurrentStr);
+//	this->_HardSerial.print(dailyMaxEnergyStorageCurrentStr) ;
+//	this->_HardSerial.print("#") ;
+//
+//	//
+//	// Sensor Request Queue Position 5
+//	//
+//
+//	char dailyEnergyStorageOutEnergyStr[15];
+//	dtostrf(dailyEnergyStorageOutEnergy,4, 2, dailyEnergyStorageOutEnergyStr);
+//	this->_HardSerial.print(dailyEnergyStorageOutEnergyStr) ;
+//	this->_HardSerial.print("#") ;
 
 	//
 	// Sensor Request Queue Position 6
@@ -447,14 +454,14 @@ void GloriaBasePowerManager::printPowerStatisticsStructToSerialPort(){
 	this->_HardSerial.print(dailyPoweredDownInLoopSecondsStr) ;
 	this->_HardSerial.print("#") ;
 
-	//
-	// Sensor Request Queue Position 7
-	//
-
-	char hourlyEnergyStorageOutEnergyStr[15];
-	dtostrf(hourlyEnergyStorageOutEnergy,4, 2, hourlyEnergyStorageOutEnergyStr);
-	this->_HardSerial.print(hourlyEnergyStorageOutEnergyStr) ;
-	this->_HardSerial.print("#") ;
+//	//
+//	// Sensor Request Queue Position 7
+//	//
+//
+//	char hourlyEnergyStorageOutEnergyStr[15];
+//	dtostrf(hourlyEnergyStorageOutEnergy,4, 2, hourlyEnergyStorageOutEnergyStr);
+//	this->_HardSerial.print(hourlyEnergyStorageOutEnergyStr) ;
+//	this->_HardSerial.print("#") ;
 	//
 	// Sensor Request Queue Position 8
 	//
