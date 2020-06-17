@@ -153,11 +153,11 @@ bool GloriaHomeRF24Communicator::receive(GloriaBaseData& gloriaBaseData,GloriaFl
 
 		bool doneBase = false;
 		bool doneFlow = false;
-		lcd.clear();
+	//	lcd.clear();
 		//while (!doneBase && !doneFlow)
 		//{
 			uint8_t bytesReceivedLength = radio.getDynamicPayloadSize();
-			lcd.println ("Rcv Gloria 1");
+			//lcd.println ("Rcv Gloria 1");
 			// Fetch the payload, and see if this was the last one.
 			if(bytesReceivedLength == sizeof gloriaBaseData){
 				  radio.read( &gloriaBaseData, sizeof gloriaBaseData);
