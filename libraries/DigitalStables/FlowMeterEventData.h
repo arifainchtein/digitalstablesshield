@@ -10,10 +10,16 @@
 
 #include "Arduino.h"
 #include <EventRecord.h>
+
+
+
+
 struct FlowMeterSample{
 	long sampleTime;
 	float flow;
 };
+
+
 typedef struct FlowMeterEventData:public EventRecord{
 
 	//

@@ -13,14 +13,16 @@
 #include <TimeManager.h>
 #include <PowerManager.h>
 #include <FlowMeter.h>
-
+#include <FlowSensorNetworkConfigParams.h>
 
 class FlowSensorNetworkManager {
-	PowerManager & powerManager;
 	TimeManager & timeManager;
 	DataStorageManager & dataStorageManager;
-	HardwareSerial& serial;
+
 	int sampleFrequencySeconds;
+	FlowSensorNetworkConfigParams & aFlowSensorNetworkConfigParams;
+
+
 
 public:
 
@@ -33,8 +35,8 @@ public:
 		};
 
 	FlowSensorNetworkManager();
-	FlowSensorNetworkManager(HardwareSerial& s, PowerManager& p,DataStorageManager & sd, TimeManager & t);
-	void begin(uint8_t n, int sampleFrequencySeconds, bool withDistributionPoint);
+	FlowSensorNetworkManager(DataStorageManager & sd, TimeManager & t, FlowSensorNetworkConfigParams f);
+	void begin();
 	static void sensor_0();
 	static void sensor_1();
 	static void sensor_2();
