@@ -4,7 +4,7 @@
  *  Created on: 7 Oct 2019
  *      Author: arifainchtein
  */
-#include "Arduino.h"
+#include <Arduino.h>
 #include <FlowSensorNetworkManager.h>
 
 
@@ -54,12 +54,13 @@ long currentMeterStartTime=0L;
 //uint8_t flow_4=0;
 //uint8_t flow_5=0;
 
-FlowMeter Meter0;// = nullptr;
-FlowMeter Meter1;// = nullptr;
-FlowMeter Meter2;// = nullptr;
-FlowMeter Meter3;// = nullptr;
-FlowMeter Meter4;// = nullptr;
-FlowMeter Meter5;// = nullptr;
+static FlowMeter  Meter0;// = nullptr;
+static FlowMeter * Meter1 = nullptr;
+static FlowMeter * Meter2 = nullptr;
+static FlowMeter * Meter3 = nullptr;
+static FlowMeter * Meter4 = nullptr;
+static FlowMeter * Meter5 = nullptr;
+
 
 FlowMeterEventDataUnion aFlowMeter0EventDataUnion;
 FlowMeterEventDataUnion aFlowMeter1EventDataUnion;
@@ -74,7 +75,7 @@ bool canPublishAsync=false;
 
 
 FlowSensorNetworkManager::FlowSensorNetworkManager(DataStorageManager& sd, TimeManager& t, FlowSensorNetworkConfigParams f ):
-				 dataStorageManager(sd),timeManager(t), aFlowSensorNetworkConfigParams(f)
+						 dataStorageManager(sd),timeManager(t), aFlowSensorNetworkConfigParams(f)
 {}
 
 
@@ -103,50 +104,50 @@ void FlowSensorNetworkManager::begin() {
 	pinMode(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber, INPUT);
 	attachInterrupt(digitalPinToInterrupt(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber), sensor_0, RISING);
 
-	if(numberOfWaterPoints>1){
-		uint8_t flow_1 = aFlowSensorNetworkConfigParams.sensor_1.interruptNumber;
+	if(numberOfWaterPoints>1 && aFlowSensorNetworkConfigParams.sensor_1!=nullptr){
+		uint8_t flow_1 = aFlowSensorNetworkConfigParams.sensor_1->interruptNumber;
 		Meter1 = new FlowMeter(flow_1);
 		pinMode(flow_1, INPUT);
-		//attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, RISING);
-		attachInterrupt(flow_1, sensor_1, RISING);
-		Meter1.reset();
+		attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, RISING);
+		//attachInterrupt(flow_1, sensor_1, RISING);
+		Meter1->reset();
 	}
 
-	if(numberOfWaterPoints>2){
-		unsigned int flow_2 = aFlowSensorNetworkConfigParams.sensor_2.interruptNumber;
+	if(numberOfWaterPoints>2 && aFlowSensorNetworkConfigParams.sensor_2!=nullptr){
+		unsigned int flow_2 = aFlowSensorNetworkConfigParams.sensor_2->interruptNumber;
 		Meter2 = new FlowMeter(flow_2);
 		pinMode(flow_2, INPUT);
-		// attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, RISING);
-		attachInterrupt(flow_2, sensor_2, RISING);
-		Meter2.reset();
+		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, RISING);
+		//attachInterrupt(flow_2, sensor_2, RISING);
+		Meter2->reset();
 
 	}
-	if(numberOfWaterPoints>3){
-		uint8_t flow_3 = aFlowSensorNetworkConfigParams.sensor_3.interruptNumber;
+	if(numberOfWaterPoints>3 && aFlowSensorNetworkConfigParams.sensor_3!=nullptr){
+		uint8_t flow_3 = aFlowSensorNetworkConfigParams.sensor_3->interruptNumber;
 		Meter3 = new FlowMeter(flow_3);
 		pinMode(flow_3, INPUT);
-		//attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, RISING);
-		attachInterrupt(flow_3, sensor_3, RISING);
-		Meter3.reset();
+		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, RISING);
+		//attachInterrupt(flow_3, sensor_3, RISING);
+		Meter3->reset();
 
 	}
-	if(numberOfWaterPoints>4){
-		uint8_t flow_4 = aFlowSensorNetworkConfigParams.sensor_4.interruptNumber;
+	if(numberOfWaterPoints>4 && aFlowSensorNetworkConfigParams.sensor_4!=nullptr){
+		uint8_t flow_4 = aFlowSensorNetworkConfigParams.sensor_4->interruptNumber;
 		Meter4 = new FlowMeter(flow_4);
 		pinMode(18, INPUT);;
 		//		attachInterrupt(INT3,sensor_4, RISING);
-		//	attachInterrupt(digitalPinToInterrupt(18), sensor_10, RISING);
-		attachInterrupt(flow_4, sensor_4, RISING);
-		Meter4.reset();
+			attachInterrupt(digitalPinToInterrupt(18), sensor_4, RISING);
+		//attachInterrupt(flow_4, sensor_4, RISING);
+		Meter4->reset();
 
 	}
-	if(numberOfWaterPoints>5){
-		uint8_t flow_5 = aFlowSensorNetworkConfigParams.sensor_5.interruptNumber;
+	if(numberOfWaterPoints>5 && aFlowSensorNetworkConfigParams.sensor_5!=nullptr){
+		uint8_t flow_5 = aFlowSensorNetworkConfigParams.sensor_5->interruptNumber;
 		Meter5 = new FlowMeter(flow_5);
 		pinMode(flow_5, INPUT);
-		//	attachInterrupt(digitalPinToInterrupt(19), sensor_10, RISING);
-		attachInterrupt(flow_5, sensor_5, RISING);
-		Meter5.reset();
+			attachInterrupt(digitalPinToInterrupt(19), sensor_5, RISING);
+		//attachInterrupt(flow_5, sensor_5, RISING);
+		Meter5->reset();
 	}
 
 
@@ -166,14 +167,11 @@ bool FlowSensorNetworkManager::updateValues(){
 	bool meter5Status=false;
 	//serial.println("in updatevalues flowsensor");
 	meter0Status = updateMeter(Meter0, 0,meter0InEvent, aFlowMeter0EventDataUnion,currentSampleIndexMeter0, withDistributionPoint);
-	if(aFlowSensorNetworkConfigParams.sensor_1.interruptNumber != FlowMeterDefinition::NOT_USED)meter1Status=updateMeter(Meter1,1, meter1InEvent, aFlowMeter1EventDataUnion,currentSampleIndexMeter1, false);
-
-
-	if(aFlowSensorNetworkConfigParams.sensor_1.interruptNumber != FlowMeterDefinition::NOT_USED)meter1Status=updateMeter(Meter1,1, meter1InEvent, aFlowMeter1EventDataUnion,currentSampleIndexMeter1, false);
-	if(aFlowSensorNetworkConfigParams.sensor_2.interruptNumber != FlowMeterDefinition::NOT_USED)meter1Status=updateMeter(Meter2,1, meter2InEvent, aFlowMeter2EventDataUnion,currentSampleIndexMeter2, false);
-	if(aFlowSensorNetworkConfigParams.sensor_3.interruptNumber != FlowMeterDefinition::NOT_USED)meter1Status=updateMeter(Meter3,1, meter3InEvent, aFlowMeter3EventDataUnion,currentSampleIndexMeter3, false);
-	if(aFlowSensorNetworkConfigParams.sensor_4.interruptNumber != FlowMeterDefinition::NOT_USED)meter1Status=updateMeter(Meter4,1, meter4InEvent, aFlowMeter4EventDataUnion,currentSampleIndexMeter4, false);
-	if(aFlowSensorNetworkConfigParams.sensor_5.interruptNumber != FlowMeterDefinition::NOT_USED)meter1Status=updateMeter(Meter5,1, meter5InEvent, aFlowMeter5EventDataUnion,currentSampleIndexMeter4, false);
+	if(Meter1!= nullptr)meter1Status=updateMeter(*Meter1,1, meter1InEvent, aFlowMeter1EventDataUnion,currentSampleIndexMeter1, false);
+	if(Meter2!= nullptr)meter1Status=updateMeter(*Meter2,2, meter2InEvent, aFlowMeter2EventDataUnion,currentSampleIndexMeter2, false);
+	if(Meter3!= nullptr)meter1Status=updateMeter(*Meter3,3, meter3InEvent, aFlowMeter3EventDataUnion,currentSampleIndexMeter3, false);
+	if(Meter4!= nullptr)meter1Status=updateMeter(*Meter4,4, meter4InEvent, aFlowMeter4EventDataUnion,currentSampleIndexMeter4, false);
+	if(Meter5!= nullptr)meter1Status=updateMeter(*Meter5,5, meter5InEvent, aFlowMeter5EventDataUnion,currentSampleIndexMeter5, false);
 
 
 	bool ret =  meter0Status || meter1Status || meter2Status|| meter3Status || meter4Status || meter5Status;
@@ -266,9 +264,9 @@ bool FlowSensorNetworkManager::updateMeter(FlowMeter & meter, uint8_t meterId,bo
 			dataStorageManager.openEventRecordFile(flowMeterEventUnstraferedFileName, sizeof(aFlowMeterEventDataUnion.aFlowMeterEventData));
 			bool savedOk = dataStorageManager.storeEventRecord(EventsDirName,flowMeterEventUnstraferedFileName, eventData, sizeof(aFlowMeterEventDataUnion.aFlowMeterEventData) );
 
-//			serial.print("saving flow event with averageflow=");
-//			serial.println(aFlowMeterEventDataUnion.aFlowMeterEventData.averageflow);
-//			//			serial.print(" savedOk=");
+			//			serial.print("saving flow event with averageflow=");
+			//			serial.println(aFlowMeterEventDataUnion.aFlowMeterEventData.averageflow);
+			//			//			serial.print(" savedOk=");
 			//			serial.println(savedOk);
 
 			aFlowMeterEventDataUnion.aFlowMeterEventData.reset();
@@ -299,19 +297,19 @@ float FlowSensorNetworkManager::getMeterCurrentFlow(uint8_t meterIndex){
 		flowRate = Meter0.getCurrentFlowrate();
 		break;
 	case 1:
-		if(aFlowSensorNetworkConfigParams.sensor_1.interruptNumber != FlowMeterDefinition::NOT_USED)flowRate = Meter1.getCurrentFlowrate();
+		if(Meter1!=nullptr)flowRate = Meter1->getCurrentFlowrate();
 		break;
 	case 2:
-		if(aFlowSensorNetworkConfigParams.sensor_2.interruptNumber != FlowMeterDefinition::NOT_USED)flowRate = Meter2.getCurrentFlowrate();
+		if(Meter2!=nullptr)flowRate = Meter2->getCurrentFlowrate();
 		break;
 	case 3:
-		if(aFlowSensorNetworkConfigParams.sensor_3.interruptNumber != FlowMeterDefinition::NOT_USED)flowRate = Meter3.getCurrentFlowrate();
+		if(Meter3!=nullptr)flowRate = Meter3->getCurrentFlowrate();
 		break;
 	case 4:
-		if(aFlowSensorNetworkConfigParams.sensor_4.interruptNumber != FlowMeterDefinition::NOT_USED)flowRate = Meter4.getCurrentFlowrate();
+		if(Meter4!=nullptr)flowRate = Meter4->getCurrentFlowrate();
 		break;
 	case 10:
-		if(aFlowSensorNetworkConfigParams.sensor_5.interruptNumber != FlowMeterDefinition::NOT_USED)flowRate = Meter5.getCurrentFlowrate();
+		if(Meter5!=nullptr)flowRate = Meter5->getCurrentFlowrate();
 		break;
 
 	default:
@@ -332,21 +330,20 @@ float FlowSensorNetworkManager::getMeterCurrentVolume(uint8_t meterIndex){
 		currentVolume = Meter0.getCurrentFlowrate();
 		break;
 	case 1:
-		if(aFlowSensorNetworkConfigParams.sensor_1.interruptNumber != FlowMeterDefinition::NOT_USED)currentVolume = Meter1.getCurrentVolume();
+		if(Meter1!=nullptr)currentVolume = Meter1->getCurrentVolume();
 		break;
 	case 2:
-		if(aFlowSensorNetworkConfigParams.sensor_2.interruptNumber != FlowMeterDefinition::NOT_USED)currentVolume = Meter2.getCurrentVolume();
+		if(Meter2!=nullptr)currentVolume = Meter2->getCurrentVolume();
 		break;
 	case 3:
-		if(aFlowSensorNetworkConfigParams.sensor_3.interruptNumber != FlowMeterDefinition::NOT_USED)currentVolume = Meter3.getCurrentVolume();
+		if(Meter3!=nullptr)currentVolume = Meter3->getCurrentVolume();
 		break;
 	case 4:
-		if(aFlowSensorNetworkConfigParams.sensor_4.interruptNumber != FlowMeterDefinition::NOT_USED)currentVolume = Meter4.getCurrentVolume();
+		if(Meter4!=nullptr)currentVolume = Meter4->getCurrentVolume();
 		break;
 	case 10:
-		if(aFlowSensorNetworkConfigParams.sensor_5.interruptNumber != FlowMeterDefinition::NOT_USED)currentVolume = Meter5.getCurrentVolume();
+		if(Meter5!=nullptr)currentVolume = Meter5->getCurrentVolume();
 		break;
-
 	default:
 		currentVolume=0.0;
 		break;
@@ -359,24 +356,24 @@ void  FlowSensorNetworkManager::sensor_0(){
 }
 
 void FlowSensorNetworkManager::sensor_1(){
-	if(aFlowSensorNetworkConfigParams.sensor_1.interruptNumber != FlowMeterDefinition::NOT_USED)Meter1.count();
+	if(Meter1!=nullptr)Meter1->count();
 }
 
 void FlowSensorNetworkManager::sensor_2(){
-	if(aFlowSensorNetworkConfigParams.sensor_2.interruptNumber != FlowMeterDefinition::NOT_USED)Meter2.count();
+	if(Meter2!=nullptr)Meter2->count();
 }
 
 void FlowSensorNetworkManager::sensor_3(){
-	if(aFlowSensorNetworkConfigParams.sensor_3.interruptNumber != FlowMeterDefinition::NOT_USED)Meter3.count();
+	if(Meter3!=nullptr)Meter3->count();
 }
 
 void FlowSensorNetworkManager::sensor_4(){
-	if(aFlowSensorNetworkConfigParams.sensor_4.interruptNumber != FlowMeterDefinition::NOT_USED)Meter4.count();
+	if(Meter4!=nullptr)Meter4->count();
 }
 
 void FlowSensorNetworkManager::sensor_5(){
 
-	if(aFlowSensorNetworkConfigParams.sensor_5.interruptNumber != FlowMeterDefinition::NOT_USED)Meter5.count();
+	if(Meter5!=nullptr)Meter5->count();
 }
 
 

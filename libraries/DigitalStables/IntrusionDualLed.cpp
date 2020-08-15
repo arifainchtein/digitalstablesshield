@@ -9,7 +9,7 @@
 #include <Adafruit_NeoPixel.h>
 #define LED_COUNT      2
 #define LED_PIN 14
-
+#define DELAYVAL 500
 Adafruit_NeoPixel intrusionleds = Adafruit_NeoPixel(LED_COUNT, LED_PIN, NEO_GRB);
 
 
@@ -56,7 +56,7 @@ void IntrusionDualLed::setColor(unsigned char pin, uint8_t red, uint8_t green, u
 
 	intrusionleds.setPixelColor(pin, intrusionleds.Color(green,red, blue));
 	intrusionleds.show();
-	delay(500);
+	delay(DELAYVAL);
 }
 
 void IntrusionDualLed::refreshValue(uint8_t pin,uint8_t red,uint8_t green, uint8_t blue ){
@@ -65,6 +65,27 @@ void IntrusionDualLed::refreshValue(uint8_t pin,uint8_t red,uint8_t green, uint8
 	intrusionleds.show();
 }
 
+void IntrusionDualLed::blink(unsigned char pin, String color){
+	for(int i=0;i<2;i++){
+		setStatusColor(pin, color);
+		delay(DELAYVAL);
+		setStatusColor(pin, "off");
+
+	}
+}
+
+void IntrusionDualLed::loopOverPrimaries(unsigned char pin){
+	setStatusColor(pin, "danger");
+	delay(DELAYVAL);
+	setStatusColor(pin, "warning");
+	delay(DELAYVAL);
+	setStatusColor(pin, "success");
+	delay(DELAYVAL);
+	setStatusColor(pin, "off");
+	delay(DELAYVAL);
+
+
+}
 IntrusionDualLed::~IntrusionDualLed() {
 	// TODO Auto-generated destructor stub
 }

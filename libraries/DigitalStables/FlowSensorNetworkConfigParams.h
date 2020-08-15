@@ -18,14 +18,14 @@ public:
 	bool withCentralWaste=false;
 
 	FlowMeterDefinition & sensor_0;
-	FlowMeterDefinition & sensor_1;
-	FlowMeterDefinition & sensor_2;
-	FlowMeterDefinition & sensor_3;
-	FlowMeterDefinition & sensor_4;
-	FlowMeterDefinition & sensor_5;
+	FlowMeterDefinition * sensor_1;
+	FlowMeterDefinition * sensor_2;
+	FlowMeterDefinition * sensor_3;
+	FlowMeterDefinition * sensor_4;
+	FlowMeterDefinition * sensor_5;
 
 	FlowSensorNetworkConfigParams(uint8_t n,int s,bool wd,bool wc,
-			FlowMeterDefinition& s0,FlowMeterDefinition & s1,FlowMeterDefinition & s2,FlowMeterDefinition & s3,FlowMeterDefinition & s4,FlowMeterDefinition & s5);
+			FlowMeterDefinition& s0,FlowMeterDefinition * s1=nullptr,FlowMeterDefinition* s2=nullptr,FlowMeterDefinition * s3=nullptr,FlowMeterDefinition * s4=nullptr,FlowMeterDefinition * s5=nullptr);
 	virtual ~FlowSensorNetworkConfigParams();
 };
 

@@ -26,6 +26,13 @@ class FlowSensorNetworkManager {
 
 public:
 
+	static FlowMeter  Meter0;// = nullptr;
+	static FlowMeter * Meter1;// = nullptr;
+	static FlowMeter * Meter2;// = nullptr;
+	static FlowMeter * Meter3;// = nullptr;
+	static FlowMeter * Meter4;// = nullptr;
+	static FlowMeter * Meter5;// = nullptr;
+
 
 	struct FlowSensorStatusStruct{
 		  uint8_t meterId;
@@ -43,6 +50,7 @@ public:
 	static void sensor_3();
 	static void sensor_4();
 	static void sensor_5();
+
 	void setSampleFrequencySeconds(int s);
 	bool updateValues();
 	float getMeterCurrentFlow(uint8_t meterIndex);
