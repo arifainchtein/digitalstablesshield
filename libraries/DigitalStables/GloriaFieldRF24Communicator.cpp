@@ -36,7 +36,7 @@ long currentTime = 0L;
 bool sendBaseData=false;
 
 
-GloriaFieldRF24Communicator::GloriaFieldRF24Communicator(LCDDisplay & l, TimeManager t) : lcd(l), timeManager(t){
+GloriaFieldRF24Communicator::GloriaFieldRF24Communicator(LCDDisplay & l, TimeManager & t) : lcd(l), timeManager(t){
 	// TODO Auto-generated constructor stub
 
 }

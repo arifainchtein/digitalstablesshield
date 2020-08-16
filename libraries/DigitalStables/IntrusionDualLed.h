@@ -17,6 +17,7 @@ public:
 	void setStatusColor(unsigned char pin, String color );
 	void setColor(unsigned char pin, uint8_t red, uint8_t green, uint8_t blue );
 	void loopOverPrimaries(unsigned char pin);
+	void loopOverPrimaries();
 	void blink(unsigned char pin, String color);
 
 

@@ -20,14 +20,6 @@ IntrusionDualLed::IntrusionDualLed() {
 
 void IntrusionDualLed::start(){
 	intrusionleds.begin();
-	uint8_t red=0;
-	uint8_t green=255;
-	uint8_t blue=255;
-
-	intrusionleds.setPixelColor(0, intrusionleds.Color(green,red, blue));
-	intrusionleds.setPixelColor(1, intrusionleds.Color(green,red, blue));
-	intrusionleds.show();
-
 }
 
 void IntrusionDualLed::setStatusColor(unsigned char pin, String color ){
@@ -56,7 +48,7 @@ void IntrusionDualLed::setColor(unsigned char pin, uint8_t red, uint8_t green, u
 
 	intrusionleds.setPixelColor(pin, intrusionleds.Color(green,red, blue));
 	intrusionleds.show();
-	delay(DELAYVAL);
+	//delay(DELAYVAL);
 }
 
 void IntrusionDualLed::refreshValue(uint8_t pin,uint8_t red,uint8_t green, uint8_t blue ){
@@ -83,9 +75,26 @@ void IntrusionDualLed::loopOverPrimaries(unsigned char pin){
 	delay(DELAYVAL);
 	setStatusColor(pin, "off");
 	delay(DELAYVAL);
+}
+
+void IntrusionDualLed::loopOverPrimaries(){
+	setStatusColor(0, "danger");
+	setStatusColor(1, "danger");
+	delay(DELAYVAL);
+	setStatusColor(0, "warning");
+	setStatusColor(1, "warning");
+	delay(DELAYVAL);
+	setStatusColor(0, "success");
+	setStatusColor(1, "success");
+	delay(DELAYVAL);
+	setStatusColor(0, "off");
+	setStatusColor(1, "off");
+
+	delay(DELAYVAL);
 
 
 }
+
 IntrusionDualLed::~IntrusionDualLed() {
 	// TODO Auto-generated destructor stub
 }
