@@ -102,7 +102,8 @@ void FlowSensorNetworkManager::begin() {
 	withDistributionPoint=aFlowSensorNetworkConfigParams.withDistributionPoint;
 	Meter0 = FlowMeter(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber);
 	pinMode(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber, INPUT);
-	attachInterrupt(digitalPinToInterrupt(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber), sensor_0, RISING);
+	//attachInterrupt(digitalPinToInterrupt(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber), sensor_0, RISING);
+	attachInterrupt(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber, sensor_0, RISING);
 
 	if(numberOfWaterPoints>1 && aFlowSensorNetworkConfigParams.sensor_1!=nullptr){
 		uint8_t flow_1 = aFlowSensorNetworkConfigParams.sensor_1->interruptNumber;
