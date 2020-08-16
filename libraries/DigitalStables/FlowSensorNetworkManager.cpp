@@ -102,14 +102,14 @@ void FlowSensorNetworkManager::begin() {
 	withDistributionPoint=aFlowSensorNetworkConfigParams.withDistributionPoint;
 	Meter0 = FlowMeter(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber);
 	pinMode(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber, INPUT);
-	attachInterrupt(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber, sensor_0, RISING);
+	attachInterrupt(digitalPinToInterrupt(aFlowSensorNetworkConfigParams.sensor_0.interruptNumber), sensor_0, RISING);
 
 	if(numberOfWaterPoints>1 && aFlowSensorNetworkConfigParams.sensor_1!=nullptr){
 		uint8_t flow_1 = aFlowSensorNetworkConfigParams.sensor_1->interruptNumber;
 		Meter1 = new FlowMeter(flow_1);
 		pinMode(flow_1, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, RISING);
-		//attachInterrupt(flow_1, sensor_1, RISING);
+		//attachInterrupt(digitalPinToInterrupt(flow_1), sensor_1, RISING);
+		attachInterrupt(flow_1, sensor_1, RISING);
 		Meter1->reset();
 	}
 
@@ -117,8 +117,8 @@ void FlowSensorNetworkManager::begin() {
 		unsigned int flow_2 = aFlowSensorNetworkConfigParams.sensor_2->interruptNumber;
 		Meter2 = new FlowMeter(flow_2);
 		pinMode(flow_2, INPUT);
-		 attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, RISING);
-		//attachInterrupt(flow_2, sensor_2, RISING);
+		// attachInterrupt(digitalPinToInterrupt(flow_2), sensor_2, RISING);
+		attachInterrupt(flow_2, sensor_2, RISING);
 		Meter2->reset();
 
 	}
@@ -126,8 +126,8 @@ void FlowSensorNetworkManager::begin() {
 		uint8_t flow_3 = aFlowSensorNetworkConfigParams.sensor_3->interruptNumber;
 		Meter3 = new FlowMeter(flow_3);
 		pinMode(flow_3, INPUT);
-		attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, RISING);
-		//attachInterrupt(flow_3, sensor_3, RISING);
+		//attachInterrupt(digitalPinToInterrupt(flow_3), sensor_3, RISING);
+		attachInterrupt(flow_3, sensor_3, RISING);
 		Meter3->reset();
 
 	}
@@ -136,8 +136,8 @@ void FlowSensorNetworkManager::begin() {
 		Meter4 = new FlowMeter(flow_4);
 		pinMode(18, INPUT);;
 		//		attachInterrupt(INT3,sensor_4, RISING);
-			attachInterrupt(digitalPinToInterrupt(18), sensor_4, RISING);
-		//attachInterrupt(flow_4, sensor_4, RISING);
+		//	attachInterrupt(digitalPinToInterrupt(18), sensor_4, RISING);
+		attachInterrupt(flow_4, sensor_4, RISING);
 		Meter4->reset();
 
 	}
@@ -145,8 +145,8 @@ void FlowSensorNetworkManager::begin() {
 		uint8_t flow_5 = aFlowSensorNetworkConfigParams.sensor_5->interruptNumber;
 		Meter5 = new FlowMeter(flow_5);
 		pinMode(flow_5, INPUT);
-			attachInterrupt(digitalPinToInterrupt(19), sensor_5, RISING);
-		//attachInterrupt(flow_5, sensor_5, RISING);
+		//	attachInterrupt(digitalPinToInterrupt(19), sensor_5, RISING);
+		attachInterrupt(flow_5, sensor_5, RISING);
 		Meter5->reset();
 	}
 
