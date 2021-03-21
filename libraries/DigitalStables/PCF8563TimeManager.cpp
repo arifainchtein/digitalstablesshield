@@ -12,15 +12,9 @@ static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 #define PCF8563address 0x51
 
 
-PCF8563TimeManager::PCF8563TimeManager() {
-	// TODO Auto-generated constructor stub
-	 Wire.begin();
-	  Serial.begin(9600);
-
-}
 
 PCF8563TimeManager::PCF8563TimeManager( HardwareSerial& serial):TimeManager(serial ){
-
+	 Wire.begin();
 }
 
 void PCF8563TimeManager::hourlyTasks(long time, int previousHour ){
@@ -260,12 +254,12 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 }
 
 
-	byte bcdToDec(byte value)
+	byte PCF8563TimeManager::bcdToDec(byte value)
 	{
 	  return ((value / 16) * 10 + value % 16);
 	}
 
-	byte decToBcd(byte value){
+	byte PCF8563TimeManager::decToBcd(byte value){
 	  return (value / 10 * 16 + value % 10);
 	}
 
