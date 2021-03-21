@@ -40,7 +40,14 @@ public:
 	bool setTime(String);
 	void setPCF8563alarm();
 	void PCF8563alarmOff();
-
+	//
+	// oscillator functions
+	//
+	void PCF8563TimeManager::PCF8563oscOFF();
+	void PCF8563osc1Hz();
+	void PCF8563osc32Hz();
+	void PCF8563osc1024kHz();
+	void PCF8563osc32768kHz();
 
 	virtual ~PCF8563TimeManager();
 

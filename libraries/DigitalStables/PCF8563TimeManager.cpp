@@ -322,6 +322,53 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	}
 
 
+	//
+	// oscilators functions
+	//
+	void PCF8563TimeManager::PCF8563oscOFF()
+	// turns off oscillator
+	{
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x0D);
+	  Wire.write(0);
+	  Wire.endTransmission();
+	}
+
+	void PCF8563TimeManager::PCF8563osc1Hz()
+	// sets oscillator to 1 Hz
+	{
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x0D);
+	  Wire.write(B10000011);
+	  Wire.endTransmission();
+	}
+
+	void PCF8563TimeManager::PCF8563osc32Hz()
+	// sets oscillator to 32 kHz
+	{
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x0D);
+	  Wire.write(B10000010);
+	  Wire.endTransmission();
+	}
+
+	void PCF8563TimeManager::PCF8563osc1024kHz()
+	// sets oscillator to 1.024 kHz
+	{
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x0D);
+	  Wire.write(B10000001);
+	  Wire.endTransmission();
+	}
+
+	void PCF8563TimeManager::PCF8563osc32768kHz()
+	// sets oscillator to 32.768 kHz
+	{
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x0D);
+	  Wire.write(B10000000);
+	  Wire.endTransmission();
+	}
 PCF8563TimeManager::~PCF8563TimeManager() {
 	// TODO Auto-generated destructor stub
 }
