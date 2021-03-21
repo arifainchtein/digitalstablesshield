@@ -6,25 +6,30 @@
  */
 #include <Arduino.h>
 #include <GloriaFieldSensors.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <GloriaPinDefinition.h>
 
-int TMP36_PIN=A0;
+#define ONE_WIRE_BUS 2
+OneWire oneWire(DS18B20Z_DQ);
+DallasTemperature tempSensor(&oneWire);
+
+
 int TANK_WATER_LEVEL_PIN=A1;
 double tankHeight;
 double tankPerimiter;
 
 GloriaFieldSensors::GloriaFieldSensors() {
-	// TODO Auto-generated constructor stub
-
+	tempSensor.begin();
 }
+
 
 
 float GloriaFieldSensors::getTemperature(){
-  int reading = analogRead(TMP36_PIN);
-  float voltage = reading * 5.0;
-  voltage /= 1024.0; //comment
-  float temperatureC = (voltage - 0.5) * 100 ;  //converting from 10 mv per degree wit 500 mV offset
-  return temperatureC;
+	tempSensor.requestTemperatures();
+	return tempSensor.getTempCByIndex(0);
 }
+
 
 void GloriaFieldSensors::setTankHeight(double d){
 	tankHeight=d;

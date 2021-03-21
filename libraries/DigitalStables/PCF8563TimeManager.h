@@ -38,6 +38,10 @@ public:
 	//
 	bool printTimeToSerial();
 	bool setTime(String);
+	void setPCF8563alarm();
+	void PCF8563alarmOff();
+
+
 	virtual ~PCF8563TimeManager();
 
 private:

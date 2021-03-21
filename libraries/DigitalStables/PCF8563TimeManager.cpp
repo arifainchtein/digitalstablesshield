@@ -264,7 +264,60 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	}
 
 
+	void PCF8563TimeManager::setPCF8563alarm()
+	// this sets the alarm data to the PCF8563
+	{
+	  byte am, ah, ad, adow;
+	  am = decToBcd(alarmMinute); //alarmMinute
+	  am = am | 100000000; // set minute enable bit to on
+	  ah = decToBcd(alarmHour);
+	  ah = ah | 100000000; // set hour enable bit to on
+	  ad = decToBcd(alarmDay);
+	  ad = ad | 100000000; // set day of week alarm enable bit on
+	  adow = decToBcd(alarmDayOfWeek);
+	  adow = ad | 100000000; // set day of week alarm enable bit on
 
+	  // write alarm data to PCF8563
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x09);
+	  Wire.write(am);
+	  Wire.write(ah);
+
+	  // optional day of month and day of week (0~6 Sunday - Saturday)
+	  /*
+	  Wire.write(ad);
+	  Wire.write(adow);
+	  */
+	  Wire.endTransmission();
+
+	  // optional - turns on INT_ pin when alarm activated
+	  // will turn off once you run void PCF8563alarmOff()
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x01);
+	  Wire.write(B00000010);
+	  Wire.endTransmission();
+	}
+
+	void PCF8563TimeManager::PCF8563alarmOff()
+	// turns off alarm enable bits and wipes alarm registers.
+	{
+	  byte test;
+	  // first retrieve the value of control register 2
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x01);
+	  Wire.endTransmission();
+	  Wire.requestFrom(PCF8563address, 1);
+	  test = Wire.read();
+
+	  // set bit 3 "alarm flag" to 0
+	  test = test - B00001000;
+
+	  // now write new control register 2
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x01);
+	  Wire.write(test);
+	  Wire.endTransmission();
+	}
 
 
 PCF8563TimeManager::~PCF8563TimeManager() {
