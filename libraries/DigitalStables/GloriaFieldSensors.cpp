@@ -21,7 +21,7 @@ GloriaFieldSensors::GloriaFieldSensors() {
 float GloriaFieldSensors::getTemperature(){
   int reading = analogRead(TMP36_PIN);
   float voltage = reading * 5.0;
-  voltage /= 1024.0;
+  voltage /= 1024.0; //comment
   float temperatureC = (voltage - 0.5) * 100 ;  //converting from 10 mv per degree wit 500 mV offset
   return temperatureC;
 }
