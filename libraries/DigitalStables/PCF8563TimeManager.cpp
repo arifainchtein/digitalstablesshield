@@ -15,6 +15,8 @@ static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
 PCF8563TimeManager::PCF8563TimeManager( HardwareSerial& serial):TimeManager(serial ){
 	 Wire.begin();
+
+
 }
 
 void PCF8563TimeManager::hourlyTasks(long time, int previousHour ){
@@ -268,20 +270,20 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	// this sets the alarm data to the PCF8563
 	{
 	  byte am, ah, ad, adow;
-	  am = decToBcd(alarmMinute); //alarmMinute
+	  am = decToBcd(1); //alarmMinute
 	  am = am | 100000000; // set minute enable bit to on
-	  ah = decToBcd(alarmHour);
-	  ah = ah | 100000000; // set hour enable bit to on
-	  ad = decToBcd(alarmDay);
-	  ad = ad | 100000000; // set day of week alarm enable bit on
-	  adow = decToBcd(alarmDayOfWeek);
-	  adow = ad | 100000000; // set day of week alarm enable bit on
+//	  ah = decToBcd(alarmHour);
+//	  ah = ah | 100000000; // set hour enable bit to on
+//	  ad = decToBcd(alarmDay);
+//	  ad = ad | 100000000; // set day of week alarm enable bit on
+//	  adow = decToBcd(alarmDayOfWeek);
+//	  adow = ad | 100000000; // set day of week alarm enable bit on
 
 	  // write alarm data to PCF8563
 	  Wire.beginTransmission(PCF8563address);
 	  Wire.write(0x09);
 	  Wire.write(am);
-	  Wire.write(ah);
+	//  Wire.write(ah);
 
 	  // optional day of month and day of week (0~6 Sunday - Saturday)
 	  /*
