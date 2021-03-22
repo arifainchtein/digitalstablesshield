@@ -10,6 +10,11 @@
 #include <Arduino.h>
 
 class Timer {
+
+	uint16_t current=0;
+	uint16_t duration;
+	bool active=false;
+
 public:
 	Timer(uint16_t duration);
 	void start();

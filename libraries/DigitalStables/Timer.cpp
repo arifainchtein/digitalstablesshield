@@ -6,10 +6,7 @@
  */
 
 #include <Timer.h>
-bool status=false;
-uint16_t current=0;
-uint16_t duration;
-bool active=false;
+
 
 Timer::Timer(uint16_t d) {
 	duration=d;
@@ -28,6 +25,7 @@ uint16_t Timer::tick(){
 	if(active)current=current+1;
 	return current;
 }
+
 bool Timer::status(){
 	if(active && current>=duration)return true;
 	else return false;
