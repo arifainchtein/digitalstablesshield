@@ -38,7 +38,7 @@ public:
 	//
 	bool printTimeToSerial();
 	bool setTime(String);
-	void setPCF8563alarm();
+	void setPCF8563alarm(byte am, byte ah);
 	void PCF8563alarmOff();
 	bool checkPCF8563alarm();
 	//
