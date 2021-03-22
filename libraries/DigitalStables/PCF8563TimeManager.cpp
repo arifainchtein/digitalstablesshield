@@ -265,12 +265,33 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	  return (value / 10 * 16 + value % 10);
 	}
 
+	void PCF8563TimeManager::checkPCF8563alarm()
+	// checks if the alarm has been activated
+	{
+	  byte test;
+	  // get the contents from control register #2 and place in byte test;
+	  Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x01);
+	  Wire.endTransmission();
+	  Wire.requestFrom(PCF8563address, 1);
+	  test = Wire.read();
+	  test = test & B00001000; // isolate the alarm flag bit
+	  if (test == B00001000) // alarm on?
+	  {
+	    // alarm! Do something to tell the user
+	    Serial.println("** alarm **");
+	    delay(2000);
+
+	    // turn off the alarm
+	   //PCF8563alarmOff();
+	  }
+	}
 
 	void PCF8563TimeManager::setPCF8563alarm()
 	// this sets the alarm data to the PCF8563
 	{
 	  byte am, ah, ad, adow;
-	  am = decToBcd(28); //alarmMinute
+	  am = decToBcd(0); //alarmMinute
 	  am = am | 100000000; // set minute enable bit to on
 	  ah = decToBcd(0);
 	  ah = ah | 100000000; // set hour enable bit to on
