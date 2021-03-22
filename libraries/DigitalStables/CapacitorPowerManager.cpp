@@ -326,16 +326,12 @@ float CapacitorPowerManager::getEnergyStorageVoltage(){ // Returns actual value 
 
 #if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
      // For mega boards
-     Serial.println(F("Using 1280/2560 Bandgap for calculations "));
-     Serial.println();
      const long InternalReferenceVoltage = 1100L;  // Adjust this value to your boards specific internal BG voltage x1000
         // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc reference
         // MUX4 MUX3 MUX2 MUX1 MUX0  --> 11110 1.1V (VBG)         -Selects channel 30, bandgap voltage, to measure
      ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR)| (0<<MUX5) | (1<<MUX4) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
 #elif defined(__AVR_ATmega1284__) || defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__)
      // For 1284/644
-     Serial.println(F("Using 1284/644 Bandgap for calculations "));
-     Serial.println();
      const long InternalReferenceVoltage = 1115L;  // Adjust this value to your boards specific internal BG voltage x1000
         // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc reference
         // MUX4 MUX3 MUX2 MUX1 MUX0  --> 11110 1.1V (VBG)         -Selects channel 30, bandgap voltage, to measure
