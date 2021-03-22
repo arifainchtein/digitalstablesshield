@@ -270,7 +270,7 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	// this sets the alarm data to the PCF8563
 	{
 	  byte am, ah, ad, adow;
-	  am = decToBcd(1); //alarmMinute
+	  am = decToBcd(0); //alarmMinute
 	  am = am | 100000000; // set minute enable bit to on
 	  ah = decToBcd(0);
 	  ah = ah | 100000000; // set hour enable bit to on
