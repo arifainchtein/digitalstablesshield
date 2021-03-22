@@ -7,19 +7,23 @@
 
 #include <Timer.h>
 bool status=false;
-long startTime;
+uint16_t current=0;
 uint16_t duration;
 Timer::Timer() {
 	// TODO Auto-generated constructor stub
 
 }
 void Timer::start(uint16_t d){
-	startTime = millis();
 	duration=d;
 }
-
+void Timer::reset(){
+	current=0;
+}
+void Timer::tick(){
+	current++;
+}
 bool Timer::status(){
-	if(millis()>startTime+duration)return true;
+	if(current>duration)return true;
 	else return false;
 }
 

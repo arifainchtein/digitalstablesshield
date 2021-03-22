@@ -14,6 +14,8 @@ public:
 	Timer();
 	void start(uint16_t duration);
 	bool status();
+	void tick();
+	void reset();
 	virtual ~Timer();
 };
 
