@@ -24,8 +24,9 @@ void Timer::stop(){
 void Timer::reset(){
 	current=0;
 }
-void Timer::tick(){
+uint16_t Timer::tick(){
 	if(active)current++;
+	return current;
 }
 bool Timer::status(){
 	if(active && current>=duration)return true;
