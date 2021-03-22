@@ -11,11 +11,12 @@
 
 class Timer {
 public:
-	Timer();
-	void start(uint16_t duration);
+	Timer(uint16_t duration);
+	void start();
 	bool status();
 	void tick();
 	void reset();
+	void stop();
 	virtual ~Timer();
 };
 

@@ -9,21 +9,26 @@
 bool status=false;
 uint16_t current=0;
 uint16_t duration;
-Timer::Timer() {
-	// TODO Auto-generated constructor stub
+bool active=false;
 
-}
-void Timer::start(uint16_t d){
+Timer::Timer(uint16_t d) {
 	duration=d;
+}
+void Timer::start(){
+
+	active=true;
+}
+void Timer::stop(){
+	active=false;
 }
 void Timer::reset(){
 	current=0;
 }
 void Timer::tick(){
-	current++;
+	if(active)current++;
 }
 bool Timer::status(){
-	if(current>duration)return true;
+	if(current>=duration)return true;
 	else return false;
 }
 
