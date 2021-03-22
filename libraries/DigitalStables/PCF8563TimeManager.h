@@ -40,7 +40,7 @@ public:
 	bool setTime(String);
 	void setPCF8563alarm();
 	void PCF8563alarmOff();
-	void checkPCF8563alarm();
+	bool checkPCF8563alarm();
 	//
 	// oscillator functions
 	//

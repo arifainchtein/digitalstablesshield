@@ -265,7 +265,7 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	  return (value / 10 * 16 + value % 10);
 	}
 
-	void PCF8563TimeManager::checkPCF8563alarm()
+	bool PCF8563TimeManager::checkPCF8563alarm()
 	// checks if the alarm has been activated
 	{
 	  byte test;
@@ -276,15 +276,15 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	  Wire.requestFrom(PCF8563address, 1);
 	  test = Wire.read();
 	  test = test & B00001000; // isolate the alarm flag bit
-	  if (test == B00001000) // alarm on?
-	  {
-	    // alarm! Do something to tell the user
-	    Serial.println("** alarm **");
-	    delay(2000);
-
-	    // turn off the alarm
-	   //PCF8563alarmOff();
-	  }
+	 return (test == B00001000) ;// alarm on?
+//	  {
+//	    // alarm! Do something to tell the user
+//	    Serial.println("** alarm **");
+//	    delay(2000);
+//
+//	    // turn off the alarm
+//	   //PCF8563alarmOff();
+//	  }
 	}
 
 	void PCF8563TimeManager::setPCF8563alarm()
