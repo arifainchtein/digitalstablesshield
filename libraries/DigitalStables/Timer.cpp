@@ -28,7 +28,7 @@ void Timer::tick(){
 	if(active)current++;
 }
 bool Timer::status(){
-	if(current>=duration)return true;
+	if(active && current>=duration)return true;
 	else return false;
 }
 
