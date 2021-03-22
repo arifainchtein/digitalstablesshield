@@ -25,7 +25,7 @@ void Timer::reset(){
 	current=0;
 }
 uint16_t Timer::tick(){
-	if(active)current++;
+	if(active)current=current+1;
 	return current;
 }
 bool Timer::status(){
