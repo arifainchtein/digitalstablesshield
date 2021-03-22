@@ -272,8 +272,8 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	  byte am, ah, ad, adow;
 	  am = decToBcd(1); //alarmMinute
 	  am = am | 100000000; // set minute enable bit to on
-//	  ah = decToBcd(alarmHour);
-//	  ah = ah | 100000000; // set hour enable bit to on
+	  ah = decToBcd(0);
+	  ah = ah | 100000000; // set hour enable bit to on
 //	  ad = decToBcd(alarmDay);
 //	  ad = ad | 100000000; // set day of week alarm enable bit on
 //	  adow = decToBcd(alarmDayOfWeek);
@@ -283,7 +283,7 @@ String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedT
 	  Wire.beginTransmission(PCF8563address);
 	  Wire.write(0x09);
 	  Wire.write(am);
-	//  Wire.write(ah);
+	  Wire.write(ah);
 
 	  // optional day of month and day of week (0~6 Sunday - Saturday)
 	  /*
