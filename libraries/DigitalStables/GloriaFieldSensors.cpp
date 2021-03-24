@@ -89,7 +89,6 @@ float GloriaFieldSensors::getTemperature(){
 	        return celsius;
 	}
 
-}
 
 void GloriaFieldSensors::setTankHeight(double d){
 	tankHeight=d;
