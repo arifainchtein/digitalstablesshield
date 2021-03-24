@@ -10,21 +10,20 @@
 #include <DallasTemperature.h>
 #include <GloriaPinDefinition.h>
 
-#define ONE_WIRE_BUS 2
 OneWire oneWire(DS18B20Z_DQ);
 DallasTemperature tempSensor(&oneWire);
 
 
-int TANK_WATER_LEVEL_PIN=A1;
 double tankHeight;
 double tankPerimiter;
 
 GloriaFieldSensors::GloriaFieldSensors() {
-	tempSensor.begin();
+
 }
 
-
-
+void GloriaFieldSensors::start(){
+	tempSensor.begin();
+}
 float GloriaFieldSensors::getTemperature(){
 	tempSensor.requestTemperatures();
 	return tempSensor.getTempCByIndex(0);

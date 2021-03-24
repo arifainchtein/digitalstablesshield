@@ -15,7 +15,7 @@ public:
 	void setTankPerimiter(double);
 	void setTankHeight(double);
 	double getTankWaterCurrentVolume();
-
+	void start();
 	float getTemperature();//{
 	float getSourceVoltage(void);// Returns actual value of Vcc (x 100)
 	double getTankWaterLevel();
