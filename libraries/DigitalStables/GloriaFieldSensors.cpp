@@ -26,6 +26,7 @@ void GloriaFieldSensors::start(){
 }
 float GloriaFieldSensors::getTemperature(){
 	tempSensor.requestTemperatures();
+	delay(100);
 	return tempSensor.getTempCByIndex(0);
 }
 
