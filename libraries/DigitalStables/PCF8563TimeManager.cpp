@@ -98,7 +98,7 @@ RTCInfoRecord PCF8563TimeManager::now(){
 
 bool PCF8563TimeManager::printTimeToSerial(){
 
-	RTCInfoRecord aRTCInfoRecord = getCurrentDateTime();
+	RTCInfoRecord aRTCInfoRecord = now();
 
 	_HardSerial.print(aRTCInfoRecord.date);
 	_HardSerial.print("/");
@@ -170,7 +170,7 @@ long PCF8563TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t dat
 
 long PCF8563TimeManager::getTimeForCodeGeneration(){
 
-	RTCInfoRecord anRTCInfoRecord =getCurrentDateTime();
+	RTCInfoRecord anRTCInfoRecord =now();
 	uint8_t seconds = anRTCInfoRecord.second+SECONDOFFSET;
 	uint8_t month = anRTCInfoRecord.month-1;
 	uint16_t year = anRTCInfoRecord.year;
@@ -183,29 +183,13 @@ long PCF8563TimeManager::getTimeForCodeGeneration(){
 
 
 long PCF8563TimeManager::getCurrentTimeInSeconds(){
-	RTCInfoRecord anRTCInfoRecord =getCurrentDateTime();
+	RTCInfoRecord anRTCInfoRecord =now();
 
 	int month = anRTCInfoRecord.month-1;
 	long now=dateAsSeconds(anRTCInfoRecord.year, month, anRTCInfoRecord.date, anRTCInfoRecord.hour, anRTCInfoRecord.minute, anRTCInfoRecord.second);
 	return now;
 }
 
-String PCF8563TimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
-	//String seconds = String(elapsedTime % 60);
-	long seconds = elapsedTime/1000;
-	int minutes = (seconds % 3600) / 60;
-	String minP ="";
-	if(minutes<10)minP="0";
-
-
-	int hours = seconds / 3600;
-	String hoursS = "";
-	if(hours<10)hoursS="0";
-
-
-	String time =  hoursS + hours + ":" + minP + minutes;// + ":" + seconds;
-	return time;
-}
 
 
 	byte PCF8563TimeManager::bcdToDec(byte value)

@@ -33,12 +33,8 @@ class TimeManager{
 		virtual void monthlyTasks(long time)=0;
 		virtual void yearlyTasks(long time)=0;
 		virtual long getCurrentTimeInSeconds()=0;
-		virtual String getElapsedTimeHoursMinutesSecondsString(long elapsedTime)=0;
-		virtual RTCInfoRecord getCurrentDateTime()=0;
+		virtual RTCInfoRecord now()=0;
 		virtual long getTimeForCodeGeneration()=0;
-		virtual String getCurrentTimeForDisplay(bool showSec)=0;
-		virtual String getCurrentDateTimeForDisplay()=0;
-		virtual String getCurrentDateForDisplay()=0;
 		//
 		// Functions that represent Serial commands
 		//
