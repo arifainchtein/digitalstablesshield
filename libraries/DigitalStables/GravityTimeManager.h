@@ -25,13 +25,9 @@ public:
 	void monthlyTasks(long time);
 	void yearlyTasks(long time);
 	long getCurrentTimeInSeconds();
-	String getElapsedTimeHoursMinutesSecondsString(long elapsedTime);
-	RTCInfoRecord getCurrentDateTime();
+	RTCInfoRecord now();
 	long getTimeForCodeGeneration();
-	String getCurrentTimeForDisplay(bool showSec);
-	String getCurrentDateTimeForDisplay();
-	String getCurrentDateForDisplay();
-	//
+		//
 	// Functions that represent Serial commands
 	//
 	bool printTimeToSerial();

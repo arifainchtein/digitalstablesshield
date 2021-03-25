@@ -144,57 +144,11 @@ long GravityTimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t dat
 	return seconds;
 }
 
-String GravityTimeManager::getCurrentTimeForDisplay(bool showSecs){
-	rtc.read();
-	String displayTime =  "";
-
-	displayTime.concat(rtc.hour);
-	displayTime.concat(":");
-	displayTime.concat(rtc.minute);
-	if(showSecs){
-		displayTime.concat(":");
-		displayTime.concat(rtc.second);
-	}
-
-	return displayTime;
-}
-
-String GravityTimeManager::getCurrentDateTimeForDisplay(){
-	rtc.read();
-	String displayTime =  "";
-	displayTime.concat(rtc.day);
-	displayTime.concat("/");
-	displayTime.concat(rtc.month);
-	displayTime.concat("/");
-	int year = rtc.year-2000;
-	displayTime.concat(year);
-	displayTime.concat(" ");
-	displayTime.concat(rtc.hour);
-	displayTime.concat(":");
-	displayTime.concat(rtc.minute);
-	displayTime.concat(":");
-	displayTime.concat(rtc.second);
-
-	return displayTime;
-}
-
-String GravityTimeManager::getCurrentDateForDisplay(){
-	rtc.read();
-	String displayTime =  "";
-	displayTime.concat(rtc.day);
-	displayTime.concat("/");
-	displayTime.concat(rtc.month);
-	displayTime.concat("/");
-	int year = rtc.year-2000;
-	displayTime.concat(year);
-
-	return displayTime;
-}
 
 
 long GravityTimeManager::getTimeForCodeGeneration(){
 
-	RTCInfoRecord anRTCInfoRecord =getCurrentDateTime();
+	RTCInfoRecord anRTCInfoRecord =now();
 	uint8_t seconds = anRTCInfoRecord.second+SECONDOFFSET;
 	uint8_t month = anRTCInfoRecord.month-1;
 	uint16_t year = anRTCInfoRecord.year;
@@ -211,7 +165,7 @@ long GravityTimeManager::getTimeForCodeGeneration(){
 
 
 
-RTCInfoRecord GravityTimeManager::getCurrentDateTime(){
+RTCInfoRecord GravityTimeManager::now(){
 	RTCInfoRecord aRTCInfoRecord;
 	rtc.read();
 	aRTCInfoRecord.date=rtc.day;
@@ -231,19 +185,4 @@ long GravityTimeManager::getCurrentTimeInSeconds(){
 	return now;
 }
 
-String GravityTimeManager::getElapsedTimeHoursMinutesSecondsString(long elapsedTime) {
-	//String seconds = String(elapsedTime % 60);
-	long seconds = elapsedTime/1000;
-	int minutes = (seconds % 3600) / 60;
-	String minP ="";
-	if(minutes<10)minP="0";
 
-
-	int hours = seconds / 3600;
-	String hoursS = "";
-	if(hours<10)hoursS="0";
-
-
-	String time =  hoursS + hours + ":" + minP + minutes;// + ":" + seconds;
-	return time;
-}

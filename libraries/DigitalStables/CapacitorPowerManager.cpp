@@ -353,7 +353,7 @@ float CapacitorPowerManager::getEnergyStorageVoltage(){ // Returns actual value 
      while( ( (ADCSRA & (1<<ADSC)) != 0 ) );
         // Scale the value
      float  results = (((InternalReferenceVoltage * 1023L) / ADC) + 5L) / 10L; // calculates for straight line value
-     return results;
+     return results/100;
 
     }
 
