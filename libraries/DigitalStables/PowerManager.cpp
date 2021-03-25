@@ -398,10 +398,21 @@ bool PowerManager::processDefaultCommands(String command){
 		processed=true;
 
 	}else if(command.startsWith("GetTime")){
-		String time = timeManager.getCurrentDateTimeForDisplay();
-		_HardSerial.println(time);
+
+		RTCInfoRecord r = timeManager.now();
+		_HardSerial.print(r.date);
+		_HardSerial.print(F("/"));
+		_HardSerial.print(r.month);
+		_HardSerial.print(F("/"));
+		_HardSerial.print(r.year);
+		_HardSerial.print(F(" "));
+		_HardSerial.print(r.hour);
+		_HardSerial.print(F(":"));
+		_HardSerial.print(r.minute);
+		_HardSerial.print(F(":"));
+		_HardSerial.println(r.second);
 		_HardSerial.flush();
-		_HardSerial.println("Ok-GetTime");
+		_HardSerial.println(F("Ok-GetTime"));
 		_HardSerial.flush();
 		processed=true;
 	}else if(command.startsWith("VerifyUserCode")){

@@ -258,7 +258,7 @@ if(!cardOk)return false;
 
 bool SDCardManager::readUntransferredFileFromSDCard(int moveData, bool sendToSerial, const char *dirName){
 	if(!cardOk)return false;
-	RTCInfoRecord anRTCInfoRecord = timeManager.getCurrentDateTime();
+	RTCInfoRecord anRTCInfoRecord = timeManager.now();
 	int year = anRTCInfoRecord.year-2000;
 	int month = anRTCInfoRecord.month-1;
 	return readUntransferredFileFromSDCardByDate( moveData,  sendToSerial,  dirName,  anRTCInfoRecord.date,  month,  year);
@@ -401,7 +401,7 @@ bool SDCardManager::readEventRecord(uint16_t index, byte *eventData,int eventSiz
 			}
 
 			char fileNameTF[30];
-			RTCInfoRecord anRTCInfoRecord = timeManager.getCurrentDateTime();
+			RTCInfoRecord anRTCInfoRecord = timeManager.now();
 			int year = anRTCInfoRecord.year-2000;
 			int month = anRTCInfoRecord.month-1;
 			snprintf(fileNameTF, sizeof fileNameTF, "/%s/%s_h/%i_%i_%i.bin", EventRecordDirName,currentlyOpenFileName, anRTCInfoRecord.date,month, year);
