@@ -77,7 +77,7 @@ bool PCF8563TimeManager::setTime(String command){
 
 }
 
-RTCInfoRecord PCF8563TimeManager::getCurrentDateTime(){
+RTCInfoRecord PCF8563TimeManager::now(){
 
 		Wire.beginTransmission(PCF8563address);
 		Wire.write(0x02);
@@ -99,7 +99,7 @@ RTCInfoRecord PCF8563TimeManager::getCurrentDateTime(){
 bool PCF8563TimeManager::printTimeToSerial(){
 
 	RTCInfoRecord aRTCInfoRecord = getCurrentDateTime();
-	String displayTime =  "";
+
 	_HardSerial.print(aRTCInfoRecord.date);
 	_HardSerial.print("/");
 	_HardSerial.print(aRTCInfoRecord.month);
@@ -166,54 +166,6 @@ long PCF8563TimeManager::dateAsSeconds(uint16_t year, uint8_t month, uint8_t dat
 
 
 
-String PCF8563TimeManager::getCurrentTimeForDisplay(bool showSecs){
-	RTCInfoRecord aRTCInfoRecord  = getCurrentDateTime();
-	String displayTime =  "";
-
-	displayTime.concat(aRTCInfoRecord.hour);
-	displayTime.concat(":");
-	displayTime.concat(aRTCInfoRecord.minute);
-	if(showSecs){
-		displayTime.concat(":");
-		displayTime.concat(aRTCInfoRecord.second);
-	}
-
-	return displayTime;
-}
-
-String PCF8563TimeManager::getCurrentDateTimeForDisplay(){
-	RTCInfoRecord aRTCInfoRecord  = getCurrentDateTime();
-
-	String displayTime =  "";
-	displayTime.concat(aRTCInfoRecord.date);
-	displayTime.concat("/");
-	displayTime.concat(aRTCInfoRecord.month);
-	displayTime.concat("/");
-	int year = aRTCInfoRecord.year-2000;
-	displayTime.concat(year);
-	displayTime.concat(" ");
-	displayTime.concat(aRTCInfoRecord.hour);
-	displayTime.concat(":");
-	displayTime.concat(aRTCInfoRecord.minute);
-	displayTime.concat(":");
-	displayTime.concat(aRTCInfoRecord.second);
-
-	return displayTime;
-}
-
-String PCF8563TimeManager::getCurrentDateForDisplay(){
-	RTCInfoRecord aRTCInfoRecord  = getCurrentDateTime();
-
-	String displayTime =  "";
-	displayTime.concat(aRTCInfoRecord.date);
-	displayTime.concat("/");
-	displayTime.concat(aRTCInfoRecord.month);
-	displayTime.concat("/");
-	int year = aRTCInfoRecord.year-2000;
-	displayTime.concat(year);
-
-	return displayTime;
-}
 
 
 long PCF8563TimeManager::getTimeForCodeGeneration(){
