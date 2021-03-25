@@ -40,7 +40,7 @@ public:
 	//
 	// oscillator functions
 	//
-	void PCF8563TimeManager::PCF8563oscOFF();
+	void PCF8563oscOFF();
 	void PCF8563osc1Hz();
 	void PCF8563osc32Hz();
 	void PCF8563osc1024kHz();
