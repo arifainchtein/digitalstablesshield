@@ -78,6 +78,7 @@ void GloriaFieldRF24Communicator::start(GloriaCommData& gloriaCommData){
 	//
 
 	radio.printDetails();
+	radio.stopListening();
 }
 
 bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData){
@@ -193,37 +194,13 @@ bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowD
 bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& data,HardwareSerial& serial)
 {
 	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
-	serial.println("point 1");
+
 	radio.stopListening();
-	serial.println("point 2");
-	//ower_all_enable();
-	//digitalWrite (SS, HIGH);
-	// SPI.begin ();
-	//digitalWrite (CHIP_ENABLE, LOW);
-	//digitalWrite (CHIP_SELECT, HIGH);
-	//  //Serial.println("Sending 2");
-	//
-	// Setup and configure rf radio
-	//
 
-	// optionally, increase the delay between retries & # of retries
-	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               radio.setRetries(15, 15);
-
-	// optionally, reduce the payload size.  seems to improve reliability
-	// radio.setPayloadSize(32);
-
-
-	//  //Serial.println("Sending 4");
 
 	delay (10);
 
 	bool ok = radio.write (&data, sizeof data);
-	serial.println("point 3");
-	if(ok){
-		//Serial.println("Base Data was sent ok");
-	}else{
-		//Serial.println("Base Data was NOT sent ok");
-	}
 
 
 	//  power_all_disable();
