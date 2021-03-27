@@ -23,7 +23,7 @@ GloriaFieldSensors::GloriaFieldSensors() {
 
 void GloriaFieldSensors::start(uint8_t address[]){
 	tempSensor.begin();
-	//tempSensor.getAddress(address, 0);
+	tempSensor.getAddress(address, 0);
 }
 
 float GloriaFieldSensors::getTemperature(){
