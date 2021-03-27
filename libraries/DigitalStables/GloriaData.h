@@ -12,6 +12,11 @@ struct GloriaFieldPowerData{
 	float rtcVoltage=0.0;
 };
 #endif
+//
+//fdev_setup_stream(&serial_stdout, serial_putchar, NULL, _FDEV_SETUP_WRITE);
+//stdout = &serial_stdout;
+//printf("This no2w goes to stdout: %d\n", 3);
+
 
 #ifndef GLORIAFIELDSENSORDATA_H
 #define GLORIAFIELDSENSORDATA_H
