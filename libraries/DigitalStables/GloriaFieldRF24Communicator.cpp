@@ -152,6 +152,7 @@ bool GloriaFieldRF24Communicator::sendSensorData (const GloriaFieldSensorData& s
 	}else{
 		//Serial.println("sensorData       Data was NOT sent ok");
 	}
+	return ok;
 }
 
 bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowData)
@@ -187,6 +188,7 @@ bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowD
 	}else{
 		//Serial.println("Flow       Data was NOT sent ok");
 	}
+	return ok;
 }
 bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& data,HardwareSerial& serial)
 {
