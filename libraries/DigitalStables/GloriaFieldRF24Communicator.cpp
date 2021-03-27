@@ -63,8 +63,9 @@ void GloriaFieldRF24Communicator::start(GloriaCommData& gloriaCommData){
 	//radio.openWritingPipe(gloriaCommData.readingPipe);//writingPipe);
 	//radio.openReadingPipe(1,gloriaCommData.writingPipe);//readingPipe);
 	const uint64_t pipes[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
-	radio.openWritingPipe(pipes[1]);
-	radio.openReadingPipe(1,pipes[0]);
+	radio.printDetails();
+	radio.openWritingPipe(pipes[0]);
+	radio.openReadingPipe(1,pipes[1]);
 
 
 	//
@@ -77,7 +78,7 @@ void GloriaFieldRF24Communicator::start(GloriaCommData& gloriaCommData){
 	// Dump the configuration of the rf unit for debugging
 	//
 
-	radio.printDetails();
+
 	radio.stopListening();
 }
 
