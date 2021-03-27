@@ -67,9 +67,6 @@ void GloriaFieldRF24Communicator::start(GloriaCommData& gloriaCommData){
 	radio->openReadingPipe(1,pipes[0]);
 
 
-	//	radio->openWritingPipe(PIPE1);
-	//	radio->openReadingPipe(1,PIPE0);
-
 	//
 	// Start listening
 	//
@@ -191,11 +188,12 @@ bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowD
 		//Serial.println("Flow       Data was NOT sent ok");
 	}
 }
-bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& data)
+bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& data,HardwareSerial& serial)
 {
 	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
+	serial.println("point 1");
 	radio->stopListening();
-
+	serial.println("point 2");
 	//ower_all_enable();
 	//digitalWrite (SS, HIGH);
 	// SPI.begin ();
@@ -218,6 +216,7 @@ bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& dat
 	delay (10);
 
 	bool ok = radio->write (&data, sizeof data);
+	serial.println("point 3");
 	if(ok){
 		//Serial.println("Base Data was sent ok");
 	}else{

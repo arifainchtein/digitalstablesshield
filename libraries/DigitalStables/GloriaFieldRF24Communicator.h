@@ -29,7 +29,7 @@ public:
 	bool receive(GloriaHomeBaseData& gloriaHomeBaseData  );
 	virtual ~GloriaFieldRF24Communicator();
 
-	bool sendPowerData (const GloriaFieldPowerData& data);
+	bool sendPowerData (const GloriaFieldPowerData& data, HardwareSerial& serial);
 	bool sendFlowData (const GloriaFieldFlowData& flowData);
 	bool sendSensorData (const GloriaFieldSensorData& sensorData);
 };
