@@ -6,7 +6,7 @@
  */
 
 #include <GloriaFieldRF24Communicator.h>
-
+#include "GloriaPinDefinition.h"
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
@@ -24,7 +24,7 @@
 const int num_reps = 100;
 const uint8_t num_channels = 128;
 uint8_t gloriaFieldValues[num_channels];
-RF24* radio;
+RF24 radio(SPI_SS, WS2812B);
 
 unsigned long lastReading=0L;
 unsigned int gloriaDataCounter;
@@ -46,47 +46,47 @@ GloriaFieldRF24Communicator::GloriaFieldRF24Communicator(LCDDisplay & l, TimeMan
 
 void GloriaFieldRF24Communicator::start(GloriaCommData& gloriaCommData){
 	//gloriaCommData=commDat;
-	radio = new RF24(gloriaCommData.CHIP_ENABLE, gloriaCommData.CHIP_SELECT);
-	radio->begin();
-	radio->setDataRate( RF24_250KBPS );
+	//radio = new RF24(gloriaCommData.CHIP_ENABLE, gloriaCommData.CHIP_SELECT);
+	radio.begin();
+	radio.setDataRate( RF24_250KBPS );
 
 	// optionally, increase the delay between retries & # of retries
-	radio->setRetries(15,15);
+	radio.setRetries(15,15);
 
 	// optionally, reduce the payload size.  seems to
 	// improve reliability
-	// radio->setPayloadSize(32);
-	radio->enableDynamicPayloads();
-	//radio->setAutoAck(1);
-	//radio->enableAckPayload();
+	// radio.setPayloadSize(32);
+	radio.enableDynamicPayloads();
+	//radio.setAutoAck(1);
+	//radio.enableAckPayload();
 
-	//radio->openWritingPipe(gloriaCommData.readingPipe);//writingPipe);
-	//radio->openReadingPipe(1,gloriaCommData.writingPipe);//readingPipe);
+	//radio.openWritingPipe(gloriaCommData.readingPipe);//writingPipe);
+	//radio.openReadingPipe(1,gloriaCommData.writingPipe);//readingPipe);
 	const uint64_t pipes[2] = { 0xF0F0F0F0E1LL, 0xF0F0F0F0D2LL };
-	radio->openWritingPipe(pipes[1]);
-	radio->openReadingPipe(1,pipes[0]);
+	radio.openWritingPipe(pipes[1]);
+	radio.openReadingPipe(1,pipes[0]);
 
 
 	//
 	// Start listening
 	//
 
-	radio->startListening();
+	radio.startListening();
 
 	//
 	// Dump the configuration of the rf unit for debugging
 	//
 
-	radio->printDetails();
+	radio.printDetails();
 }
 
 bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData){
 	bool toReturn=false;
-	radio->startListening ();
+	radio.startListening ();
 	delay(10);
-	if ( radio->available() ){
+	if ( radio.available() ){
 		//blink(pixelsLayer2.Color(248, 128, 23));
-		uint8_t bytesReceivedLength = radio->getDynamicPayloadSize();
+		uint8_t bytesReceivedLength = radio.getDynamicPayloadSize();
 		lcd.print ("bytesReceivedLength = ");
 		lcd.print (bytesReceivedLength);
 		// Dump the payloads until we've gotten everything
@@ -99,7 +99,7 @@ bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData
 			// Fetch the payload, and see if this was the last one.
 
 			if(bytesReceivedLength == sizeof gloriaHomeBaseData){
-				done = radio->read( &gloriaHomeBaseData, sizeof gloriaHomeBaseData);
+				done = radio.read( &gloriaHomeBaseData, sizeof gloriaHomeBaseData);
 				//Serial.print ("new pump status = ");
 				//Serial.println (gloriaHomeBaseData.pumpState);
 			}else {
@@ -112,7 +112,7 @@ bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData
 	}
 
 
-	radio->stopListening ();
+	radio.stopListening ();
 	return toReturn;
 }
 
@@ -146,7 +146,7 @@ bool GloriaFieldRF24Communicator::sendSensorData (const GloriaFieldSensorData& s
 	delay (10);
 	//Serial.print("Sending sensorData:");
 
-	bool  ok = radio->write (&sensorData, sizeof sensorData);
+	bool  ok = radio.write (&sensorData, sizeof sensorData);
 	if(ok){
 		//Serial.println("sensorData Data was sent ok");
 	}else{
@@ -181,7 +181,7 @@ bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowD
 	delay (10);
 	//Serial.print("Sending flow:");
 
-	bool  ok = radio->write (&flowData, sizeof flowData);
+	bool  ok = radio.write (&flowData, sizeof flowData);
 	if(ok){
 		//Serial.println("Flow Data was sent ok");
 	}else{
@@ -192,7 +192,7 @@ bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& dat
 {
 	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
 	serial.println("point 1");
-	radio->stopListening();
+	radio.stopListening();
 	serial.println("point 2");
 	//ower_all_enable();
 	//digitalWrite (SS, HIGH);
@@ -215,7 +215,7 @@ bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& dat
 
 	delay (10);
 
-	bool ok = radio->write (&data, sizeof data);
+	bool ok = radio.write (&data, sizeof data);
 	serial.println("point 3");
 	if(ok){
 		//Serial.println("Base Data was sent ok");
@@ -225,7 +225,7 @@ bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& dat
 
 
 	//  power_all_disable();
-	radio->startListening();
+	radio.startListening();
 	return ok;
 }
 
@@ -246,15 +246,15 @@ void GloriaFieldRF24Communicator::scan(void)
 		while (i--)
 		{
 			// Select this channel
-			//      radio->setChannel(i);
+			//      radio.setChannel(i);
 			//
 			//      // Listen for a little
-			//      radio->startListening();
+			//      radio.startListening();
 			//      delayMicroseconds(128);
-			//      radio->stopListening();
+			//      radio.stopListening();
 			//
 			//      // Did we get a carrier?
-			//      if ( radio->testCarrier() )
+			//      if ( radio.testCarrier() )
 			//        ++gloriaFieldValues[i];
 		}
 	}
