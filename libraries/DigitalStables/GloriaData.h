@@ -17,6 +17,12 @@ struct GloriaFieldPowerData{
 //stdout = &serial_stdout;
 //printf("This no2w goes to stdout: %d\n", 3);
 
+//FILE serial_stdout;
+//int serial_putchar(char c, FILE* f) {
+ //  if (c == '\n') serial_putchar('\r', f);
+  // return Serial.write(c) == 1? 0 : 1;
+//}
+
 
 #ifndef GLORIAFIELDSENSORDATA_H
 #define GLORIAFIELDSENSORDATA_H
