@@ -103,8 +103,8 @@ bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData
 
 			if(bytesReceivedLength == sizeof gloriaHomeBaseData){
 				done = radio->read( &gloriaHomeBaseData, sizeof gloriaHomeBaseData);
-				Serial.print ("new pump status = ");
-				Serial.println (gloriaHomeBaseData.pumpState);
+				//Serial.print ("new pump status = ");
+				//Serial.println (gloriaHomeBaseData.pumpState);
 			}else {
 				//blink(pixelsLayer2.Color(0 ,255, 0));
 				done=false;
@@ -132,7 +132,7 @@ bool GloriaFieldRF24Communicator::sendSensorData (const GloriaFieldSensorData& s
 	// SPI.begin ();
 	//digitalWrite (CHIP_ENABLE, LOW);
 	//digitalWrite (CHIP_SELECT, HIGH);
-	//  Serial.println("Sending 2");
+	//  //Serial.println("Sending 2");
 	//
 	// Setup and configure rf radio
 	//
@@ -144,16 +144,16 @@ bool GloriaFieldRF24Communicator::sendSensorData (const GloriaFieldSensorData& s
 	// radio.setPayloadSize(32);
 
 
-	//  Serial.println("Sending 4");
+	//  //Serial.println("Sending 4");
 
 	delay (10);
-	Serial.print("Sending sensorData:");
+	//Serial.print("Sending sensorData:");
 
 	bool  ok = radio->write (&sensorData, sizeof sensorData);
 	if(ok){
-		Serial.println("sensorData Data was sent ok");
+		//Serial.println("sensorData Data was sent ok");
 	}else{
-		Serial.println("sensorData       Data was NOT sent ok");
+		//Serial.println("sensorData       Data was NOT sent ok");
 	}
 }
 
@@ -167,7 +167,7 @@ bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowD
 	// SPI.begin ();
 	//digitalWrite (CHIP_ENABLE, LOW);
 	//digitalWrite (CHIP_SELECT, HIGH);
-	//  Serial.println("Sending 2");
+	//  //Serial.println("Sending 2");
 	//
 	// Setup and configure rf radio
 	//
@@ -179,29 +179,29 @@ bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowD
 	// radio.setPayloadSize(32);
 
 
-	//  Serial.println("Sending 4");
+	//  //Serial.println("Sending 4");
 
 	delay (10);
-	Serial.print("Sending flow:");
+	//Serial.print("Sending flow:");
 
 	bool  ok = radio->write (&flowData, sizeof flowData);
 	if(ok){
-		Serial.println("Flow Data was sent ok");
+		//Serial.println("Flow Data was sent ok");
 	}else{
-		Serial.println("Flow       Data was NOT sent ok");
+		//Serial.println("Flow       Data was NOT sent ok");
 	}
 }
 bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& data)
 {
 	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
-
+	radio->stopListening();
 
 	//ower_all_enable();
-	digitalWrite (SS, HIGH);
+	//digitalWrite (SS, HIGH);
 	// SPI.begin ();
 	//digitalWrite (CHIP_ENABLE, LOW);
 	//digitalWrite (CHIP_SELECT, HIGH);
-	//  Serial.println("Sending 2");
+	//  //Serial.println("Sending 2");
 	//
 	// Setup and configure rf radio
 	//
@@ -213,19 +213,20 @@ bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& dat
 	// radio.setPayloadSize(32);
 
 
-	//  Serial.println("Sending 4");
+	//  //Serial.println("Sending 4");
 
 	delay (10);
 
 	bool ok = radio->write (&data, sizeof data);
 	if(ok){
-		Serial.println("Base Data was sent ok");
+		//Serial.println("Base Data was sent ok");
 	}else{
-		Serial.println("Base Data was NOT sent ok");
+		//Serial.println("Base Data was NOT sent ok");
 	}
 
 
 	//  power_all_disable();
+	radio->startListening();
 	return ok;
 }
 
