@@ -21,9 +21,11 @@ GloriaFieldSensors::GloriaFieldSensors() {
 
 }
 
-void GloriaFieldSensors::start(){
-	//tempSensor.begin();
+void GloriaFieldSensors::start(uint8_t address[]){
+	tempSensor.begin();
+	tempSensor.getAddress(address, 0);
 }
+
 float GloriaFieldSensors::getTemperature(){
 	tempSensor.requestTemperatures();
 	delay(100);
@@ -110,11 +112,34 @@ double GloriaFieldSensors::getTankWaterLevel(void){
 float GloriaFieldSensors::getSourceVoltage(void) // Returns actual value of Vcc (x 100)
     {
 
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+     // For mega boards
+   //  Serial.println(F("Using 1280/2560 Bandgap for calculations "));
+     //Serial.println();
+     const long InternalReferenceVoltage = 1100L;  // Adjust this value to your boards specific internal BG voltage x1000
+        // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc reference
+        // MUX4 MUX3 MUX2 MUX1 MUX0  --> 11110 1.1V (VBG)         -Selects channel 30, bandgap voltage, to measure
+     ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR)| (0<<MUX5) | (1<<MUX4) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
+#elif defined(__AVR_ATmega1284__) || defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega644__) || defined(__AVR_ATmega644P__)
      // For 1284/644
-     const long InternalReferenceVoltage = 1065L;  // Adjust this value to your boards specific internal BG voltage x1000
+    // Serial.println(F("Using 1284/644 Bandgap for calculations "));
+   //  Serial.println();
+     const long InternalReferenceVoltage = 1115L;  // Adjust this value to your boards specific internal BG voltage x1000
         // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc reference
         // MUX4 MUX3 MUX2 MUX1 MUX0  --> 11110 1.1V (VBG)         -Selects channel 30, bandgap voltage, to measure
      ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR)| (1<<MUX4) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
+#else
+     // For 168/328 boards
+   //  Serial.println(F("Using 168/328 Bandgap for calculations"));
+    // Serial.println();
+     const long InternalReferenceVoltage = 1100L;  // Adjust this value to your boards specific internal BG voltage x1000
+        // REFS1 REFS0          --> 0 1, AVcc internal ref. -Selects AVcc external reference
+        // MUX3 MUX2 MUX1 MUX0  --> 1110 1.1V (VBG)         -Selects channel 14, bandgap voltage, to measure
+     ADMUX = (0<<REFS1) | (1<<REFS0) | (0<<ADLAR) | (1<<MUX3) | (1<<MUX2) | (1<<MUX1) | (0<<MUX0);
+
+#endif
+
+
 
      delay(50);  // Let mux settle a little to get a more stable A/D conversion
         // Start a conversion

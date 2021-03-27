@@ -29,8 +29,8 @@ RF24* radio;
 unsigned long lastReading=0L;
 unsigned int gloriaDataCounter;
 unsigned long lastRead2;
-GloriaBaseData gloriaBaseData;
-GloriaFlowData gloriaFlowData;
+
+
 long lastReceptionFromBase=0L;
 long currentTime = 0L;
 bool sendBaseData=false;
@@ -103,18 +103,8 @@ bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData
 
 			if(bytesReceivedLength == sizeof gloriaHomeBaseData){
 				done = radio->read( &gloriaHomeBaseData, sizeof gloriaHomeBaseData);
-				gloriaBaseData.relayState= gloriaHomeBaseData.pumpState;
-
-				//   blink(pixelsLayer2.Color(255 ,0,0));
 				Serial.print ("new pump status = ");
-				Serial.println (gloriaBaseData.relayState);
-
-				if(gloriaBaseData.relayState){
-				//	pixelsLayer2.setPixelColor(1, pixelsLayer2.Color(255 ,0, 0));
-				}else{
-				//	pixelsLayer2.setPixelColor(1, pixelsLayer2.Color(0 ,255, 0));
-				}
-				//pixelsLayer2.show();
+				Serial.println (gloriaHomeBaseData.pumpState);
 			}else {
 				//blink(pixelsLayer2.Color(0 ,255, 0));
 				done=false;
@@ -131,34 +121,43 @@ bool GloriaFieldRF24Communicator::receive(GloriaHomeBaseData& gloriaHomeBaseData
 
 
 
-bool GloriaFieldRF24Communicator::publish(GloriaBaseData& gloriaBaseData,GloriaFlowData& gloriaFlowData){
-	currentTime = timeManager.getCurrentTimeInSeconds();
-	gloriaBaseData.secondsTime=currentTime;
-	bool ok=false;
 
-	if(sendBaseData){
-		ok= sendBase (gloriaBaseData);
-		sendBaseData=false;
-		if(ok){
-			//    blink(pixelsLayer2.Color(255 ,0,0));
-		}else{
-			//    blink(pixelsLayer2.Color(0 ,255, 0));
-		}
-	}else{
-		currentTime = timeManager.getCurrentTimeInSeconds();
-		sendBaseData=true;
-		ok= sendFlow (gloriaFlowData);
-		if(ok){
-			//   blink(pixelsLayer2.Color(255 ,0,0));
-		}else{
-			//   blink(pixelsLayer2.Color(0 ,255, 0));
-		}
-	}
-	return ok;
-}
 
 //
-bool GloriaFieldRF24Communicator::sendFlow (const GloriaFlowData& flowData)
+bool GloriaFieldRF24Communicator::sendSensorData (const GloriaFieldSensorData& sensorData)
+{
+	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
+	//ower_all_enable();
+	digitalWrite (SS, HIGH);
+	// SPI.begin ();
+	//digitalWrite (CHIP_ENABLE, LOW);
+	//digitalWrite (CHIP_SELECT, HIGH);
+	//  Serial.println("Sending 2");
+	//
+	// Setup and configure rf radio
+	//
+
+	// optionally, increase the delay between retries & # of retries
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               radio.setRetries(15, 15);
+
+	// optionally, reduce the payload size.  seems to improve reliability
+	// radio.setPayloadSize(32);
+
+
+	//  Serial.println("Sending 4");
+
+	delay (10);
+	Serial.print("Sending sensorData:");
+
+	bool  ok = radio->write (&sensorData, sizeof sensorData);
+	if(ok){
+		Serial.println("sensorData Data was sent ok");
+	}else{
+		Serial.println("sensorData       Data was NOT sent ok");
+	}
+}
+
+bool GloriaFieldRF24Communicator::sendFlowData (const GloriaFieldFlowData& flowData)
 {
 	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
 
@@ -192,7 +191,7 @@ bool GloriaFieldRF24Communicator::sendFlow (const GloriaFlowData& flowData)
 		Serial.println("Flow       Data was NOT sent ok");
 	}
 }
-bool GloriaFieldRF24Communicator::sendBase (const GloriaBaseData& data)
+bool GloriaFieldRF24Communicator::sendPowerData (const GloriaFieldPowerData& data)
 {
 	// Set up nRF24L01 radio on SPI bus plus pins 9 & 10
 

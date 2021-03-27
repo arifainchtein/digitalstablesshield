@@ -18,7 +18,7 @@ public:
 	void start(GloriaCommData& commData);
 	void scan( );
 	bool publish(GloriaHomeBaseData& gloriaHomeBaseData  );
-    bool receive(GloriaBaseData& gloriaBaseData,GloriaFlowData& gloriaFlowData);
+    bool receive(GloriaFieldPowerData& gloriaFieldPowerData,GloriaFieldSensorData& gloriaFielSensorData,GloriaFieldFlowData& gloriaFieldFlowData);
 	virtual ~GloriaHomeRF24Communicator();
 };
 

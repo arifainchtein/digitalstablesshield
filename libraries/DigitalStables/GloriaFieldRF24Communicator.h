@@ -27,12 +27,11 @@ public:
 	void start(GloriaCommData& commData);
 	void scan( );
 	bool receive(GloriaHomeBaseData& gloriaHomeBaseData  );
-	bool publish(GloriaBaseData& gloriaBaseData,GloriaFlowData& gloriaFlowData);
 	virtual ~GloriaFieldRF24Communicator();
 
-private:
-	bool sendBase (const GloriaBaseData& data);
-	bool sendFlow (const GloriaFlowData& flowData);
+	bool sendPowerData (const GloriaFieldPowerData& data);
+	bool sendFlowData (const GloriaFieldFlowData& flowData);
+	bool sendSensorData (const GloriaFieldSensorData& sensorData);
 };
 
 #endif /* LIBRARIES_DIGITALSTABLES_GLORIAFIELDRF24COMMUNICATOR_H_ */

@@ -145,7 +145,7 @@ bool GloriaHomeRF24Communicator::publish(GloriaHomeBaseData& gloriaHomeBaseData)
 
 
 
-bool GloriaHomeRF24Communicator::receive(GloriaBaseData& gloriaBaseData,GloriaFlowData& gloriaFlowData){
+bool GloriaHomeRF24Communicator::receive(GloriaFieldPowerData& gloriaFieldPowerData,GloriaFieldSensorData& gloriaFieldSensorData,GloriaFieldFlowData& gloriaFieldFlowData){
 
 
 	bool toReturn=false;
@@ -163,15 +163,15 @@ bool GloriaHomeRF24Communicator::receive(GloriaBaseData& gloriaBaseData,GloriaFl
 			uint8_t bytesReceivedLength = radio33->getDynamicPayloadSize();
 			//lcd.println ("Rcv Gloria 1");
 			// Fetch the payload, and see if this was the last one.
-			if(bytesReceivedLength == sizeof gloriaBaseData){
-				  radio33->read( &gloriaBaseData, sizeof gloriaBaseData);
+			if(bytesReceivedLength == sizeof gloriaFieldPowerData){
+				  radio33->read( &gloriaFieldPowerData, sizeof gloriaFieldPowerData);
 
 			//	delay(100);
 				toReturn=true;
 
 
-			}else if(bytesReceivedLength == sizeof gloriaFlowData){
-				radio33->read( &gloriaFlowData, sizeof gloriaFlowData);
+			}else if(bytesReceivedLength == sizeof gloriaFieldFlowData){
+				radio33->read( &gloriaFieldFlowData, sizeof gloriaFieldFlowData);
 			//	delay(100);
 
 				toReturn=true;
