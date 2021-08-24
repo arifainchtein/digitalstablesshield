@@ -31,7 +31,6 @@ void PCF8563TimeManager::hourlyTasks(long time, int previousHour ){
  void PCF8563TimeManager::yearlyTasks(long time){
 
  }
- byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
 
 bool PCF8563TimeManager::setTime(String command){
 	//SetTime#24#10#19#4#17#32#00
