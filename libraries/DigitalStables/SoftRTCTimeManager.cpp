@@ -7,10 +7,14 @@
 
 #include <SoftRTCTimeManager.h>
 
+#include <swRTC.h>
+
 static const byte monthDays[]={31,28,31,30,31,30,31,31,30,31,30,31};
 
 
+
 SoftRTCTimeManager::SoftRTCTimeManager( HardwareSerial& serial):TimeManager(serial ){
+	rtc = new swRTC();
 
 }
 
@@ -38,10 +42,10 @@ bool SoftRTCTimeManager::setTime(String command){
 	int minute = GeneralFunctions::getValue(command, '#', 6).toInt();
 	int second = GeneralFunctions::getValue(command, '#', 7).toInt();
 
-	rtc.stopRTC(); //stop the RTC
-	rtc.setTime(hour,minute,second); //set the time here
-	rtc.setDate(date,month,year); //set the date here
-	rtc.startRTC(); //start the RTC
+	rtc->stopRTC(); //stop the RTC
+	rtc->setTime(hour,minute,second); //set the time here
+	rtc->setDate(date,month,year); //set the date here
+	rtc->startRTC(); //start the RTC
 
 	return true;
 
@@ -50,13 +54,13 @@ bool SoftRTCTimeManager::setTime(String command){
 RTCInfoRecord SoftRTCTimeManager::now(){
 
 		RTCInfoRecord aRTCInfoRecord;
-		aRTCInfoRecord.second     = rtc.getSeconds();
-		aRTCInfoRecord.minute     = rtc.getMinutes();
-		aRTCInfoRecord.hour       = rtc.getHours();
-		aRTCInfoRecord.date 	= rtc.getDay();
-		aRTCInfoRecord.dayOfWeek  = rtc.getWeekDay();
-		aRTCInfoRecord.month      = rtc.getMonth();
-		aRTCInfoRecord.year       = rtc.getYear();
+		aRTCInfoRecord.second     = rtc->getSeconds();
+		aRTCInfoRecord.minute     = rtc->getMinutes();
+		aRTCInfoRecord.hour       = rtc->getHours();
+		aRTCInfoRecord.date 	= rtc->getDay();
+		aRTCInfoRecord.dayOfWeek  = rtc->getWeekDay();
+		aRTCInfoRecord.month      = rtc->getMonth();
+		aRTCInfoRecord.year       = rtc->getYear();
 		return aRTCInfoRecord;
 	}
 
@@ -87,7 +91,7 @@ bool SoftRTCTimeManager::printTimeToSerial(){
 
 void SoftRTCTimeManager::start(){
 
-	rtc.startRTC();
+	rtc->startRTC();
 }
 
 

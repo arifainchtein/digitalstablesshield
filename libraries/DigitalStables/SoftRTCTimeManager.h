@@ -9,12 +9,14 @@
 #define LIBRARIES_DIGITALSTABLES_SOFTRTCTIMEMANAGER_H_
 
 #include <TimeManager.h>
-#include <swRTC.h>
 #include <RTCInfoRecord.h>
 
-class SoftRTCTimeManager  : public TimeManager {
 
-	swRTC rtc;
+    class swRTC;
+
+
+class SoftRTCTimeManager  : public TimeManager {
+    	swRTC* rtc;
 
 public:
 	SoftRTCTimeManager(HardwareSerial& serial);
