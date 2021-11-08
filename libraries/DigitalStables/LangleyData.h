@@ -25,6 +25,10 @@ struct LangleyData{
 	float fenceVoltage=0.0;
 	int rssi=0;
 	int snr=0;
+	// the status values are:
+	// 0 - WPS normal
+	// 1 - Active Normal
+	uint8_t status=0;
 };
 #endif
 
