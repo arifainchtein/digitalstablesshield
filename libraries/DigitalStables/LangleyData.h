@@ -22,6 +22,9 @@ struct LangleyData{
 	float capacitorVoltage=0.0;
 	float externalBatteryVoltage=0.0;
 	float temperature=0.0;
+	float fenceVoltage=0.0;
+	int rssi=0;
+	int snr=0;
 };
 #endif
 
