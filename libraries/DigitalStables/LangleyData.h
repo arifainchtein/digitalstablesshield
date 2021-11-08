@@ -26,9 +26,14 @@ struct LangleyData{
 	int rssi=0;
 	int snr=0;
 	// the status values are:
-	// 0 - WPS normal
-	// 1 - Active Normal
+	// 0 - Comma
+	// 1 - WPS normal
+	// 2 - Active Normal
 	uint8_t operatingStatus=0;
+	uint16_t wpsFrequencySeconds=1800;
+	float maxWPSVoltage=3.75;
+	float minWPSVoltage=3.25;
+	long secondsSinceLastPulse;
 };
 #endif
 
