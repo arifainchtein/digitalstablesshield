@@ -28,7 +28,7 @@ struct LangleyData{
 	// the status values are:
 	// 0 - WPS normal
 	// 1 - Active Normal
-	uint8_t status=0;
+	uint8_t operatingStatus=0;
 };
 #endif
 
