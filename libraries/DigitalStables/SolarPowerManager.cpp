@@ -217,9 +217,9 @@ void SolarPowerManager::defineState(){
 //					lcd.print(r.year);
 //					lcd.print(F(" "));
 					lcd.print(r.hour);
-					lcd.print(F(":"));
+					lcd.print(":");
 					lcd.print(r.minute);
-					lcd.print(F(":"));
+					lcd.print(":");
 					lcd.print(r.second);
 					lcd.print(" " );
 					//lcd.print(regulatorVoltage );
