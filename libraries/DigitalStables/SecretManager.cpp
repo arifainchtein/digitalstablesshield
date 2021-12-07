@@ -1,5 +1,5 @@
 #include "Arduino.h"
-#include <EEPROM.h>
+
 #include <totp.h>
 #include <TimeManager.h>
 #include <SecretManager.h>
@@ -14,27 +14,7 @@ SecretManager::SecretManager(TimeManager& t): timeManager(t){
 
 }
 
-void SecretManager::saveSecret(String secret, int numberDigits, int periodSeconds ){
-	char someCharArray[SHARED_SECRET_LENGTH];
-	secret.toCharArray(someCharArray,SHARED_SECRET_LENGTH);
 
-	for(int i=0;i<SHARED_SECRET_LENGTH ;i++){
-		EEPROM.write(i, someCharArray[i]);
-	}
-
-	EEPROM.write(SHARED_SECRET_LENGTH, numberDigits);
-	EEPROM.write(SHARED_SECRET_LENGTH+1, periodSeconds);
-}
-
-
-void SecretManager::readSecret(char *secretCode){
-
-	if ( EEPROM.read ( 0 ) != 0xff ){
-		for (int i = 0; i < SHARED_SECRET_LENGTH; ++i ){
-			secretCode [ i ] = EEPROM.read ( i );
-		}
-	}
-}
 
 long SecretManager::generateCode(){
 
@@ -43,8 +23,8 @@ long SecretManager::generateCode(){
 	long timestamp = timeManager.getTimeForCodeGeneration();
 
 	char secretCode[SHARED_SECRET_LENGTH];
-	readSecret(secretCode);
-	TOTP totp = TOTP(secretCode);
+	String secret = readSecret();
+	TOTP totp = TOTP(secret);
 	long code=totp. gen_code  (timestamp ) ;
 	//
 	// now check to see if this code is already in the history

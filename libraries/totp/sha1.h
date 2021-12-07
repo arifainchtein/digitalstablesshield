@@ -118,7 +118,7 @@ private:
 		}
 	void pad()
 		{
-		// Implement SHA-1 padding (fips180-2 §5.1.1)
+		// Implement SHA-1 padding (fips180-2 ï¿½5.1.1)
 		// Pad with 0x80 followed by 0x00 until the end of the block
 		add(0x80);
 		while(buf_offset!=(BLOCK_LENGTH-8))

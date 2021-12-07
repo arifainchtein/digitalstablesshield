@@ -9,7 +9,7 @@
 #define LIBRARIES_DIGITALSTABLES_PCF8563TIMEMANAGER_H_
 
 #include <TimeManager.h>
-#include <GravityRtc.h>
+
 #include <RTCInfoRecord.h>
 
 class PCF8563TimeManager  : public TimeManager {
@@ -27,6 +27,8 @@ public:
 	void monthlyTasks(long time);
 	void yearlyTasks(long time);
 	long getCurrentTimeInSeconds();
+	long getCurrentTimeInSeconds(RTCInfoRecord r);
+    bool printTimeToSerial(RTCInfoRecord aRTCInfoRecord);
 	RTCInfoRecord now();
 	long getTimeForCodeGeneration();
 	//
@@ -34,6 +36,7 @@ public:
 	//
 	bool printTimeToSerial();
 	bool setTime(String);
+	bool setTime(RTCInfoRecord);
 	void setPCF8563alarm(byte am, byte ah);
 	void PCF8563alarmOff();
 	bool checkPCF8563alarm();

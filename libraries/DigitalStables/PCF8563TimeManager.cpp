@@ -31,7 +31,18 @@ void PCF8563TimeManager::hourlyTasks(long time, int previousHour ){
  void PCF8563TimeManager::yearlyTasks(long time){
 
  }
-
+bool PCF8563TimeManager::setTime(RTCInfoRecord e){
+	Wire.beginTransmission(PCF8563address);
+	  Wire.write(0x02);
+	  Wire.write(decToBcd(e.second));
+	  Wire.write(decToBcd(e.minute));
+	  Wire.write(decToBcd(e.hour));
+	  Wire.write(decToBcd(e.date));
+	  Wire.write(decToBcd(e.dayOfWeek));
+	  Wire.write(decToBcd(e.month));
+	  Wire.write(decToBcd(e.year));
+	  Wire.endTransmission();
+}
 bool PCF8563TimeManager::setTime(String command){
 	//SetTime#24#10#19#4#17#32#00
 	int date = GeneralFunctions::getValue(command, '#', 1).toInt();
@@ -94,6 +105,25 @@ RTCInfoRecord PCF8563TimeManager::now(){
 		return aRTCInfoRecord;
 	}
 
+bool PCF8563TimeManager::printTimeToSerial(RTCInfoRecord aRTCInfoRecord){
+
+
+
+	_HardSerial.print(aRTCInfoRecord.date);
+	_HardSerial.print("/");
+	_HardSerial.print(aRTCInfoRecord.month);
+	_HardSerial.print("/");
+	_HardSerial.print(aRTCInfoRecord.year);
+	_HardSerial.print(" ");
+	_HardSerial.print(aRTCInfoRecord.hour);
+	_HardSerial.print(":");
+	_HardSerial.print(aRTCInfoRecord.minute);
+	_HardSerial.print(":");
+	_HardSerial.print(aRTCInfoRecord.second);
+
+
+	return true;
+}
 
 bool PCF8563TimeManager::printTimeToSerial(){
 
@@ -179,7 +209,12 @@ long PCF8563TimeManager::getTimeForCodeGeneration(){
 
 
 
+long PCF8563TimeManager::getCurrentTimeInSeconds(RTCInfoRecord anRTCInfoRecord){
 
+	int month = anRTCInfoRecord.month-1;
+	long now=dateAsSeconds(anRTCInfoRecord.year, month, anRTCInfoRecord.date, anRTCInfoRecord.hour, anRTCInfoRecord.minute, anRTCInfoRecord.second);
+	return now;
+}
 
 long PCF8563TimeManager::getCurrentTimeInSeconds(){
 	RTCInfoRecord anRTCInfoRecord =now();
